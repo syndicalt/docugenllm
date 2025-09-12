@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_docugen_code_docs</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="u_docugen_code_docs">u_documentation_markdownISNOTEMPTY^EQ<item endquery="false" field="u_documentation_markdown" goto="false" newquery="false" operator="ISNOTEMPTY" or="false" value=""/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Form Control - Translate Markdown</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	// Helper function to escape HTML special characters
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+	
+	try {
+		// CSS styles for the formatted HTML
+		const styles = `
+			<style>
+				.markdown-body {
+					font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+					line-height: 1.6;
+					max-width: 900px;
+					margin: 0 auto;
+					padding: 20px;
+					color: #333;
+				}
+				.markdown-body h1 {
+					font-size: 2.2em;
+					border-bottom: 2px solid #eaecef;
+					padding-bottom: 0.3em;
+					margin-top: 1.5em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body h2 {
+					font-size: 1.8em;
+					border-bottom: 1px solid #eaecef;
+					padding-bottom: 0.3em;
+					margin-top: 1.2em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body h3 {
+					font-size: 1.4em;
+					margin-top: 1em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body h4 {
+					font-size: 1.2em;
+					margin-top: 1em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body p {
+					margin: 0.8em 0;
+				}
+				.markdown-body ul, .markdown-body ol {
+					padding-left: 2em;
+					margin: 0.8em 0;
+				}
+				.markdown-body li {
+					margin: 0.4em 0;
+				}
+				.markdown-body code {
+					background: #f6f8fa;
+					padding: 0.2em 0.4em;
+					border-radius: 3px;
+					font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+					font-size: 85%;
+				}
+				.markdown-body pre {
+					background: #f6f8fa;
+					padding: 1em;
+					border-radius: 6px;
+					overflow-x: auto;
+					margin: 0.8em 0;
+				}
+				.markdown-body pre code {
+					background: none;
+					padding: 0;
+				}
+				.markdown-body blockquote {
+					border-left: 4px solid #dfe2e5;
+					padding: 0 1em;
+					color: #6a737d;
+					margin: 0.8em 0;
+				}
+				.markdown-body a {
+					color: #0366d6;
+					text-decoration: none;
+				}
+				.markdown-body a:hover {
+					text-decoration: underline;
+				}
+			</style>
+		`;
+
+		// Replace literal \n with actual newlines
+		markdown = current.u_documentation_markdown.replace(/\\n/g, '\n');
+
+		// Split markdown into lines for processing
+		let lines = markdown.split('\n');
+		let htmlLines = [];
+		let inCodeBlock = false;
+		let listStack = []; // Track nested list levels: {type: 'ul'|'ol', indent: number}
+
+		for (let i = 0; i < lines.length; i++) {
+			let line = lines[i].trimEnd();
+			
+			// Skip empty lines in code blocks
+			if (inCodeBlock && line === '') {
+				htmlLines.push('');
+				continue;
+			}
+
+			// Handle code blocks
+			if (line.startsWith('```')) {
+				if (inCodeBlock) {
+					inCodeBlock = false;
+					htmlLines.push('</code></pre>');
+				} else {
+					const lang = line.replace('```', '').trim() || 'text';
+					inCodeBlock = true;
+					htmlLines.push(`<pre><code class="language-${lang}">`);
+				}
+				continue;
+			}
+
+			// Process lines within code blocks
+			if (inCodeBlock) {
+				htmlLines.push(escapeHtml(line));
+				continue;
+			}
+
+			// Escape HTML for non-code content
+			line = escapeHtml(line);
+
+			// Headers (#, ##, ###, ####)
+			if (line.match(/^#{1,4}\s+/)) {
+				while (listStack.length > 0) {
+					const { type } = listStack.pop();
+					htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+				}
+				const level = line.match(/^#+/)[0].length;
+				const content = line.replace(/^#{1,4}\s+/, '');
+				htmlLines.push(`<h${level}>${content}</h${level}>`);
+				continue;
+			}
+
+			// Handle lists (unordered: -/*, ordered: 1.)
+			const listMatch = line.match(/^(\s*)((?:[-*]|\d+\.)\s+)(.+)$/);
+			if (listMatch) {
+				const indent = listMatch[1].length;
+				const marker = listMatch[2].trim();
+				const content = listMatch[3];
+				const isOrdered = /^\d+\./.test(marker);
+				const listType = isOrdered ? 'ol' : 'ul';
+
+				// Close lists with greater indent or different type
+				while (listStack.length > 0 && (listStack[listStack.length - 1].indent > indent || 
+					(listStack[listStack.length - 1].indent === indent && listStack[listStack.length - 1].type !== listType))) {
+					const { type } = listStack.pop();
+					htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+				}
+
+				// Open new list if needed
+				if (!listStack.length || listStack[listStack.length - 1].indent < indent) {
+					listStack.push({ type: listType, indent });
+					htmlLines.push(`<${listType}>`);
+				}
+
+				htmlLines.push(`<li>${content}</li>`);
+				continue;
+			}
+
+			// Close lists if line isn't part of a list
+			if (listStack.length > 0 && !line.match(/^\s*([-*]|\d+\.)\s+/)) {
+				while (listStack.length > 0) {
+					const { type } = listStack.pop();
+					htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+				}
+			}
+
+			// Blockquotes (> text)
+			if (line.startsWith('> ')) {
+				const content = line.replace(/^>\s+/, '');
+				htmlLines.push(`<blockquote>${content}</blockquote>`);
+				continue;
+			}
+
+			// Inline formatting for non-empty lines
+			if (line !== '') {
+				// Bold (**text** or __text__)
+				line = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+				line = line.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+				// Italic (*text* or _text_)
+				line = line.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+				line = line.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+				// Inline code (`code`)
+				line = line.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+				// Links ([text](url))
+				line = line.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+				// Wrap in paragraph if not in a block element
+				if (listStack.length === 0 && !line.startsWith('<h') && !line.startsWith('<blockquote')) {
+					line = `<p>${line}</p>`;
+				}
+			} else {
+				line = '';
+			}
+
+			htmlLines.push(line);
+		}
+
+		// Close any open tags
+		if (inCodeBlock) {
+			htmlLines.push('</code></pre>');
+		}
+		while (listStack.length > 0) {
+			const { type } = listStack.pop();
+			htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+		}
+
+		// Join lines and normalize newlines (preserve paragraph breaks)
+		let html = htmlLines.join('\n').replace(/\n{3,}/g, '\n\n');
+
+		current.setValue('u_documentation', `<div class="markdown-body">${styles}${html}</div>`);
+	} catch(e) {
+		gs.addErrorMessage(`[Form Control - Translate Markdown] Error: ${ JSON.stringify(e) }`);
+	}
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 17:20:36</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>3834c44883c8721046cfe4d0deaad36d</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>Form Control - Translate Markdown</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_3834c44883c8721046cfe4d0deaad36d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-12 17:45:33</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=3834c44883c8721046cfe4d0deaad36d"/>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>3834c44883c8721046cfe4d0deaad36d</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 17:20:36</sys_created_on>
+        <sys_id>8974c44883c8721046cfe4d0deaad3e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-12 17:20:36</sys_updated_on>
+        <table>sys_script</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>
