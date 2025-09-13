@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Comma-separated list of sys_metadata classes that are available for DocuGenLLM documentation generation. Comma-separated list. (string)</description>
+        <ignore_cache>true</ignore_cache>
+        <is_private>false</is_private>
+        <name>docugenllm.valid.classes</name>
+        <read_roles>docugen_admin,docugen_user</read_roles>
+        <suffix/>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 14:33:08</sys_created_on>
+        <sys_id>eff6e8148304f21046cfe4d0deaad38b</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>docugenllm.valid.classes</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_properties_eff6e8148304f21046cfe4d0deaad38b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 14:33:34</sys_updated_on>
+        <type>string</type>
+        <value>sysauto_script,sys_script,sys_db_obect,sys_script_client,sys_ui_policy,sys_ui_action,sys_ui_script,sys_script_include,	sys_ux_client_script,catalog_script_client,sys_script_email,ecc_agent_script,ecc_agent_script_file,ecc_agent_script_include,sys_ws_definition,sys_web_service,sys_db_object,sys_script_validator</value>
+        <write_roles>docugen_admin</write_roles>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=eff6e8148304f21046cfe4d0deaad38b"/>
+</record_update>

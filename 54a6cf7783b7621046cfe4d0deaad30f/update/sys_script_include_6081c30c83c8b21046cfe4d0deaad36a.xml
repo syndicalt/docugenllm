@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.ClientActionsHandler</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>ClientActionsHandler</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var ClientActionsHandler = Class.create();
+ClientActionsHandler.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	checkClass: function(className) {
+		const classesSysProperty = gs.getProperty('docugenllm.valid.classes');
+		const valid_classes = classesSysProperty.split(',');
+
+		return valid_classes.indexOf(className) > -1;
+		
+		//  default_valid_classes = [
+		// 	'sysauto_script',
+		// 	'sys_script',
+		// 	'sys_db_obect',
+		// 	'sys_script_client',
+		// 	'sys_ui_policy',
+		// 	'sys_ui_action',
+		// 	'sys_ui_script',
+		// 	'sys_script_include',
+		// 	'sys_ux_client_script',
+		// 	'catalog_script_client',
+		// 	'sys_script_email',
+		// 	'ecc_agent_script',
+		// 	'ecc_agent_script_file',
+		// 	'ecc_agent_script_include',
+		// 	'sys_ws_definition',
+		// 	'sys_web_service',
+		// 	'sys_db_object',
+		// 	'sys_script_validator'
+		// ]
+	},
+
+	checkDocumentationExists: function(recordSysId) {
+		const sys_id = recordSysId || this.getParameter('sysparm_recordSysId');
+		var docGr = new GlideRecord('u_docugen_code_docs');
+		docGr.addQuery('u_script_reference', recordSysId);
+		docGr.query();
+
+		return docGr.hasNext();
+	},
+
+	getDocumentationLink: function(recordSysId) {
+		const sys_id = recordSysId || this.getParameter('sysparm_recordSysId');
+		const docGr = new GlideRecord('u_docugen_code_docs');
+		docGr.get('u_script_reference', sys_id);
+
+		return docGr.getLink();
+	},
+	
+    type: 'ClientActionsHandler'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 07:07:57</sys_created_on>
+        <sys_id>6081c30c83c8b21046cfe4d0deaad36a</sys_id>
+        <sys_mod_count>39</sys_mod_count>
+        <sys_name>ClientActionsHandler</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_6081c30c83c8b21046cfe4d0deaad36a</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 14:38:51</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>6081c30c83c8b21046cfe4d0deaad36a</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 07:07:57</sys_created_on>
+        <sys_id>24d14300830cb21046cfe4d0deaad355</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 07:07:57</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

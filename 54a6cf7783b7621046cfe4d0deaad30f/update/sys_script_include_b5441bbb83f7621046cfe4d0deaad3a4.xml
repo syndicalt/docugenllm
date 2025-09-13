@@ -11,7 +11,7 @@
         <sandbox_callable>false</sandbox_callable>
         <script><![CDATA[var DocuGenLLMClientUtils = Class.create();
 DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
-	initialize: function(model=null) {
+	initialize: function(model) {
 		const docuGenModel = new GlideRecord('u_models');
 		if(!model) {
 			docuGenModel.addQuery('u_default', true);
@@ -27,19 +27,10 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
 			this.MODEL = docuGenModel.u_model.toString();
 		} else {
-			this.ERROR = true;
 			throw new Error(`[DocuGenLLMClientUtils.initialize] Error: Model ${ model } not found in the u_models table.`);
 		}
 		this.DOCS_TABLE = 'u_docugen_code_docs';
 		this.DEBUG = false;
-		this.VALID_CLASSES = [
-			'sysauto_script',
-			'sys_script',
-			'sys_db_obect',
-			'sys_script_client',
-			'sys_ui_policy',
-			'sys_ui_action'
-		];
     },
 	
 	STATUS: {
@@ -48,9 +39,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 		DEBUG: 999
 	},
 
-	checkClass: function(gr) {	
-		return this.VALID_CLASSES.includes(gr.sys_class_name);
-	},
+	
 
     generateDocumentation: function(recordSysId, recordDisplayValue, tableName) {
 		if(this.ERROR) throw new Error();
@@ -319,14 +308,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>182</sys_mod_count>
+        <sys_mod_count>214</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 04:20:27</sys_updated_on>
+        <sys_updated_on>2025-09-13 07:09:37</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>
