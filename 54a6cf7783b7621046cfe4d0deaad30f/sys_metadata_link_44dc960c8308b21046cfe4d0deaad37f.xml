@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_metadata_link">
+    <sys_metadata_link action="INSERT_OR_UPDATE">
+        <directory>/</directory>
+        <documentkey>models_demo_data</documentkey>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<unload unload_date="2025-09-13 04:27:22">
+<u_models action="INSERT_OR_UPDATE">
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2025-09-12 13:17:43</sys_created_on>
+<sys_id>05dc43ff83b7621046cfe4d0deaad31d</sys_id>
+<sys_mod_count>13</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2025-09-13 04:04:04</sys_updated_on>
+<u_api_endpoint>https://api.openai.com/v1/responses</u_api_endpoint>
+<u_api_key></u_api_key>
+<u_default>true</u_default>
+<u_model>chatgpt</u_model>
+<u_name>ChatGPT Basic</u_name>
+<u_prompt>{
+    "model": "gpt-4.1",
+    "input": ""
+  }</u_prompt>
+<u_prompt_text_attribute>input</u_prompt_text_attribute>
+</u_models>
+<u_models action="INSERT_OR_UPDATE">
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2025-09-12 23:35:31</sys_created_on>
+<sys_id>310a19888380b21046cfe4d0deaad36d</sys_id>
+<sys_mod_count>1</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2025-09-12 23:35:52</sys_updated_on>
+<u_api_endpoint>https://api.anthropic.com/v1/messages</u_api_endpoint>
+<u_api_key></u_api_key>
+<u_default>false</u_default>
+<u_model>claude</u_model>
+<u_name>Claude Basic</u_name>
+<u_prompt>{
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 1000,
+    "messages": [
+      {
+        "role": "user", 
+        "content": "What should I search for to find the latest developments in renewable energy?"
+      }
+    ]
+  }</u_prompt>
+<u_prompt_text_attribute>message[0].content</u_prompt_text_attribute>
+</u_models>
+<u_models action="INSERT_OR_UPDATE">
+<sys_created_by>admin</sys_created_by>
+<sys_created_on>2025-09-12 14:40:22</sys_created_on>
+<sys_id>446fdf3b833b621046cfe4d0deaad3ac</sys_id>
+<sys_mod_count>10</sys_mod_count>
+<sys_updated_by>admin</sys_updated_by>
+<sys_updated_on>2025-09-13 03:59:05</sys_updated_on>
+<u_api_endpoint>https://api.x.ai/v1/chat/completions</u_api_endpoint>
+<u_api_key></u_api_key>
+<u_default>false</u_default>
+<u_model>grok</u_model>
+<u_name>Grok Basic</u_name>
+<u_prompt>{"messages":[{"role":"system","content":"You are Grok, a highly intelligent ServiceNow and Javascript developer."},{"role":"user","content":""}],"model":"grok-4-0709","stream":false}</u_prompt>
+<u_prompt_text_attribute>messages[1].content</u_prompt_text_attribute>
+</u_models>
+</unload>]]></payload>
+        <sys_class_name>sys_metadata_link</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 04:29:12</sys_created_on>
+        <sys_id>44dc960c8308b21046cfe4d0deaad37f</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_metadata_link_44dc960c8308b21046cfe4d0deaad37f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 04:31:50</sys_updated_on>
+        <tablename>u_models</tablename>
+    </sys_metadata_link>
+</record_update>
