@@ -120,7 +120,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 	},
 
     _callLLMAPI: function(prompt) {
-		if(this.DEBUG) return this._simulateAPIResponse(this.MODEL);
+		//if(this.DEBUG) return this._simulateAPIResponse(this.MODEL);
 		try {
 			const restMessage = new sn_ws.RESTMessageV2();
 			restMessage.setEndpoint(this.LLMENDPOINT);
@@ -148,7 +148,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 		try {			
 			switch(this.MODEL) {
 				case 'chatgpt':
-					return JSON.parse(response)[0].content.text;
+					return JSON.parse(response).output[0].content[0].text;
 					break;
 				case 'grok':
 					result = JSON.parse(response).choices[0].message.content;
@@ -319,14 +319,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>179</sys_mod_count>
+        <sys_mod_count>182</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 02:12:30</sys_updated_on>
+        <sys_updated_on>2025-09-13 04:20:27</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>

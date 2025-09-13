@@ -2,17 +2,17 @@
     <element db_object_id="d3e687b783b7621046cfe4d0deaad32d" label="Models" max_length="40" name="u_models" type="collection">
         <element choice="1" label="Model" mandatory="true" max_length="40" name="u_model" type="choice">
             <choice>
-                <element inactive_on_update="false" label="Claude" sequence="2" value="claude"/>
+                <element inactive_on_update="false" label="Grok" sequence="1" value="grok"/>
                 <element inactive_on_update="false" label="Gemini" sequence="3" value="gemini"/>
                 <element inactive_on_update="false" label="Mistral" sequence="4" value="mistral"/>
                 <element inactive_on_update="false" label="ChatGPT" sequence="0" value="chatgpt"/>
-                <element inactive_on_update="false" label="Grok" sequence="1" value="grok"/>
+                <element inactive_on_update="false" label="Claude" sequence="2" value="claude"/>
             </choice>
         </element>
         <element label="Default" max_length="255" name="u_default" read_only="true" type="boolean"/>
         <element hint="This is the attribute in the prompt JSON that contains the prompt that will be populated with record information for processing." label="Prompt Text Attribute" max_length="155" name="u_prompt_text_attribute" type="string"/>
         <element label="API Endpoint" max_length="1024" name="u_api_endpoint" type="url"/>
-        <element label="API Key" mandatory="true" max_length="155" name="u_api_key" type="string"/>
+        <element label="API Key" mandatory="true" max_length="255" name="u_api_key" type="string"/>
         <element hint="This is the JSON structure of the API request prompt that will be sent to the LLM. Check the documentation of the LLM API you are using to get find the basic prompt structure." label="Prompt" mandatory="true" max_length="4000" name="u_prompt" type="string"/>
         <element display="true" label="Name" mandatory="true" max_length="155" name="u_name" type="string"/>
     </element>
