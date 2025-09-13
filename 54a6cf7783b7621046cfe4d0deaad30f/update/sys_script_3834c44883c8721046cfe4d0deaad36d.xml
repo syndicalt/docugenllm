@@ -41,6 +41,25 @@
         };
         return text.replace(/[&<>"']/g, m => map[m]);
     }
+
+	// Helper function to apply inline formatting
+	function applyInlineFormatting(line) {
+		// Bold (**text** or __text__)
+		line = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+		line = line.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+		// Italic (*text* or _text_)
+		line = line.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+		line = line.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+		// Inline code (`code`)
+		line = line.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+		// Links ([text](url))
+		line = line.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+		return line;
+	}
 	
 	try {
 		// CSS styles for the formatted HTML
@@ -85,6 +104,9 @@
 					padding-left: 2em;
 					margin: 0.8em 0;
 				}
+				.markdown-body ul ul, .markdown-body ol ul, .markdown-body ul ol, .markdown-body ol ol {
+					margin: 0.4em 0;
+				}
 				.markdown-body li {
 					margin: 0.4em 0;
 				}
@@ -119,6 +141,20 @@
 				.markdown-body a:hover {
 					text-decoration: underline;
 				}
+				.markdown-body table {
+					border-collapse: collapse;
+					width: 100%;
+					margin: 0.8em 0;
+				}
+				.markdown-body th, .markdown-body td {
+					border: 1px solid #dfe2e5;
+					padding: 0.6em 1em;
+					text-align: left;
+				}
+				.markdown-body th {
+					background: #f6f8fa;
+					font-weight: 600;
+				}
 			</style>
 		`;
 
@@ -126,29 +162,53 @@
 		markdown = current.u_documentation_markdown.replace(/\\n/g, '\n');
 
 		// Split markdown into lines for processing
-		let lines = markdown.split('\n');
-		let htmlLines = [];
-		let inCodeBlock = false;
-		let listStack = []; // Track nested list levels: {type: 'ul'|'ol', indent: number}
+		var lines = markdown.split('\n');
+		var htmlLines = [];
+		var inCodeBlock = false;
+		var listStack = []; // Track nested list levels: {type: 'ul'|'ol', indent: number}
+		var inTable = false;
+		var tableHeaders = [];
+		var tableRows = [];
 
-		for (let i = 0; i < lines.length; i++) {
-			let line = lines[i].trimEnd();
+		for (var i = 0; i < lines.length; i++) {
+			var line = lines[i].replace(/\r$/, ''); // Trim trailing \r for Windows line endings
 			
 			// Skip empty lines in code blocks
-			if (inCodeBlock && line === '') {
+			if (inCodeBlock && line.trim() === '') {
 				htmlLines.push('');
 				continue;
 			}
 
 			// Handle code blocks
-			if (line.startsWith('```')) {
+			if (line.trim().indexOf('```') === 0) {
 				if (inCodeBlock) {
 					inCodeBlock = false;
 					htmlLines.push('</code></pre>');
 				} else {
-					const lang = line.replace('```', '').trim() || 'text';
+					var lang = line.trim().replace('```', '').trim() || 'text';
 					inCodeBlock = true;
-					htmlLines.push(`<pre><code class="language-${lang}">`);
+					htmlLines.push('<pre><code class="language-' + lang + '">');
+				}
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
 				}
 				continue;
 			}
@@ -162,78 +222,192 @@
 			// Escape HTML for non-code content
 			line = escapeHtml(line);
 
+			// Handle tables
+			if (line.indexOf('|') !== -1 && !line.match(/^>\s+/) && !line.match(/^#{1,4}\s+/) && !line.match(/^\s*[-*]\s+/) && !line.match(/^\s*\d+\.\s+/)) {
+				// Check if line is a table row (contains |content|)
+				var pipeParts = line.split('|');
+				if (pipeParts.length > 2) { // At least one column
+					if (!inTable) {
+						inTable = true;
+						tableHeaders = [];
+						tableRows = [];
+						htmlLines.push('<table>');
+					}
+					var cells = [];
+					for (var p = 0; p < pipeParts.length; p++) {
+						var cell = pipeParts[p].trim();
+						if (cell !== '') {
+							cells.push(cell);
+						}
+					}
+					// Check if it's a separator row (e.g., |---|---|)
+					var isSeparator = true;
+					for (var c = 0; c < cells.length; c++) {
+						if (!cells[c].match(/^-+$/)) {
+							isSeparator = false;
+							break;
+						}
+					}
+					if (isSeparator) {
+						// Separator row, ignore it
+						continue;
+					}
+					// First row is headers
+					if (tableHeaders.length === 0) {
+						tableHeaders = cells;
+					} else {
+						tableRows.push(cells);
+					}
+					continue;
+				} else if (inTable) {
+					// End table if line doesn't match table format
+					inTable = false;
+					// Output table headers
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					// Output table rows
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+			}
+
 			// Headers (#, ##, ###, ####)
 			if (line.match(/^#{1,4}\s+/)) {
-				while (listStack.length > 0) {
-					const { type } = listStack.pop();
-					htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
 				}
-				const level = line.match(/^#+/)[0].length;
-				const content = line.replace(/^#{1,4}\s+/, '');
-				htmlLines.push(`<h${level}>${content}</h${level}>`);
+				while (listStack.length > 0) {
+					var listItem = listStack.pop();
+					htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
+				}
+				var levelMatch = line.match(/^#+/);
+				var level = levelMatch ? levelMatch[0].length : 1;
+				var content = line.replace(/^#{1,4}\s+/, '');
+				htmlLines.push('<h' + level + '>' + content + '</h' + level + '>');
 				continue;
 			}
 
 			// Handle lists (unordered: -/*, ordered: 1.)
-			const listMatch = line.match(/^(\s*)((?:[-*]|\d+\.)\s+)(.+)$/);
+			var listMatch = line.match(/^(\s*)((?:[-*]|\d+\.)\s+)(.+)$/);
 			if (listMatch) {
-				const indent = listMatch[1].length;
-				const marker = listMatch[2].trim();
-				const content = listMatch[3];
-				const isOrdered = /^\d+\./.test(marker);
-				const listType = isOrdered ? 'ol' : 'ul';
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+				var indent = listMatch[1].length;
+				var marker = listMatch[2].trim();
+				var content = listMatch[3];
+				var isOrdered = /^\d+\./.test(marker);
+				var listType = isOrdered ? 'ol' : 'ul';
 
 				// Close lists with greater indent or different type
 				while (listStack.length > 0 && (listStack[listStack.length - 1].indent > indent || 
 					(listStack[listStack.length - 1].indent === indent && listStack[listStack.length - 1].type !== listType))) {
-					const { type } = listStack.pop();
-					htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+					var listItem = listStack.pop();
+					htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
 				}
 
 				// Open new list if needed
-				if (!listStack.length || listStack[listStack.length - 1].indent < indent) {
-					listStack.push({ type: listType, indent });
-					htmlLines.push(`<${listType}>`);
+				if (listStack.length === 0 || listStack[listStack.length - 1].indent < indent) {
+					listStack.push({ type: listType, indent: indent });
+					htmlLines.push('<' + listType + '>');
 				}
 
-				htmlLines.push(`<li>${content}</li>`);
+				htmlLines.push('<li>' + applyInlineFormatting(content) + '</li>');
 				continue;
 			}
 
 			// Close lists if line isn't part of a list
 			if (listStack.length > 0 && !line.match(/^\s*([-*]|\d+\.)\s+/)) {
 				while (listStack.length > 0) {
-					const { type } = listStack.pop();
-					htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+					var listItem = listStack.pop();
+					htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
 				}
 			}
 
 			// Blockquotes (> text)
-			if (line.startsWith('> ')) {
-				const content = line.replace(/^>\s+/, '');
-				htmlLines.push(`<blockquote>${content}</blockquote>`);
+			if (line.match(/^>\s+/)) {
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+				var content = line.replace(/^>\s+/, '');
+				htmlLines.push('<blockquote>' + applyInlineFormatting(content) + '</blockquote>');
 				continue;
 			}
 
 			// Inline formatting for non-empty lines
-			if (line !== '') {
-				// Bold (**text** or __text__)
-				line = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-				line = line.replace(/__([^_]+)__/g, '<strong>$1</strong>');
-
-				// Italic (*text* or _text_)
-				line = line.replace(/\*([^*]+)\*/g, '<em>$1</em>');
-				line = line.replace(/_([^_]+)_/g, '<em>$1</em>');
-
-				// Inline code (`code`)
-				line = line.replace(/`([^`]+)`/g, '<code>$1</code>');
-
-				// Links ([text](url))
-				line = line.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+			if (line.trim() !== '') {
+				line = applyInlineFormatting(line);
 
 				// Wrap in paragraph if not in a block element
-				if (listStack.length === 0 && !line.startsWith('<h') && !line.startsWith('<blockquote')) {
-					line = `<p>${line}</p>`;
+				if (listStack.length === 0 && !line.match(/^<h/) && !line.match(/^<block/) && !inTable) {
+					line = '<p>' + line + '</p>';
 				}
 			} else {
 				line = '';
@@ -246,13 +420,31 @@
 		if (inCodeBlock) {
 			htmlLines.push('</code></pre>');
 		}
+		if (inTable) {
+			// Output table
+			if (tableHeaders.length > 0) {
+				htmlLines.push('<tr>');
+				for (var h = 0; h < tableHeaders.length; h++) {
+					htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+				}
+				htmlLines.push('</tr>');
+			}
+			for (var r = 0; r < tableRows.length; r++) {
+				htmlLines.push('<tr>');
+				for (var c = 0; c < tableRows[r].length; c++) {
+					htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+				}
+				htmlLines.push('</tr>');
+			}
+			htmlLines.push('</table>');
+		}
 		while (listStack.length > 0) {
-			const { type } = listStack.pop();
-			htmlLines.push(type === 'ul' ? '</ul>' : '</ol>');
+			var listItem = listStack.pop();
+			htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
 		}
 
 		// Join lines and normalize newlines (preserve paragraph breaks)
-		let html = htmlLines.join('\n').replace(/\n{3,}/g, '\n\n');
+		var html = htmlLines.join('\n').replace(/\n{3,}/g, '\n\n');
 
 		current.setValue('u_documentation', `<div class="markdown-body">${styles}${html}</div>`);
 	} catch(e) {
@@ -265,7 +457,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>3834c44883c8721046cfe4d0deaad36d</sys_id>
-        <sys_mod_count>17</sys_mod_count>
+        <sys_mod_count>18</sys_mod_count>
         <sys_name>Form Control - Translate Markdown</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
@@ -273,7 +465,7 @@
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_3834c44883c8721046cfe4d0deaad36d</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-12 17:45:33</sys_updated_on>
+        <sys_updated_on>2025-09-13 15:19:20</sys_updated_on>
         <template/>
         <when>before</when>
     </sys_script>
