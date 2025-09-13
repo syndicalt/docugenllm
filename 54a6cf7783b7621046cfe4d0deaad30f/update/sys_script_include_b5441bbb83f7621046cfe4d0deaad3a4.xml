@@ -30,29 +30,42 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			this.ERROR = true;
 			throw new Error(`[DocuGenLLMClientUtils.initialize] Error: Model ${ model } not found in the u_models table.`);
 		}
-		this.DEBUG = false;
 		this.DOCS_TABLE = 'u_docugen_code_docs';
-		this.STATUS = {
-			SUCCESS: 200,
-			BAD_REQUEST: 400,
-			DEBUG: 999
-		}
+		this.DEBUG = false;
+		this.VALID_CLASSES = [
+			'sysauto_script',
+			'sys_script',
+			'sys_db_obect',
+			'sys_script_client',
+			'sys_ui_policy',
+			'sys_ui_action'
+		];
     },
+	
+	STATUS: {
+		SUCCESS: 200,
+		BAD_REQUEST: 400,
+		DEBUG: 999
+	},
 
-    generateDocumentation: function(recordSysId, recordDisplayValue, tableName, modelRecordName=null) {
+	checkClass: function(gr) {	
+		return this.VALID_CLASSES.includes(gr.sys_class_name);
+	},
+
+    generateDocumentation: function(recordSysId, recordDisplayValue, tableName) {
 		if(this.ERROR) throw new Error();
 		let responseArr = [];
 
         try {
             // Prepare the LLM prompt
             const prompt = this._buildPrompt(recordSysId, tableName);
-			const jsonFormattedPrompt = this._formatRequest(prompt, modelRecordName);
+			const jsonFormattedPrompt = this._formatRequest(prompt);
 			
 			if(this.DEBUG) responseArr.push(jsonFormattedPrompt);
 
             // Call LLM API
             const response = this._callLLMAPI(jsonFormattedPrompt);
-			if(this.DEBUG) responseArr.push(JSON.stringify({ 'response': response }));
+			if(this.DEBUG) responseArr.push(response);
 
             const documentation = this._parseLLMResponse(response);
 			if(this.DEBUG) responseArr.push(documentation);
@@ -63,7 +76,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			
 			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
 
-			return this._createResponse(this._createResponse(this.STATUS.SUCCESS, result));
+			return this._createResponse(this.STATUS.SUCCESS, result);
         } catch(e) {
             gs.error(`[DocuGenLLM.generateDocumentation] Error: ${ e }`);
 			return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateDocumentation]: ${ e }`);
@@ -71,10 +84,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
     },
 
 	_createResponse: function(status, message) {
-		return {
-			'status': status,
-			'message': message
-		}
+		return { status, message }
 	},
 
     _buildPrompt: function(recordSysId, tableName) {
@@ -228,7 +238,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
 		switch(model) {
 			case "chatgpt":
-				response = [
+				response = JSON.stringify([
 					{
 						"id": "msg_67b73f697ba4819183a15cc17d011509",
 						"type": "message",
@@ -241,10 +251,10 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 							}
 						]
 					}
-				]
+				]);
 				break;
 			case "grok":
-				response = {
+				response = JSON.stringify({
 					"id":"6dd0e908-dd7c-6ea7-67cb-31d841a5d3f2_us-east-1",
 					"object":"chat.completion",
 					"created":1757715272,
@@ -277,10 +287,10 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 						"num_sources_used":0
 					},
 					"system_fingerprint":"fp_19e21a36c0"
-				}
+				});
 				break;
 			case 'claude':
-				response = {
+				response = JSON.stringify({
 					"id": "msg_01HCDu5LRGeP2o7s2xGmxyx8",
 					"type": "message", 
 					"role": "assistant",
@@ -296,7 +306,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 						"input_tokens": 21,
 						"output_tokens": 305
 					}
-				}
+				});
 				break;
 		}
 
@@ -309,14 +319,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>155</sys_mod_count>
+        <sys_mod_count>179</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-12 23:45:14</sys_updated_on>
+        <sys_updated_on>2025-09-13 02:12:30</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>
