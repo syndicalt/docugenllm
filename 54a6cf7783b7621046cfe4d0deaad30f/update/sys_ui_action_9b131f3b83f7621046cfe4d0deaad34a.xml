@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
     <sys_ui_action action="INSERT_OR_UPDATE">
-        <action_name>generate_code_documentation</action_name>
+        <action_name/>
         <active>true</active>
         <client>false</client>
         <client_script_v2><![CDATA[function onClick(g_form) {
@@ -60,7 +60,7 @@ try {
 	gs.log(`[DocuGenLLM: Generate Code Documentation] Error ${ e }`);
 	gs.addErrorMessage(`[DocuGenLLM: Generate Code Documentation] Error: ${ e.message }`);
 }]]></script>
-        <show_insert>true</show_insert>
+        <show_insert>false</show_insert>
         <show_multiple_update>false</show_multiple_update>
         <show_query>false</show_query>
         <show_update>true</show_update>
@@ -70,7 +70,7 @@ try {
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>9b131f3b83f7621046cfe4d0deaad34a</sys_id>
-        <sys_mod_count>22</sys_mod_count>
+        <sys_mod_count>28</sys_mod_count>
         <sys_name>DocuGenLLM: Generate Code Documentation</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
@@ -78,7 +78,7 @@ try {
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_ui_action_9b131f3b83f7621046cfe4d0deaad34a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 02:15:28</sys_updated_on>
+        <sys_updated_on>2025-09-13 03:08:17</sys_updated_on>
         <table>sys_metadata</table>
         <ui11_compatible>true</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
