@@ -30,10 +30,34 @@
         <name>DocuGenLLM: Generate Code Annotation</name>
         <onclick/>
         <order>100</order>
-        <script><![CDATA[try {
-	gs.addInfoMessage('Code annotation functionality coming soon!');
+        <script><![CDATA[const DEBUG = false;
+
+try {
+	const recordName = current.getDisplayValue() ?
+		current.getDisplayValue() : current.name ?
+			current.name : `${ current.getTableName() }_${ current.getUniqueValue() }`;
+
+	if(DEBUG) gs.addInfoMessage(recordName);
+
+	const docUtil = new DocuGenLLMClientUtils();
+	const response = docUtil.generateAnnotation(
+		current.getUniqueValue(),
+		recordName,
+		current.getTableName()
+	);
+
+	if(DEBUG) gs.addInfoMessage(JSON.stringify(response));
+	
+	if(response.status === 200) {
+		gs.addInfoMessage('[DocuGenLLM: Generate Code Annotation] Code annotation has been generated! Please note that this feature is not fully implemented, so there may be errors.');
+		gs.addInfoMessage(`<a href='${ response.message.link }'>${ response.message.title }</a>`);
+	} else {
+		gs.addErrorMessage(response.message);
+	}
+
 	action.setRedirectURL(current);
 } catch(e) {
+	gs.log(`[DocuGenLLM: Generate Code Annotation] Error ${ e }`);
 	gs.addErrorMessage(`[DocuGenLLM: Generate Code Annotation] Error: ${ e.message }`);
 }]]></script>
         <show_insert>false</show_insert>
@@ -46,7 +70,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>785dbd5c838cf21046cfe4d0deaad3a5</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>5</sys_mod_count>
         <sys_name>DocuGenLLM: Generate Code Annotation</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
@@ -54,7 +78,7 @@
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_ui_action_785dbd5c838cf21046cfe4d0deaad3a5</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 20:51:34</sys_updated_on>
+        <sys_updated_on>2025-09-14 02:57:11</sys_updated_on>
         <table>sys_metadata</table>
         <ui11_compatible>false</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>

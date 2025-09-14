@@ -39,12 +39,12 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 		DEBUG: 999
 	},
 
-	generateAnnotation: function(recordsysId, recordDisplayValue, tableName) {
+	generateAnnotation: function(recordSysId, recordDisplayValue, tableName) {
 		let responseArr = [];
 
 		try {
 			const prompt = this._buildAnnotationPrompt(recordSysId, tableName);
-			const jsonFormattedPrompt = this_formatRequest(prompt);
+			const jsonFormattedPrompt = this._formatRequest(prompt);
 
 			if(this.DEBUG) responseArr.push(jsonFormattedPrompt);
 
@@ -52,11 +52,11 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
             const response = this._callLLMAPI(jsonFormattedPrompt);
 			if(this.DEBUG) responseArr.push(response);
 
-            const documentation = this._parseLLMResponse(response);
+            const annotation = this._parseLLMAnnotationResponse(response);
 			if(this.DEBUG) responseArr.push(documentation);
 
             // Store or update documentation
-            const result = this._storeDocumentation(documentation, recordSysId, tableName, recordDisplayValue);
+            const result = this._storeAnnotation(annotation, recordSysId, tableName, recordDisplayValue);
             if(this.DEBUG) responseArr.push(result);
 			
 			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
@@ -82,7 +82,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
             const response = this._callLLMAPI(jsonFormattedPrompt);
 			if(this.DEBUG) responseArr.push(response);
 
-            const documentation = this._parseLLMResponse(response);
+            const documentation = this._parseLLMDocumentResponse(response);
 			if(this.DEBUG) responseArr.push(documentation);
 
             // Store or update documentation
@@ -128,7 +128,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			if(/(^|\W)script($|\W)/i.test(key) || key === 'condition') scriptAttributesObj[key] = recordGr[key].toString();
 		}
 
-		return 'You are an expert JavasScript developer. Generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works. If there are multiple scripts, separate the scripts into code blocks that are easy to parse via Javascript processing. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do provide any commentary regarding the annotation.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
+		return 'As an expert JavasScript developer. Generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works. If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do provide any commentary, or headers regarding the annotation.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
 	},
 
 	_formatRequest(prompt) {
@@ -147,7 +147,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 	},
 
     _callLLMAPI: function(prompt) {
-		//if(this.DEBUG) return this._simulateAPIResponse(this.MODEL);
+		//if(this.DEBUG) return this._simulateAPIDocumentationResponse(this.MODEL);
 		try {
 			const restMessage = new sn_ws.RESTMessageV2();
 			restMessage.setEndpoint(this.LLMENDPOINT);
@@ -170,12 +170,12 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 		}
     },
 
-	_parseLLMResponse: function(response) {
-		var result;
+	_parseLLMDocumentResponse: function(response) {
+		let result;
 		try {			
 			switch(this.MODEL) {
 				case 'chatgpt':
-					return JSON.parse(response).output[0].content[0].text;
+					result = JSON.parse(response).output[0].content[0].text;
 					break;
 				case 'grok':
 					result = JSON.parse(response).choices[0].message.content;
@@ -189,9 +189,40 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
 			return result;
 		} catch(e) {
-			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMResponse] Error: ${ e }`);
-			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMResponse] responseObj: ${ response }`);
-			throw new Error(`[DocuGenLLM.generateDocumentation._parseLLMResponse] Error: ${ e }`);
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMDocumentResponse] Error: ${ e }`);
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMDocumentResponse] responseObj: ${ response }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._parseLLMDocumentResponse] Error: ${ e }`);
+		}
+	},
+
+	_parseLLMAnnotationResponse: function(response) {
+		let tempResult;
+		try {			
+			switch(this.MODEL) {
+				case 'chatgpt':
+					tempResult = JSON.parse(response).output[0].content[0].text;
+					break;
+				case 'grok':
+					tempResult = JSON.parse(response).choices[0].message.content;
+					break;
+				case 'claude':
+					tempResult = JSON.parse(response).content.text;
+					break;
+				default: 
+					tempResult = 'No documenation generated';
+			}
+
+			let resultArr = tempResult.split('|||');
+
+			resultArr.forEach((result, index) => {
+				resultArr[index] = result.replace('\`\`\`javascript','').replace('\`\`\`','');
+			});
+		
+			return resultArr.join('\n\n');
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMAnnotationResponse] Error: ${ e }`);
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMAnnotationResponse] responseObj: ${ response }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._parseLLMAnnotationResponse] Error: ${ e }`);
 		}
 	},
 
@@ -204,7 +235,6 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			if (docGr.next()) {
 				docGr.u_name = displayValue;
 				docGr.u_documentation_markdown = documentation;
-				docGr.u_last_updated = new GlideDateTime();
 				docGr.update();
 			} else {
 				docGr.initialize();
@@ -212,7 +242,6 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 				docGr.u_script_reference = recordSysId;
 				docGr.u_script_type = tableName;
 				docGr.u_documentation_markdown = documentation;
-				docGr.u_last_updated = new GlideDateTime();
 				docGr.insert();
 			}
 
@@ -225,6 +254,35 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			throw new Error(`[DocuGenLLM.generateDocumentation._storeDocumentation] Error: ${ e }`);
 		}
     },
+
+	_storeAnnotation: function(annotation, recordSysId, tableName, displayValue) {
+		try {
+			var docGr = new GlideRecord(this.DOCS_TABLE);
+			docGr.addQuery('u_script_reference', recordSysId);
+			docGr.query();
+			
+			if (docGr.next()) {
+				docGr.u_name = displayValue;
+				docGr.u_script = annotation;
+				docGr.update();
+			} else {
+				docGr.initialize();
+				docGr.u_name = displayValue;
+				docGr.u_script_reference = recordSysId;
+				docGr.u_script_type = tableName;
+				docGr.u_script = annotation;
+				docGr.insert();
+			}
+
+			return {
+				'title': docGr.getDisplayValue(),
+				'link': `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+			}
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._storeAnnotation] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._storeAnnotation] Error: ${ e }`);
+		}
+	},
 
 	_setNestedValue: function(obj, keyStr, newValue) {
 		const parts = keyStr.split('.');
@@ -260,7 +318,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 		}
 	},
 
-	_simulateAPIResponse: function(model) {
+	_simulateAPIDocumentationResponse: function(model) {
 		let response;
 
 		switch(model) {
@@ -346,14 +404,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>215</sys_mod_count>
+        <sys_mod_count>229</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 21:32:43</sys_updated_on>
+        <sys_updated_on>2025-09-14 02:50:46</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>
