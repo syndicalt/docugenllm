@@ -22,7 +22,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
 		if(docuGenModel.next()) {
 			this.LLMENDPOINT = docuGenModel.u_api_endpoint;
-			this.APIKEY = docuGenModel.u_api_key;
+			this.APIKEY = docuGenModel.u_api_key.getDecryptedValue();
 			this.APIPROMPT = docuGenModel.u_prompt;
 			this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
 			this.MODEL = docuGenModel.u_model.toString();
@@ -404,14 +404,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>229</sys_mod_count>
+        <sys_mod_count>230</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-14 02:50:46</sys_updated_on>
+        <sys_updated_on>2025-09-14 13:41:17</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>

@@ -2,7 +2,7 @@
     <element audit="true" db_object_id="ba70d73783f7621046cfe4d0deaad39c" label="DocuGenLLM Code Documentation" max_length="40" name="u_docugen_code_docs" type="collection">
         <element label="Documentation (Markdown)" max_length="50000" name="u_documentation_markdown" type="string"/>
         <element dependent="u_projects" dependent_on_field="u_projects" label="Story(s)" max_length="1024" name="u_stories" reference="rm_story" reference_qual="javascript:if(current.u_projects) { new ClientActionsHandler().getProjectStoriesFilter(current.u_projects.toString()); }" type="glide_list" use_dependent_field="true" use_reference_qualifier="advanced"/>
-        <element label="Script Reference" max_length="32" name="u_script_reference" read_only="true" reference="sys_metadata" type="reference"/>
+        <element attributes="readonly_clickthrough=true" label="Script Reference" max_length="32" name="u_script_reference" read_only="true" reference="sys_metadata" type="reference"/>
         <element choice="1" label="Script Type" max_length="40" name="u_script_type" read_only="true" type="choice">
             <choice>
                 <element inactive_on_update="false" label="Business Rule" sequence="0" value="business_rule"/>
