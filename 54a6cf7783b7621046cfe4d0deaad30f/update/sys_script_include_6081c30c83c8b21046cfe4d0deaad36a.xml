@@ -39,6 +39,21 @@ ClientActionsHandler.prototype = Object.extendsObject(global.AbstractAjaxProcess
 		// ]
 	},
 
+	checkAppInstalled: function(tableName) {
+		var debug = true;
+		const appTable = this.getParameter('sysparm_tableName');
+		const tableGr = new GlideRecord('sys_db_object');
+		tableGr.addQuery('name', appTable);
+		tableGr.query();
+		
+		if(debug) {
+			gs.info(`[ClientActionsHandler.checkAppInstalled] Table: ${ appTable }`);
+			gs.info(`[ClientActionsHandler.checkAppInstalled] Result: ${ tableGr.hasNext() }`);
+		}
+
+		return tableGr.hasNext();
+	},
+
 	checkDocumentationExists: function(recordSysId) {
 		const sys_id = recordSysId || this.getParameter('sysparm_recordSysId');
 		var docGr = new GlideRecord('u_docugen_code_docs');
@@ -55,21 +70,34 @@ ClientActionsHandler.prototype = Object.extendsObject(global.AbstractAjaxProcess
 
 		return docGr.getLink();
 	},
-	
+
+	getProjectStoriesFilter: function(projectList) {
+		let res = [];
+		const storiesGr = new GlideRecord('rm_story');
+		storiesGr.addEncodedQuery(`project.sys_idIN ${ projectList }`);
+		storiesGr.query();
+
+		while(storiesGr.next()) {
+			res.push(storiesGr.getUniqueValue());
+		}
+
+		return `sys_idIN${ res.join(',') }`;
+	},
+
     type: 'ClientActionsHandler'
 });]]></script>
         <sys_class_name>sys_script_include</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-13 07:07:57</sys_created_on>
         <sys_id>6081c30c83c8b21046cfe4d0deaad36a</sys_id>
-        <sys_mod_count>39</sys_mod_count>
+        <sys_mod_count>47</sys_mod_count>
         <sys_name>ClientActionsHandler</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_6081c30c83c8b21046cfe4d0deaad36a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 14:38:51</sys_updated_on>
+        <sys_updated_on>2025-09-14 01:24:45</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>6081c30c83c8b21046cfe4d0deaad36a</id>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script_client">
+    <sys_script_client action="DELETE">
+        <active>true</active>
+        <applies_extended>false</applies_extended>
+        <condition/>
+        <description/>
+        <field/>
+        <global>true</global>
+        <isolate_script>false</isolate_script>
+        <messages/>
+        <name>Form Control - Help Messages</name>
+        <order/>
+        <script><![CDATA[function onLoad() {	
+		g_form.showFieldMsg(
+			'u_script', 
+			'<strong>Note: This is a DocuGenLLM annotated version of the script. This is ***NOT** the version of the script that is used in the platform. If you edit this script, the changes will not be reflected in the resulting application.</strong>', 
+			'info'
+		);
+	} catch(e) {
+		g_form.addErrorMessage(`[Form Control - Help Messages] Error: ${ e.message }`);
+	}
+}]]></script>
+        <sys_class_name>sys_script_client</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 19:52:13</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>fd80bd98834cf21046cfe4d0deaad324</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>Form Control - Help Messages</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_client_fd80bd98834cf21046cfe4d0deaad324</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 20:06:53</sys_updated_on>
+        <table>u_docugen_code_docs</table>
+        <type>onLoad</type>
+        <ui_type>10</ui_type>
+        <view/>
+    </sys_script_client>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>sys_script_client_fd80bd98834cf21046cfe4d0deaad324</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update sys_domain="global" table="sys_script_client"&gt;&lt;sys_script_client action="INSERT_OR_UPDATE"&gt;&lt;active&gt;true&lt;/active&gt;&lt;applies_extended&gt;false&lt;/applies_extended&gt;&lt;condition/&gt;&lt;description/&gt;&lt;field/&gt;&lt;global&gt;true&lt;/global&gt;&lt;isolate_script&gt;false&lt;/isolate_script&gt;&lt;messages/&gt;&lt;name&gt;Form Control - Help Messages&lt;/name&gt;&lt;order/&gt;&lt;script&gt;&lt;![CDATA[function onLoad() {	
+		g_form.showFieldMsg(
+			'u_script', 
+			'&lt;strong&gt;Note: This is a DocuGenLLM annotated version of the script. This is ***NOT** the version of the script that is used in the platform. If you edit this script, the changes will not be reflected in the resulting application.&lt;/strong&gt;', 
+			'info'
+		);
+	} catch(e) {
+		g_form.addErrorMessage(`[Form Control - Help Messages] Error: ${ e.message }`);
+	}
+}]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_client&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2025-09-13 19:52:13&lt;/sys_created_on&gt;&lt;sys_domain&gt;global&lt;/sys_domain&gt;&lt;sys_domain_path&gt;/&lt;/sys_domain_path&gt;&lt;sys_id&gt;fd80bd98834cf21046cfe4d0deaad324&lt;/sys_id&gt;&lt;sys_mod_count&gt;8&lt;/sys_mod_count&gt;&lt;sys_name&gt;Form Control - Help Messages&lt;/sys_name&gt;&lt;sys_overrides/&gt;&lt;sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f"&gt;54a6cf7783b7621046cfe4d0deaad30f&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="DocuGenLLM"&gt;54a6cf7783b7621046cfe4d0deaad30f&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_client_fd80bd98834cf21046cfe4d0deaad324&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2025-09-13 20:06:53&lt;/sys_updated_on&gt;&lt;table&gt;u_docugen_code_docs&lt;/table&gt;&lt;type&gt;onLoad&lt;/type&gt;&lt;ui_type&gt;10&lt;/ui_type&gt;&lt;view/&gt;&lt;/sys_script_client&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>-1923176218</payload_hash>
+        <record_name>Form Control - Help Messages</record_name>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 20:06:53</sys_created_on>
+        <sys_id>aa14f510838cf21046cfe4d0deaad3ca</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19944b010060000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 20:06:53</sys_updated_on>
+        <type>Client Script</type>
+        <update_guid>ee14f510788cf2108ba81c48fb17fdc9</update_guid>
+        <update_guid_history>ee14f510788cf2108ba81c48fb17fdc9:-1923176218,24f33510df8cf210f997d1d7369dc827:-592960560,ccd33110828cf210ada4c94b2a6b7d8e:879280239,36b3fddc4e4cf2104d5ed3c8d46fff15:-1072480522,fea339dc4d4cf21035bbc5503b297869:-346156199,dfe2715cd94cf2104dd7812bb7c01a7c:-2101935333,9b61f11c4e4cf210f321ae3a3ba38c15:-583086794,3cf0f5d8be4cf210ca385549b1d24fce:972878755,7fb0bd98114cf2100b8d9f20f225f181:1142914112</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-13 20:09:54</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_client">sys_script_client</sys_db_object>
+        <sys_id>175ac48d31e4410894b049368882c2e4</sys_id>
+        <sys_metadata>fd80bd98834cf21046cfe4d0deaad324</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Form Control - Help Messages</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent display_value="DocuGenLLM Code Documentation">ba70d73783f7621046cfe4d0deaad39c</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>sys_script_client_fd80bd98834cf21046cfe4d0deaad324</sys_update_name>
+        <sys_update_version display_value="sys_script_client_fd80bd98834cf21046cfe4d0deaad324">aa14f510838cf21046cfe4d0deaad3ca</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 20:09:54</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

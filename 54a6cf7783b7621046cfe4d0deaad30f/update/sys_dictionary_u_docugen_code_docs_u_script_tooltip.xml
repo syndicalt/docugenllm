@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update>
-    <sys_dictionary action="INSERT_OR_UPDATE" element="" table="u_docugen_code_docs">
+    <sys_dictionary action="INSERT_OR_UPDATE" element="u_script_tooltip" table="u_docugen_code_docs">
         <active>true</active>
         <array>false</array>
         <attributes/>
-        <audit>true</audit>
+        <audit>false</audit>
         <calculation/>
-        <choice>0</choice>
+        <choice/>
         <choice_field/>
         <choice_table/>
-        <column_label/>
+        <column_label>Script - Tooltip</column_label>
         <comments/>
         <create_roles/>
-        <default_value/>
+        <default_value>&lt;p&gt;&lt;strong&gt;Note: This is a DocuGenLLM annotated version of the script. This is &lt;span style="color: rgb(186, 55, 42);"&gt;***NOT***&lt;/span&gt; the version of the script that is used in the platform. If you edit this script, the changes will not be reflected in the resulting application.&lt;/strong&gt;&lt;/p&gt;</default_value>
         <defaultsort/>
         <delete_roles/>
         <dependent/>
@@ -21,19 +21,19 @@
         <dynamic_creation_script/>
         <dynamic_default_value/>
         <dynamic_ref_qual/>
-        <element/>
+        <element>u_script_tooltip</element>
         <element_reference>false</element_reference>
         <foreign_database/>
         <formula/>
         <function_definition/>
         <function_field>false</function_field>
-        <internal_type display_value="Collection">collection</internal_type>
+        <internal_type display_value="HTML">html</internal_type>
         <mandatory>false</mandatory>
-        <max_length>40</max_length>
+        <max_length>4000</max_length>
         <name>u_docugen_code_docs</name>
         <next_element/>
         <primary>false</primary>
-        <read_only>false</read_only>
+        <read_only>true</read_only>
         <read_roles/>
         <reference/>
         <reference_cascade_rule/>
@@ -46,14 +46,14 @@
         <staged>false</staged>
         <sys_class_name>sys_dictionary</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-12 13:33:31</sys_created_on>
-        <sys_name>u_docugen_code_docs</sys_name>
+        <sys_created_on>2025-09-13 20:11:08</sys_created_on>
+        <sys_name>Script - Tooltip</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_dictionary_u_docugen_code_docs_null</sys_update_name>
+        <sys_update_name>sys_dictionary_u_docugen_code_docs_u_script_tooltip</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 19:21:56</sys_updated_on>
+        <sys_updated_on>2025-09-13 20:18:02</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>
@@ -66,18 +66,4 @@
         <write_roles/>
         <xml_view>false</xml_view>
     </sys_dictionary>
-    <sys_claim action="INSERT_OR_UPDATE">
-        <claim_owner_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</claim_owner_scope>
-        <claim_timestamp>1993e2ba8ff0000001</claim_timestamp>
-        <metadata_update_name>sys_dictionary_u_docugen_code_docs_NULL</metadata_update_name>
-        <previous_claim_app_version>1.0.0</previous_claim_app_version>
-        <previous_claim_name>DocuGenLLM</previous_claim_name>
-        <previous_claim_scope>54a6cf7783b7621046cfe4d0deaad30f</previous_claim_scope>
-        <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-12 13:44:32</sys_created_on>
-        <sys_id>cc03d73b83f7621046cfe4d0deaad3a2</sys_id>
-        <sys_mod_count>0</sys_mod_count>
-        <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-12 13:44:32</sys_updated_on>
-    </sys_claim>
 </record_update>
