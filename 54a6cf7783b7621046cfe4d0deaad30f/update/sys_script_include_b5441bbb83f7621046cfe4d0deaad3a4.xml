@@ -31,7 +31,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			this.LOG_SOURCE = 'DocuGenLLM';
 			this.REQUEST_TYPE = '';
 			this.LOG_MESSAGE = '';
-			this.CONTEXT_MAP = '';
+			this.LOG_LEVEL = 0;
 		} else {
 			throw new Error(`[DocuGenLLMClientUtils.initialize] Error: Model ${ model } not found in the u_models table.`);
 		}
@@ -46,6 +46,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 	},
 
 	generateAnnotation: function(recordSysId, recordDisplayValue, tableName) {
+		this.REQUEST_TYPE = 'annotation';
 		let responseArr = [];
 
 		try {
@@ -61,25 +62,26 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
             const annotation = this._parseLLMAnnotationResponse(response);
 			if(this.DEBUG) responseArr.push(documentation);
-
-			this.LOG_MESSAGE = JSON.stringify(response);
-			this.REQUEST_TYPE = 'annotation';
-
+			
             // Store or update documentation
             const result = this._storeAnnotation(annotation, recordSysId, tableName, recordDisplayValue);
             
 			if(this.DEBUG) responseArr.push(result);
 			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
 			
+			this.LOG_MESSAGE = JSON.stringify(response);
 			this._writeUsageLog();
 			return this._createResponse(this.STATUS.SUCCESS, result);
 		} catch(e) {
-			gs.error(`[DocuGenLLM.generateDocumentation.generateAnnotation] Error: ${ e }`);
+			this.LOG_MESSAGE = `[DocuGenLLM.generateDocumentation.generateAnnotation] Error: ${ e }`;
+			this.REQUEST_TYPE = 'annotation';
+			this._writeUsageLog();
 			return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateAnnotation]: ${ e }`);
 		}
 	},
 
     generateDocumentation: function(recordSysId, recordDisplayValue, tableName) {
+		this.REQUEST_TYPE = 'documentation';
 		let responseArr = [];
 
         try {
@@ -103,12 +105,11 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
 
 			this.LOG_MESSAGE = JSON.stringify(response);
-			this.REQUEST_TYPE = 'documentation';
-
 			this._writeUsageLog();
 			return this._createResponse(this.STATUS.SUCCESS, result);
         } catch(e) {
-            gs.error(`[DocuGenLLM.generateDocumentation.generateDocumentation] Error: ${ e }`);
+			this.LOG_MESSAGE = `[DocuGenLLM.generateDocumentation.generateDocumentation] Error: ${ e }`;
+			this._writeUsageLog();
 			return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateDocumentation]: ${ e }`);
         }
     },
@@ -309,7 +310,6 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			logGr.u_model = this.MODEL;
 			logGr.u_request_type = this.REQUEST_TYPE;
 			logGr.message = this.LOG_MESSAGE;
-			logGr.context_map = this.CONTEXT_MAP;
 			logGr.insert();
 		} catch(e) {
 			gs.error(`[DocuGenLLM.generateDocumentation._writeUsageLog] Error: ${ e }`);
@@ -437,14 +437,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>235</sys_mod_count>
+        <sys_mod_count>236</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-15 12:59:49</sys_updated_on>
+        <sys_updated_on>2025-09-15 13:50:07</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="par_dashboard_tab">
+    <par_dashboard_tab action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <background_color/>
+        <dashboard display_value="DocuGenLLM Dashboard">60fafebc83ccb61046cfe4d0deaad3a2</dashboard>
+        <name>New Tab 28</name>
+        <order>0</order>
+        <sys_class_name>par_dashboard_tab</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-15 14:33:21</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>24fa7e708300f61046cfe4d0deaad38f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>New Tab 28</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>par_dashboard_tab_24fa7e708300f61046cfe4d0deaad38f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-15 14:33:21</sys_updated_on>
+    </par_dashboard_tab>
+</record_update>
