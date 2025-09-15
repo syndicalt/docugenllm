@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object">
+    <sys_db_object action="DELETE">
+        <access/>
+        <actions_access>true</actions_access>
+        <alter_access>true</alter_access>
+        <caller_access/>
+        <client_scripts_access>true</client_scripts_access>
+        <configuration_access>false</configuration_access>
+        <create_access>true</create_access>
+        <create_access_controls>false</create_access_controls>
+        <delete_access>false</delete_access>
+        <filter_extension/>
+        <is_df_table>false</is_df_table>
+        <is_extendable>false</is_extendable>
+        <label>Docugenllm Usage Log</label>
+        <live_feed_enabled>false</live_feed_enabled>
+        <name>u_docugenllm_usage_log0003</name>
+        <number_ref/>
+        <provider_class/>
+        <read_access>true</read_access>
+        <scriptable_table>false</scriptable_table>
+        <super_class display_value="Log Entry" name="syslog0003">61f968735df122104f34969735a7ad8e</super_class>
+        <sys_class_name>sys_db_object</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-15 13:31:51</sys_created_on>
+        <sys_id>e7dc263c838cb61046cfe4d0deaad39d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Docugenllm Usage Log0003</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_db_object_e7dc263c838cb61046cfe4d0deaad39d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-15 13:31:51</sys_updated_on>
+        <update_access>true</update_access>
+        <user_role/>
+        <ws_access>true</ws_access>
+    </sys_db_object>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>sys_db_object_e7dc263c838cb61046cfe4d0deaad39d</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_db_object"><sys_db_object action="INSERT_OR_UPDATE"><access/><actions_access>true</actions_access><alter_access>true</alter_access><caller_access/><client_scripts_access>true</client_scripts_access><configuration_access>false</configuration_access><create_access>true</create_access><create_access_controls>false</create_access_controls><delete_access>false</delete_access><filter_extension/><is_df_table>false</is_df_table><is_extendable>false</is_extendable><label>Docugenllm Usage Log</label><live_feed_enabled>false</live_feed_enabled><name>u_docugenllm_usage_log0003</name><number_ref/><provider_class/><read_access>true</read_access><scriptable_table>false</scriptable_table><super_class display_value="Log Entry" name="syslog0003">61f968735df122104f34969735a7ad8e</super_class><sys_class_name>sys_db_object</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-09-15 13:31:51</sys_created_on><sys_id>e7dc263c838cb61046cfe4d0deaad39d</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Docugenllm Usage Log0003</sys_name><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_update_name>sys_db_object_e7dc263c838cb61046cfe4d0deaad39d</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-09-15 13:31:51</sys_updated_on><update_access>true</update_access><user_role/><ws_access>true</ws_access></sys_db_object></record_update>]]></payload>
+        <payload_hash>-409424031</payload_hash>
+        <record_name>Docugenllm Usage Log</record_name>
+        <reverted_from/>
+        <source>139c44118323221046cfe4d0deaad3d4</source>
+        <source_table>sys_upgrade_history</source_table>
+        <state>previous</state>
+        <sys_created_by/>
+        <sys_created_on>2025-08-22 18:37:16</sys_created_on>
+        <sys_id>8fcdaebc838cb61046cfe4d0deaad3c6</sys_id>
+        <sys_mod_count/>
+        <sys_recorded_at>198d3121b600000000</sys_recorded_at>
+        <sys_updated_by/>
+        <sys_updated_on/>
+        <type>Table</type>
+        <update_guid>4fcdaebc808cb610046a9962988ecac6</update_guid>
+        <update_guid_history>4fcdaebc808cb610046a9962988ecac6:-409424031</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-15 13:35:55</sys_created_on>
+        <sys_db_object display_value="" name="sys_db_object">sys_db_object</sys_db_object>
+        <sys_id>5f158d56bcb740c08290bb533e4a7c10</sys_id>
+        <sys_metadata>e7dc263c838cb61046cfe4d0deaad39d</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Docugenllm Usage Log0003</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>sys_db_object_e7dc263c838cb61046cfe4d0deaad39d</sys_update_name>
+        <sys_update_version display_value="sys_db_object_e7dc263c838cb61046cfe4d0deaad39d">8fcdaebc838cb61046cfe4d0deaad3c6</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-15 13:35:55</sys_updated_on>
+    </sys_metadata_delete>
+    <sys_claim action="INSERT_OR_UPDATE">
+        <claim_owner_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</claim_owner_scope>
+        <claim_timestamp>1994d9783f50000001</claim_timestamp>
+        <metadata_update_name>sys_db_object_e7dc263c838cb61046cfe4d0deaad39d</metadata_update_name>
+        <previous_claim_app_version>1.0.0</previous_claim_app_version>
+        <previous_claim_name>DocuGenLLM</previous_claim_name>
+        <previous_claim_scope>54a6cf7783b7621046cfe4d0deaad30f</previous_claim_scope>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-15 13:36:39</sys_created_on>
+        <sys_id>fdfdaafc838cb61046cfe4d0deaad37b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-15 13:36:39</sys_updated_on>
+    </sys_claim>
+</record_update>
