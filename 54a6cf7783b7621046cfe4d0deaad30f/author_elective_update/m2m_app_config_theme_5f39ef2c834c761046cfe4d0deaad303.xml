@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="m2m_app_config_theme">
+    <m2m_app_config_theme action="DELETE">
+        <applicability/>
+        <order>0</order>
+        <sys_class_name>m2m_app_config_theme</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 23:17:09</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>5f39ef2c834c761046cfe4d0deaad303</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>m2m_app_config_theme_5f39ef2c834c761046cfe4d0deaad303</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 23:17:09</sys_updated_on>
+        <theme/>
+        <ux_app_configuration display_value="DocuGenLLM">a62d5f28830c761046cfe4d0deaad3da</ux_app_configuration>
+    </m2m_app_config_theme>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>m2m_app_config_theme_5f39ef2c834c761046cfe4d0deaad303</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="m2m_app_config_theme"><m2m_app_config_theme action="INSERT_OR_UPDATE"><applicability/><order>0</order><sys_class_name>m2m_app_config_theme</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-09-14 23:17:09</sys_created_on><sys_domain>global</sys_domain><sys_domain_path>/</sys_domain_path><sys_id>5f39ef2c834c761046cfe4d0deaad303</sys_id><sys_mod_count>0</sys_mod_count><sys_name/><sys_overrides/><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_update_name>m2m_app_config_theme_5f39ef2c834c761046cfe4d0deaad303</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-09-14 23:17:09</sys_updated_on><theme/><ux_app_configuration display_value="DocuGenLLM">a62d5f28830c761046cfe4d0deaad3da</ux_app_configuration></m2m_app_config_theme></record_update>]]></payload>
+        <payload_hash>-1240587494</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 23:17:09</sys_created_on>
+        <sys_id>1b39ef2c834c761046cfe4d0deaad305</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1994a849d790000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 23:17:09</sys_updated_on>
+        <type>UX App Theme</type>
+        <update_guid>9f39ef2cd04c7610998d5366d4be4304</update_guid>
+        <update_guid_history>9f39ef2cd04c7610998d5366d4be4304:-1240587494</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">9a5b2bec834c761046cfe4d0deaad322</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 23:26:21</sys_created_on>
+        <sys_db_object display_value="" name="m2m_app_config_theme">m2m_app_config_theme</sys_db_object>
+        <sys_id>0297e0e861594f1c80cf77c9cf5f6090</sys_id>
+        <sys_metadata>5f39ef2c834c761046cfe4d0deaad303</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>m2m_app_config_theme_5f39ef2c834c761046cfe4d0deaad303</sys_update_name>
+        <sys_update_version display_value="m2m_app_config_theme_5f39ef2c834c761046cfe4d0deaad303">1b39ef2c834c761046cfe4d0deaad305</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 23:26:21</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

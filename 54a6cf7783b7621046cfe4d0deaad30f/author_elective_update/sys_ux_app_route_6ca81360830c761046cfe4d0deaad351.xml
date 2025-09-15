@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ux_app_route">
+    <sys_ux_app_route action="DELETE">
+        <app_config display_value="DocuGenLLM Workspace">59e0db2483c8761046cfe4d0deaad32a</app_config>
+        <description/>
+        <extension_point/>
+        <fields/>
+        <icon/>
+        <interoperable>false</interoperable>
+        <name>Model</name>
+        <optional_parameters/>
+        <order>0</order>
+        <parent_macroponent display_value="UXR Base Experience Shell">76a83a645b122010b913030a1d81c780</parent_macroponent>
+        <parent_macroponent_composition_element_id/>
+        <route_type>model</route_type>
+        <screen_type display_value="Model">a0a81360830c761046cfe4d0deaad34f</screen_type>
+        <sys_class_name>sys_ux_app_route</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 22:04:35</sys_created_on>
+        <sys_id>6ca81360830c761046cfe4d0deaad351</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Model</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ux_app_route_6ca81360830c761046cfe4d0deaad351</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 22:04:35</sys_updated_on>
+    </sys_ux_app_route>
+    <sys_translated_text action="DELETE" query="documentkey=6ca81360830c761046cfe4d0deaad351"/>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>sys_ux_app_route_6ca81360830c761046cfe4d0deaad351</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ux_app_route"><sys_ux_app_route action="INSERT_OR_UPDATE"><app_config display_value="DocuGenLLM Workspace">59e0db2483c8761046cfe4d0deaad32a</app_config><description/><extension_point/><fields/><icon/><interoperable>false</interoperable><name>Model</name><optional_parameters/><order>0</order><parent_macroponent display_value="UXR Base Experience Shell">76a83a645b122010b913030a1d81c780</parent_macroponent><parent_macroponent_composition_element_id/><route_type>model</route_type><screen_type display_value="Model">a0a81360830c761046cfe4d0deaad34f</screen_type><sys_class_name>sys_ux_app_route</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-09-14 22:04:35</sys_created_on><sys_id>6ca81360830c761046cfe4d0deaad351</sys_id><sys_mod_count>0</sys_mod_count><sys_name>Model</sys_name><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_update_name>sys_ux_app_route_6ca81360830c761046cfe4d0deaad351</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-09-14 22:04:35</sys_updated_on></sys_ux_app_route><sys_translated_text action="delete_multiple" query="documentkey=6ca81360830c761046cfe4d0deaad351"/></record_update>]]></payload>
+        <payload_hash>-1855129179</payload_hash>
+        <record_name>Model</record_name>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 22:04:35</sys_created_on>
+        <sys_id>e8a81360830c761046cfe4d0deaad354</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1994a422fd50000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 22:04:35</sys_updated_on>
+        <type>UX App Route</type>
+        <update_guid>60a81360820c76105c5e362bedc33a54</update_guid>
+        <update_guid_history>60a81360820c76105c5e362bedc33a54:-1855129179</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 22:05:08</sys_created_on>
+        <sys_db_object display_value="" name="sys_ux_app_route">sys_ux_app_route</sys_db_object>
+        <sys_id>10265fc5311944e0bfc6524a09f3e400</sys_id>
+        <sys_metadata>6ca81360830c761046cfe4d0deaad351</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Model</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>sys_ux_app_route_6ca81360830c761046cfe4d0deaad351</sys_update_name>
+        <sys_update_version display_value="sys_ux_app_route_6ca81360830c761046cfe4d0deaad351">e8a81360830c761046cfe4d0deaad354</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 22:05:08</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

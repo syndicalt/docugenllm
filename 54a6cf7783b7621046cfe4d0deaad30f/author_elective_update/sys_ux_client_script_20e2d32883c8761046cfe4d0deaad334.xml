@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ux_client_script">
+    <sys_ux_client_script action="DELETE">
+        <controller_preset/>
+        <includes/>
+        <macroponent display_value="Simple List Page">ece25fe483c8761046cfe4d0deaad3e4</macroponent>
+        <name>Set browser or workspace tab title</name>
+        <preset/>
+        <required_translations>[]</required_translations>
+        <script><![CDATA[/**
+* @param {params} params
+* @param {api} params.api
+* @param {any} params.event
+* @param {any} params.imports
+* @param {ApiHelpers} params.helpers
+*/
+function handler({api, event, helpers, imports}) {
+    // set browser and workspace tab title
+    if (!event.payload.title) {
+        console.warn('ignoring request to set empty tab title');
+        return;
+    }
+    api.emit('SCREEN_STATUS_CHANGED', { title: event.payload.title });
+}]]></script>
+        <script_api_version>2.0.0</script_api_version>
+        <sys_class_name>sys_ux_client_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 21:39:28</sys_created_on>
+        <sys_id>20e2d32883c8761046cfe4d0deaad334</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Set browser or workspace tab title</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ux_client_script_20e2d32883c8761046cfe4d0deaad334</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 21:39:28</sys_updated_on>
+        <target>macroponent</target>
+        <type>default</type>
+    </sys_ux_client_script>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>sys_ux_client_script_20e2d32883c8761046cfe4d0deaad334</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_ux_client_script"&gt;&lt;sys_ux_client_script action="INSERT_OR_UPDATE"&gt;&lt;controller_preset/&gt;&lt;includes/&gt;&lt;macroponent display_value="Simple List Page"&gt;ece25fe483c8761046cfe4d0deaad3e4&lt;/macroponent&gt;&lt;name&gt;Set browser or workspace tab title&lt;/name&gt;&lt;preset/&gt;&lt;required_translations&gt;[]&lt;/required_translations&gt;&lt;script&gt;&lt;![CDATA[/**
+* @param {params} params
+* @param {api} params.api
+* @param {any} params.event
+* @param {any} params.imports
+* @param {ApiHelpers} params.helpers
+*/
+function handler({api, event, helpers, imports}) {
+    // set browser and workspace tab title
+    if (!event.payload.title) {
+        console.warn('ignoring request to set empty tab title');
+        return;
+    }
+    api.emit('SCREEN_STATUS_CHANGED', { title: event.payload.title });
+}]]&gt;&lt;/script&gt;&lt;script_api_version&gt;2.0.0&lt;/script_api_version&gt;&lt;sys_class_name&gt;sys_ux_client_script&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2025-09-14 21:39:28&lt;/sys_created_on&gt;&lt;sys_id&gt;20e2d32883c8761046cfe4d0deaad334&lt;/sys_id&gt;&lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;&lt;sys_name&gt;Set browser or workspace tab title&lt;/sys_name&gt;&lt;sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f"&gt;54a6cf7783b7621046cfe4d0deaad30f&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="DocuGenLLM"&gt;54a6cf7783b7621046cfe4d0deaad30f&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_ux_client_script_20e2d32883c8761046cfe4d0deaad334&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2025-09-14 21:39:28&lt;/sys_updated_on&gt;&lt;target&gt;macroponent&lt;/target&gt;&lt;type&gt;default&lt;/type&gt;&lt;/sys_ux_client_script&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>-1460779325</payload_hash>
+        <record_name>Set browser or workspace tab title</record_name>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 21:39:28</sys_created_on>
+        <sys_id>24e2d32883c8761046cfe4d0deaad336</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>1994a2b2fb90000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 21:39:28</sys_updated_on>
+        <type>UX Client Script</type>
+        <update_guid>a8e2d328a9c876100c5ee12626670935</update_guid>
+        <update_guid_history>a8e2d328a9c876100c5ee12626670935:-1460779325</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-14 22:14:03</sys_created_on>
+        <sys_db_object display_value="" name="sys_ux_client_script">sys_ux_client_script</sys_db_object>
+        <sys_id>0a3913f2dad24cb1808668bb29293799</sys_id>
+        <sys_metadata>20e2d32883c8761046cfe4d0deaad334</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Set browser or workspace tab title</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>sys_ux_client_script_20e2d32883c8761046cfe4d0deaad334</sys_update_name>
+        <sys_update_version display_value="sys_ux_client_script_20e2d32883c8761046cfe4d0deaad334">24e2d32883c8761046cfe4d0deaad336</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-14 22:14:03</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
