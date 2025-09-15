@@ -26,6 +26,12 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			this.APIPROMPT = docuGenModel.u_prompt;
 			this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
 			this.MODEL = docuGenModel.u_model.toString();
+			
+			// Logging Globals
+			this.LOG_SOURCE = 'DocuGenLLM';
+			this.REQUEST_TYPE = '';
+			this.LOG_MESSAGE = '';
+			this.CONTEXT_MAP = '';
 		} else {
 			throw new Error(`[DocuGenLLMClientUtils.initialize] Error: Model ${ model } not found in the u_models table.`);
 		}
@@ -50,17 +56,22 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
             // Call LLM API
             const response = this._callLLMAPI(jsonFormattedPrompt);
+			
 			if(this.DEBUG) responseArr.push(response);
 
             const annotation = this._parseLLMAnnotationResponse(response);
 			if(this.DEBUG) responseArr.push(documentation);
 
+			this.LOG_MESSAGE = JSON.stringify(response);
+			this.REQUEST_TYPE = 'annotation';
+
             // Store or update documentation
             const result = this._storeAnnotation(annotation, recordSysId, tableName, recordDisplayValue);
-            if(this.DEBUG) responseArr.push(result);
-			
+            
+			if(this.DEBUG) responseArr.push(result);
 			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
-
+			
+			this._writeUsageLog();
 			return this._createResponse(this.STATUS.SUCCESS, result);
 		} catch(e) {
 			gs.error(`[DocuGenLLM.generateDocumentation.generateAnnotation] Error: ${ e }`);
@@ -91,6 +102,10 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			
 			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
 
+			this.LOG_MESSAGE = JSON.stringify(response);
+			this.REQUEST_TYPE = 'documentation';
+
+			this._writeUsageLog();
 			return this._createResponse(this.STATUS.SUCCESS, result);
         } catch(e) {
             gs.error(`[DocuGenLLM.generateDocumentation.generateDocumentation] Error: ${ e }`);
@@ -158,9 +173,11 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
 			const response = restMessage.execute();
 			if (response.getStatusCode() != 200) {
+				this.LOG_LEVEL = 2;
 				throw new Error(`[DocuGenLLMClientUtils._callLLMAPI] Error: LLM API call failed: ${ response.getErrorMessage() }`);
 			}
 			
+			this.LOG_LEVEL = 0;
 			const responseBody = response.getBody();
 			
 			return response.getBody();
@@ -284,6 +301,22 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 		}
 	},
 
+	_writeUsageLog: function(message, contextMap) {
+		try {
+			const logGr = new GlideRecord('u_docugenllm_usage_log');
+			logGr.source = this.LOG_SOURCE;
+			logGr.level = this.LOG_LEVEL;
+			logGr.u_model = this.MODEL;
+			logGr.u_request_type = this.REQUEST_TYPE;
+			logGr.message = this.LOG_MESSAGE;
+			logGr.context_map = this.CONTEXT_MAP;
+			logGr.insert();
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._writeUsageLog] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._writeUsageLog] Error: ${ e }`);
+		}
+	},
+
 	_setNestedValue: function(obj, keyStr, newValue) {
 		const parts = keyStr.split('.');
 		let target = obj;
@@ -404,14 +437,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>230</sys_mod_count>
+        <sys_mod_count>235</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-14 13:41:17</sys_updated_on>
+        <sys_updated_on>2025-09-15 12:59:49</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>
