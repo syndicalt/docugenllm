@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element db_object_id="1d8724b483c0b61046cfe4d0deaad3cf" extends="syslog" max_length="40" name="u_docugenllm_usage_log" type="collection">
+        <element label="Model" max_length="40" name="u_model" type="string"/>
+        <element label="Request Type" max_length="40" name="u_request_type" type="string"/>
+        <index name="index">
+            <element name="u_model"/>
+        </index>
+    </element>
+</database>

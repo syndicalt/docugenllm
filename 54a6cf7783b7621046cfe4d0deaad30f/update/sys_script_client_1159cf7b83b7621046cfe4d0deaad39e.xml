@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script_client">
+    <sys_script_client action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <applies_extended>false</applies_extended>
+        <condition/>
+        <description/>
+        <field>u_model</field>
+        <global>true</global>
+        <isolate_script>true</isolate_script>
+        <messages/>
+        <name>Form Control - Default API Endpoint</name>
+        <order/>
+        <script><![CDATA[function onChange(control, oldValue, newValue, isLoading, isTemplate) {
+	if (isLoading || newValue === '') {
+		return;
+	}
+
+	try {
+		var chatgptEndpoint = 'https://api.openai.com/v1/chat/completions';
+		var grokEndpoint = 'https://api.x.ai/v1/chat/completions';
+		var anthropicEndpoint = 'https://api.anthropic.com/v1/messages';
+		var model = g_form.getValue('u_model');
+
+		switch(model) {
+			case 'chatgpt':
+				g_form.setValue('u_api_endpoint', chatgptEndpoint);
+				break;
+			case 'grok':
+				g_form.setValue('u_api_endpoint', grokEndpoint);
+				break;
+			case 'anthropic':
+				g_form.setValue('u_api_endpoint', anthropicEndpoint);
+				break;
+			default:
+				g_form.setValue('u_api_endpoint', '');
+				break;
+		}
+	} catch(e) {
+		g_form.addErrorMessage(`[Form Control - Default API Endpoint] Error: ${ e.message }`);
+		throw new Error(`[Form Control - Default API Endpoint] Error: ${ e.message }`);
+	}
+}]]></script>
+        <sys_class_name>sys_script_client</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 13:08:55</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>1159cf7b83b7621046cfe4d0deaad39e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Form Control - Default API Endpoint</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_client_1159cf7b83b7621046cfe4d0deaad39e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-12 13:08:55</sys_updated_on>
+        <table>u_models</table>
+        <type>onChange</type>
+        <ui_type>10</ui_type>
+        <view/>
+    </sys_script_client>
+</record_update>

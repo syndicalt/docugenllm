@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_docugen_code_docs</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="u_docugen_code_docs">u_documentation_markdownISNOTEMPTY^EQ<item endquery="false" field="u_documentation_markdown" goto="false" newquery="false" operator="ISNOTEMPTY" or="false" value=""/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Form Control - Translate Markdown</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	// Helper function to escape HTML special characters
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+	// Helper function to apply inline formatting
+	function applyInlineFormatting(line) {
+		// Bold (**text** or __text__)
+		line = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+		line = line.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+
+		// Italic (*text* or _text_)
+		line = line.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+		line = line.replace(/_([^_]+)_/g, '<em>$1</em>');
+
+		// Inline code (`code`)
+		line = line.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+		// Links ([text](url))
+		line = line.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+		return line;
+	}
+	
+	try {
+		// CSS styles for the formatted HTML
+		const styles = `
+			<style>
+				.markdown-body {
+					font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+					line-height: 1.6;
+					max-width: 900px;
+					margin: 0 auto;
+					padding: 20px;
+					color: #333;
+				}
+				.markdown-body h1 {
+					font-size: 2.2em;
+					border-bottom: 2px solid #eaecef;
+					padding-bottom: 0.3em;
+					margin-top: 1.5em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body h2 {
+					font-size: 1.8em;
+					border-bottom: 1px solid #eaecef;
+					padding-bottom: 0.3em;
+					margin-top: 1.2em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body h3 {
+					font-size: 1.4em;
+					margin-top: 1em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body h4 {
+					font-size: 1.2em;
+					margin-top: 1em;
+					margin-bottom: 0.5em;
+				}
+				.markdown-body p {
+					margin: 0.8em 0;
+				}
+				.markdown-body ul, .markdown-body ol {
+					padding-left: 2em;
+					margin: 0.8em 0;
+				}
+				.markdown-body ul ul, .markdown-body ol ul, .markdown-body ul ol, .markdown-body ol ol {
+					margin: 0.4em 0;
+				}
+				.markdown-body li {
+					margin: 0.4em 0;
+				}
+				.markdown-body code {
+					background: #f6f8fa;
+					padding: 0.2em 0.4em;
+					border-radius: 3px;
+					font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+					font-size: 85%;
+				}
+				.markdown-body pre {
+					background: #f6f8fa;
+					padding: 1em;
+					border-radius: 6px;
+					overflow-x: auto;
+					margin: 0.8em 0;
+				}
+				.markdown-body pre code {
+					background: none;
+					padding: 0;
+				}
+				.markdown-body blockquote {
+					border-left: 4px solid #dfe2e5;
+					padding: 0 1em;
+					color: #6a737d;
+					margin: 0.8em 0;
+				}
+				.markdown-body a {
+					color: #0366d6;
+					text-decoration: none;
+				}
+				.markdown-body a:hover {
+					text-decoration: underline;
+				}
+				.markdown-body table {
+					border-collapse: collapse;
+					width: 100%;
+					margin: 0.8em 0;
+				}
+				.markdown-body th, .markdown-body td {
+					border: 1px solid #dfe2e5;
+					padding: 0.6em 1em;
+					text-align: left;
+				}
+				.markdown-body th {
+					background: #f6f8fa;
+					font-weight: 600;
+				}
+			</style>
+		`;
+
+		// Replace literal \n with actual newlines
+		markdown = current.u_documentation_markdown.replace(/\\n/g, '\n');
+
+		// Split markdown into lines for processing
+		var lines = markdown.split('\n');
+		var htmlLines = [];
+		var inCodeBlock = false;
+		var listStack = []; // Track nested list levels: {type: 'ul'|'ol', indent: number}
+		var inTable = false;
+		var tableHeaders = [];
+		var tableRows = [];
+
+		for (var i = 0; i < lines.length; i++) {
+			var line = lines[i].replace(/\r$/, ''); // Trim trailing \r for Windows line endings
+			
+			// Skip empty lines in code blocks
+			if (inCodeBlock && line.trim() === '') {
+				htmlLines.push('');
+				continue;
+			}
+
+			// Handle code blocks
+			if (line.trim().indexOf('```') === 0) {
+				if (inCodeBlock) {
+					inCodeBlock = false;
+					htmlLines.push('</code></pre>');
+				} else {
+					var lang = line.trim().replace('```', '').trim() || 'text';
+					inCodeBlock = true;
+					htmlLines.push('<pre><code class="language-' + lang + '">');
+				}
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+				continue;
+			}
+
+			// Process lines within code blocks
+			if (inCodeBlock) {
+				htmlLines.push(escapeHtml(line));
+				continue;
+			}
+
+			// Escape HTML for non-code content
+			line = escapeHtml(line);
+
+			// Handle tables
+			if (line.indexOf('|') !== -1 && !line.match(/^>\s+/) && !line.match(/^#{1,4}\s+/) && !line.match(/^\s*[-*]\s+/) && !line.match(/^\s*\d+\.\s+/)) {
+				// Check if line is a table row (contains |content|)
+				var pipeParts = line.split('|');
+				if (pipeParts.length > 2) { // At least one column
+					if (!inTable) {
+						inTable = true;
+						tableHeaders = [];
+						tableRows = [];
+						htmlLines.push('<table>');
+					}
+					var cells = [];
+					for (var p = 0; p < pipeParts.length; p++) {
+						var cell = pipeParts[p].trim();
+						if (cell !== '') {
+							cells.push(cell);
+						}
+					}
+					// Check if it's a separator row (e.g., |---|---|)
+					var isSeparator = true;
+					for (var c = 0; c < cells.length; c++) {
+						if (!cells[c].match(/^-+$/)) {
+							isSeparator = false;
+							break;
+						}
+					}
+					if (isSeparator) {
+						// Separator row, ignore it
+						continue;
+					}
+					// First row is headers
+					if (tableHeaders.length === 0) {
+						tableHeaders = cells;
+					} else {
+						tableRows.push(cells);
+					}
+					continue;
+				} else if (inTable) {
+					// End table if line doesn't match table format
+					inTable = false;
+					// Output table headers
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					// Output table rows
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+			}
+
+			// Headers (#, ##, ###, ####)
+			if (line.match(/^#{1,4}\s+/)) {
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+				while (listStack.length > 0) {
+					var listItem = listStack.pop();
+					htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
+				}
+				var levelMatch = line.match(/^#+/);
+				var level = levelMatch ? levelMatch[0].length : 1;
+				var content = line.replace(/^#{1,4}\s+/, '');
+				htmlLines.push('<h' + level + '>' + content + '</h' + level + '>');
+				continue;
+			}
+
+			// Handle lists (unordered: -/*, ordered: 1.)
+			var listMatch = line.match(/^(\s*)((?:[-*]|\d+\.)\s+)(.+)$/);
+			if (listMatch) {
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+				var indent = listMatch[1].length;
+				var marker = listMatch[2].trim();
+				var content = listMatch[3];
+				var isOrdered = /^\d+\./.test(marker);
+				var listType = isOrdered ? 'ol' : 'ul';
+
+				// Close lists with greater indent or different type
+				while (listStack.length > 0 && (listStack[listStack.length - 1].indent > indent || 
+					(listStack[listStack.length - 1].indent === indent && listStack[listStack.length - 1].type !== listType))) {
+					var listItem = listStack.pop();
+					htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
+				}
+
+				// Open new list if needed
+				if (listStack.length === 0 || listStack[listStack.length - 1].indent < indent) {
+					listStack.push({ type: listType, indent: indent });
+					htmlLines.push('<' + listType + '>');
+				}
+
+				htmlLines.push('<li>' + applyInlineFormatting(content) + '</li>');
+				continue;
+			}
+
+			// Close lists if line isn't part of a list
+			if (listStack.length > 0 && !line.match(/^\s*([-*]|\d+\.)\s+/)) {
+				while (listStack.length > 0) {
+					var listItem = listStack.pop();
+					htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
+				}
+			}
+
+			// Blockquotes (> text)
+			if (line.match(/^>\s+/)) {
+				if (inTable) {
+					inTable = false;
+					// Output table
+					if (tableHeaders.length > 0) {
+						htmlLines.push('<tr>');
+						for (var h = 0; h < tableHeaders.length; h++) {
+							htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+						}
+						htmlLines.push('</tr>');
+					}
+					for (var r = 0; r < tableRows.length; r++) {
+						htmlLines.push('<tr>');
+						for (var c = 0; c < tableRows[r].length; c++) {
+							htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+						}
+						htmlLines.push('</tr>');
+					}
+					htmlLines.push('</table>');
+					tableHeaders = [];
+					tableRows = [];
+				}
+				var content = line.replace(/^>\s+/, '');
+				htmlLines.push('<blockquote>' + applyInlineFormatting(content) + '</blockquote>');
+				continue;
+			}
+
+			// Inline formatting for non-empty lines
+			if (line.trim() !== '') {
+				line = applyInlineFormatting(line);
+
+				// Wrap in paragraph if not in a block element
+				if (listStack.length === 0 && !line.match(/^<h/) && !line.match(/^<block/) && !inTable) {
+					line = '<p>' + line + '</p>';
+				}
+			} else {
+				line = '';
+			}
+
+			htmlLines.push(line);
+		}
+
+		// Close any open tags
+		if (inCodeBlock) {
+			htmlLines.push('</code></pre>');
+		}
+		if (inTable) {
+			// Output table
+			if (tableHeaders.length > 0) {
+				htmlLines.push('<tr>');
+				for (var h = 0; h < tableHeaders.length; h++) {
+					htmlLines.push('<th>' + applyInlineFormatting(tableHeaders[h]) + '</th>');
+				}
+				htmlLines.push('</tr>');
+			}
+			for (var r = 0; r < tableRows.length; r++) {
+				htmlLines.push('<tr>');
+				for (var c = 0; c < tableRows[r].length; c++) {
+					htmlLines.push('<td>' + applyInlineFormatting(tableRows[r][c]) + '</td>');
+				}
+				htmlLines.push('</tr>');
+			}
+			htmlLines.push('</table>');
+		}
+		while (listStack.length > 0) {
+			var listItem = listStack.pop();
+			htmlLines.push(listItem.type === 'ul' ? '</ul>' : '</ol>');
+		}
+
+		// Join lines and normalize newlines (preserve paragraph breaks)
+		var html = htmlLines.join('\n').replace(/\n{3,}/g, '\n\n');
+
+		current.setValue('u_documentation', `<div class="markdown-body">${styles}${html}</div>`);
+	} catch(e) {
+		gs.addErrorMessage(`[Form Control - Translate Markdown] Error: ${ JSON.stringify(e) }`);
+	}
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 17:20:36</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>3834c44883c8721046cfe4d0deaad36d</sys_id>
+        <sys_mod_count>18</sys_mod_count>
+        <sys_name>Form Control - Translate Markdown</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_3834c44883c8721046cfe4d0deaad36d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-13 15:19:20</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=3834c44883c8721046cfe4d0deaad36d"/>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>3834c44883c8721046cfe4d0deaad36d</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 17:20:36</sys_created_on>
+        <sys_id>8974c44883c8721046cfe4d0deaad3e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-12 17:20:36</sys_updated_on>
+        <table>sys_script</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

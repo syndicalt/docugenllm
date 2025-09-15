@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMClientUtils</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMClientUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var DocuGenLLMClientUtils = Class.create();
+DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+	initialize: function(model) {
+		const docuGenModel = new GlideRecord('u_models');
+		if(!model) {
+			docuGenModel.addQuery('u_default', true);
+		} else {
+			docuGenModel.addQuery('u_name', model);
+		}
+		docuGenModel.query();
+
+		if(docuGenModel.next()) {
+			this.LLMENDPOINT = docuGenModel.u_api_endpoint;
+			this.APIKEY = docuGenModel.u_api_key.getDecryptedValue();
+			this.APIPROMPT = docuGenModel.u_prompt;
+			this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
+			this.MODEL = docuGenModel.u_model.toString();
+			
+			// Logging Globals
+			this.LOG_SOURCE = 'DocuGenLLM';
+			this.REQUEST_TYPE = '';
+			this.LOG_MESSAGE = '';
+			this.CONTEXT_MAP = '';
+		} else {
+			throw new Error(`[DocuGenLLMClientUtils.initialize] Error: Model ${ model } not found in the u_models table.`);
+		}
+		this.DOCS_TABLE = 'u_docugen_code_docs';
+		this.DEBUG = false;
+    },
+	
+	STATUS: {
+		SUCCESS: 200,
+		BAD_REQUEST: 400,
+		DEBUG: 999
+	},
+
+	generateAnnotation: function(recordSysId, recordDisplayValue, tableName) {
+		let responseArr = [];
+
+		try {
+			const prompt = this._buildAnnotationPrompt(recordSysId, tableName);
+			const jsonFormattedPrompt = this._formatRequest(prompt);
+
+			if(this.DEBUG) responseArr.push(jsonFormattedPrompt);
+
+            // Call LLM API
+            const response = this._callLLMAPI(jsonFormattedPrompt);
+			
+			if(this.DEBUG) responseArr.push(response);
+
+            const annotation = this._parseLLMAnnotationResponse(response);
+			if(this.DEBUG) responseArr.push(documentation);
+
+			this.LOG_MESSAGE = JSON.stringify(response);
+			this.REQUEST_TYPE = 'annotation';
+
+            // Store or update documentation
+            const result = this._storeAnnotation(annotation, recordSysId, tableName, recordDisplayValue);
+            
+			if(this.DEBUG) responseArr.push(result);
+			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
+			
+			this._writeUsageLog();
+			return this._createResponse(this.STATUS.SUCCESS, result);
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation.generateAnnotation] Error: ${ e }`);
+			return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateAnnotation]: ${ e }`);
+		}
+	},
+
+    generateDocumentation: function(recordSysId, recordDisplayValue, tableName) {
+		let responseArr = [];
+
+        try {
+            // Prepare the LLM prompt
+            const prompt = this._buildDocumentationPrompt(recordSysId, tableName);
+			const jsonFormattedPrompt = this._formatRequest(prompt);
+			
+			if(this.DEBUG) responseArr.push(jsonFormattedPrompt);
+
+            // Call LLM API
+            const response = this._callLLMAPI(jsonFormattedPrompt);
+			if(this.DEBUG) responseArr.push(response);
+
+            const documentation = this._parseLLMDocumentResponse(response);
+			if(this.DEBUG) responseArr.push(documentation);
+
+            // Store or update documentation
+            const result = this._storeDocumentation(documentation, recordSysId, tableName, recordDisplayValue);
+            if(this.DEBUG) responseArr.push(result);
+			
+			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
+
+			this.LOG_MESSAGE = JSON.stringify(response);
+			this.REQUEST_TYPE = 'documentation';
+
+			this._writeUsageLog();
+			return this._createResponse(this.STATUS.SUCCESS, result);
+        } catch(e) {
+            gs.error(`[DocuGenLLM.generateDocumentation.generateDocumentation] Error: ${ e }`);
+			return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateDocumentation]: ${ e }`);
+        }
+    },
+
+	_createResponse: function(status, message) {
+		return { status, message }
+	},
+
+    _buildDocumentationPrompt: function(recordSysId, tableName) {
+		try {
+			let scriptAttributesObj = {}
+			const recordGr = new GlideRecord(tableName);
+			recordGr.get(recordSysId);
+
+			for(key in recordGr) {
+				if(!key.includes('sys_')) scriptAttributesObj[key] = recordGr[key].toString() || null;
+			}		
+
+			return 'Generate detailed documentation for the following ServiceNow ' + recordGr.getTableName() + ' script. Include purpose, parameters, logic flow, and any key functionality. Ignore system fields, prefixed by sys_. Format the output in markdown.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
+		} catch(e) {
+			gs.error(`[DocuGenLLM._buildPrompt] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM._buildPrompt] Error: ${ e }`);
+		}
+    },
+
+	_buildAnnotationPrompt: function(recordSysId, tableName) {
+		let scriptAttributesObj = {}
+		const recordGr = new GlideRecord(tableName);
+		recordGr.get(recordSysId);
+
+		for(key in recordGr) {
+			if(/(^|\W)script($|\W)/i.test(key) || key === 'condition') scriptAttributesObj[key] = recordGr[key].toString();
+		}
+
+		return 'As an expert JavasScript developer. Generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works. If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do provide any commentary, or headers regarding the annotation.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
+	},
+
+	_formatRequest(prompt) {
+		try {
+			let promptJson;
+			let obj;
+			obj = JSON.parse(this.APIPROMPT);
+			this._setNestedValue(obj, this.PROMPTATTRIBUTE, prompt);
+			promptJson = obj;
+
+			return obj;
+		} catch(e) {
+			gs.error(`[DocuGenLLMClientUtils._formatPrompt] Error: ${ e }`);
+			throw new Error(`[DocuGenLLMClientUtils._formatPrompt] Error: ${ e }`);
+		}
+	},
+
+    _callLLMAPI: function(prompt) {
+		//if(this.DEBUG) return this._simulateAPIDocumentationResponse(this.MODEL);
+		try {
+			const restMessage = new sn_ws.RESTMessageV2();
+			restMessage.setEndpoint(this.LLMENDPOINT);
+			restMessage.setHttpMethod('POST');
+			restMessage.setRequestHeader('Authorization', `Bearer ${ this.APIKEY }`);
+			restMessage.setRequestHeader('Content-Type', 'application/json');
+			restMessage.setRequestBody(JSON.stringify(prompt));
+
+			const response = restMessage.execute();
+			if (response.getStatusCode() != 200) {
+				this.LOG_LEVEL = 2;
+				throw new Error(`[DocuGenLLMClientUtils._callLLMAPI] Error: LLM API call failed: ${ response.getErrorMessage() }`);
+			}
+			
+			this.LOG_LEVEL = 0;
+			const responseBody = response.getBody();
+			
+			return response.getBody();
+		} catch(e) {
+			gs.error(`[DocuGenLLMClientUtils._callLLMAPI] Error: ${ e }`);
+			throw new Error(`[DocuGenLLMClientUtils._callLLMAPI] Error: ${ e }`);
+		}
+    },
+
+	_parseLLMDocumentResponse: function(response) {
+		let result;
+		try {			
+			switch(this.MODEL) {
+				case 'chatgpt':
+					result = JSON.parse(response).output[0].content[0].text;
+					break;
+				case 'grok':
+					result = JSON.parse(response).choices[0].message.content;
+					break;
+				case 'claude':
+					result = JSON.parse(response).content.text;
+					break;
+				default: 
+					result = 'No documenation generated';
+			}
+
+			return result;
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMDocumentResponse] Error: ${ e }`);
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMDocumentResponse] responseObj: ${ response }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._parseLLMDocumentResponse] Error: ${ e }`);
+		}
+	},
+
+	_parseLLMAnnotationResponse: function(response) {
+		let tempResult;
+		try {			
+			switch(this.MODEL) {
+				case 'chatgpt':
+					tempResult = JSON.parse(response).output[0].content[0].text;
+					break;
+				case 'grok':
+					tempResult = JSON.parse(response).choices[0].message.content;
+					break;
+				case 'claude':
+					tempResult = JSON.parse(response).content.text;
+					break;
+				default: 
+					tempResult = 'No documenation generated';
+			}
+
+			let resultArr = tempResult.split('|||');
+
+			resultArr.forEach((result, index) => {
+				resultArr[index] = result.replace('\`\`\`javascript','').replace('\`\`\`','');
+			});
+		
+			return resultArr.join('\n\n');
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMAnnotationResponse] Error: ${ e }`);
+			gs.error(`[DocuGenLLM.generateDocumentation._parseLLMAnnotationResponse] responseObj: ${ response }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._parseLLMAnnotationResponse] Error: ${ e }`);
+		}
+	},
+
+    _storeDocumentation: function(documentation, recordSysId, tableName, displayValue) {
+		try {
+			var docGr = new GlideRecord(this.DOCS_TABLE);
+			docGr.addQuery('u_script_reference', recordSysId);
+			docGr.query();
+			
+			if (docGr.next()) {
+				docGr.u_name = displayValue;
+				docGr.u_documentation_markdown = documentation;
+				docGr.update();
+			} else {
+				docGr.initialize();
+				docGr.u_name = displayValue;
+				docGr.u_script_reference = recordSysId;
+				docGr.u_script_type = tableName;
+				docGr.u_documentation_markdown = documentation;
+				docGr.insert();
+			}
+
+			return {
+				'title': docGr.getDisplayValue(),
+				'link': `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+			}
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._storeDocumentation] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._storeDocumentation] Error: ${ e }`);
+		}
+    },
+
+	_storeAnnotation: function(annotation, recordSysId, tableName, displayValue) {
+		try {
+			var docGr = new GlideRecord(this.DOCS_TABLE);
+			docGr.addQuery('u_script_reference', recordSysId);
+			docGr.query();
+			
+			if (docGr.next()) {
+				docGr.u_name = displayValue;
+				docGr.u_script = annotation;
+				docGr.update();
+			} else {
+				docGr.initialize();
+				docGr.u_name = displayValue;
+				docGr.u_script_reference = recordSysId;
+				docGr.u_script_type = tableName;
+				docGr.u_script = annotation;
+				docGr.insert();
+			}
+
+			return {
+				'title': docGr.getDisplayValue(),
+				'link': `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+			}
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._storeAnnotation] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._storeAnnotation] Error: ${ e }`);
+		}
+	},
+
+	_writeUsageLog: function(message, contextMap) {
+		try {
+			const logGr = new GlideRecord('u_docugenllm_usage_log');
+			logGr.source = this.LOG_SOURCE;
+			logGr.level = this.LOG_LEVEL;
+			logGr.u_model = this.MODEL;
+			logGr.u_request_type = this.REQUEST_TYPE;
+			logGr.message = this.LOG_MESSAGE;
+			logGr.context_map = this.CONTEXT_MAP;
+			logGr.insert();
+		} catch(e) {
+			gs.error(`[DocuGenLLM.generateDocumentation._writeUsageLog] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM.generateDocumentation._writeUsageLog] Error: ${ e }`);
+		}
+	},
+
+	_setNestedValue: function(obj, keyStr, newValue) {
+		const parts = keyStr.split('.');
+		let target = obj;
+		let lastPart = parts.pop();
+
+		for (let part of parts) {
+			if (part.includes('[')) {
+				const match = part.match(/(\w+)\[(\d+)\]/);
+				if (match) {
+					const base = match[1];
+					const idx = parseInt(match[2], 10);
+					target = target[base][idx];
+				} else {
+					target = target[part];
+				}
+			} else {
+			target = target[part];
+			}
+		}
+
+		if (lastPart.includes('[')) {
+			const match = lastPart.match(/(\w+)\[(\d+)\]/);
+			if (match) {
+			const base = match[1];
+			const idx = parseInt(match[2], 10);
+			target[base][idx] = newValue;
+			} else {
+			target[lastPart] = newValue;
+			}
+		} else {
+			target[lastPart] = newValue;
+		}
+	},
+
+	_simulateAPIDocumentationResponse: function(model) {
+		let response;
+
+		switch(model) {
+			case "chatgpt":
+				response = JSON.stringify([
+					{
+						"id": "msg_67b73f697ba4819183a15cc17d011509",
+						"type": "message",
+						"role": "assistant",
+						"content": [
+							{
+								"type": "output_text",
+								"text": "Under the soft glow of the moon, Luna the unicorn danced through fields of twinkling stardust, leaving trails of dreams for every child asleep.",
+								"annotations": []
+							}
+						]
+					}
+				]);
+				break;
+			case "grok":
+				response = JSON.stringify({
+					"id":"6dd0e908-dd7c-6ea7-67cb-31d841a5d3f2_us-east-1",
+					"object":"chat.completion",
+					"created":1757715272,
+					"model":"grok-4-0709",
+					"choices":[{
+						"index":0,
+						"message":{
+							"role":"assistant",
+							"content":"# Documentation for Client Script: Form Control - Validate JSON\n\n## Overview\nThis is a ServiceNow client script configured as an onSubmit script. It applies globally to the `u_models` table and is active. The script isolates its execution for security and performance reasons. It does not apply to extended tables and has no specific view or condition restrictions.\n\n## Purpose\nThe primary purpose of this client script is to validate the contents of the `u_prompt` field on form submission. It checks whether the field's value is a valid JSON string. If the value is valid JSON, the form submission proceeds normally. If invalid, an error message is displayed on the field, and the submission is prevented. This ensures data integrity by enforcing proper JSON formatting before saving records.\n\n## Parameters\nClient scripts of type `onSubmit` do not accept explicit parameters. However, the script implicitly relies on the ServiceNow GlideForm API (`g_form`) to interact with the form:\n- `g_form.getValue('u_prompt')`: Retrieves the current value of the `u_prompt` field as a string.\nNo other inputs or parameters are used.\n\n## Logic Flow\nThe script executes as a single `onSubmit` function when the form is submitted. Below is a step-by-step breakdown of its logic:\n\n1. **Retrieve Field Value**:  \n   The value of the `u_prompt` field is fetched using `g_form.getValue('u_prompt')` and stored in the `prompt` variable.\n\n2. **Attempt JSON Parsing**:  \n   The script attempts to parse the `prompt` value as JSON using `JSON.parse(prompt)`. This is wrapped in a try-catch block to handle parsing errors gracefully.\n\n3. **Successful Parse (Valid JSON)**:  \n   If parsing succeeds (no exception is thrown), the function immediately returns `true`, allowing the form submission to continue.\n\n4. **Failed Parse (Invalid JSON)**:  \n   If parsing fails (an exception is caught), the script:  \n   - Displays an error message on the `u_prompt` field using `g_form.showFieldMsg('u_prompt', 'Invalid JSON', 'error')`.  \n   - Returns `false`, which cancels the form submission and keeps the user on the form to correct the input.\n\nThe script does not perform any additional operations, such as data manipulation or server-side calls.\n\n## Key Functionality\n- **JSON Validation**: Uses JavaScript's built-in `JSON.parse()` to check for valid JSON syntax. This catches common issues like missing quotes, unbalanced brackets, or invalid characters.\n- **Error Handling**: Provides user-friendly feedback via field-level error messages, improving the user experience by highlighting exactly where the issue is.\n- **Form Submission Control**: By returning `true` or `false`, the script acts as a gatekeeper, preventing invalid data from being submitted to the server.\n- **Isolation and Scope**: The script is isolated (`isolate_script: true`), ensuring it runs in a sandboxed environment without interfering with other scripts or global variables.\n- **Global Applicability**: Set to `global: true`, making it available across the instance, though tied specifically to the `u_models` table.\n- **No Dependencies**: Relies solely on the core ServiceNow client-side API (`g_form`) and standard JavaScript features, with no external libraries or custom functions.\n\nThis script is lightweight and focused, making it suitable for enforcing data quality in forms where JSON input is expected in the `u_prompt` field.",
+							"refusal":null
+						},
+						"finish_reason":"stop"
+					}],
+					"usage":{
+						"prompt_tokens":897,
+						"completion_tokens":703,
+						"total_tokens":1949,
+						"prompt_tokens_details":{
+							"text_tokens":897,
+							"audio_tokens":0,
+							"image_tokens":0,
+							"cached_tokens":896
+						},
+						"completion_tokens_details":{
+							"reasoning_tokens":349,
+							"audio_tokens":0,
+							"accepted_prediction_tokens":0,
+							"rejected_prediction_tokens":0
+						},
+						"num_sources_used":0
+					},
+					"system_fingerprint":"fp_19e21a36c0"
+				});
+				break;
+			case 'claude':
+				response = JSON.stringify({
+					"id": "msg_01HCDu5LRGeP2o7s2xGmxyx8",
+					"type": "message", 
+					"role": "assistant",
+					"content": [
+						{
+						"type": "text",
+						"text": "Here are some effective search strategies to find the latest renewable energy developments:\n\n## Search Terms to Use:\n- \"renewable energy news 2024\"\n- \"clean energy breakthrough\"\n- \"solar/wind/battery technology advances\"\n- \"green energy innovations\"\n- \"climate tech developments\"\n- \"energy storage solutions\"\n\n## Best Sources to Check:\n\n**News & Industry Sites:**\n- Renewable Energy World\n- GreenTech Media (now Wood Mackenzie)\n- Energy Storage News\n- CleanTechnica\n- PV Magazine (for solar)\n- WindPower Engineering & Development..."
+						}
+					],
+					"model": "claude-sonnet-4-20250514",
+					"stop_reason": "end_turn",
+					"usage": {
+						"input_tokens": 21,
+						"output_tokens": 305
+					}
+				});
+				break;
+		}
+
+		return response;
+	},
+
+    type: 'DocuGenLLMClientUtils'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 13:54:08</sys_created_on>
+        <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
+        <sys_mod_count>235</sys_mod_count>
+        <sys_name>DocuGenLLMClientUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-15 12:59:49</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>b5441bbb83f7621046cfe4d0deaad3a4</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-12 13:54:07</sys_created_on>
+        <sys_id>6c359bfb83f7621046cfe4d0deaad3ec</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-12 13:54:07</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>
