@@ -7,7 +7,7 @@
 
 }]]></client_script_v2>
         <comments/>
-        <condition>current.sys_class_name != 'sys_db_object' &amp;&amp; new ClientActionsHandler().checkClass(current.sys_class_name.toString())</condition>
+        <condition>current.sys_class_name == 'sys_db_object'</condition>
         <form_action>true</form_action>
         <form_button>false</form_button>
         <form_button_v2>false</form_button_v2>
@@ -27,7 +27,7 @@
         <list_save_with_form_button>false</list_save_with_form_button>
         <list_style/>
         <messages/>
-        <name>DocuGenLLM: Generate Code Documentation</name>
+        <name>DocuGenLLM: Generate Table Documentation</name>
         <onclick/>
         <order>100</order>
         <script><![CDATA[const DEBUG = false;
@@ -39,16 +39,16 @@ try {
 	if(DEBUG) gs.addInfoMessage(recordName);
 
 	const docUtil = new DocuGenLLMClientUtils();
-	const response = docUtil.generateDocumentation(
+	const response = docUtil.generateTableDocumentation(
 		current.getUniqueValue(),
 		recordName,
-		current.getTableName()
+		current.name
 	);
 
 	if(DEBUG) gs.addInfoMessage(JSON.stringify(response));
 	
 	if(response.status === 200) {
-		gs.addInfoMessage('[DocuGenLLM: Generate Code Documentation] Code documenation has been generated!');
+		gs.addInfoMessage('[DocuGenLLM: Generate Table Documentation] Table documenation has been generated!');
 		gs.addInfoMessage(`<a href='${ response.message.link }'>${ response.message.title }</a>`);
 	} else {
 		gs.addErrorMessage(response.message);
@@ -56,40 +56,40 @@ try {
 
 	action.setRedirectURL(current);
 } catch(e) {
-	gs.log(`[DocuGenLLM: Generate Code Documentation] Error ${ e }`);
-	gs.addErrorMessage(`[DocuGenLLM: Generate Code Documentation] Error: ${ e.message }`);
+	gs.error(`[DocuGenLLM: Generate Table Documentation] Error ${ e }`);
+	gs.addErrorMessage(`[DocuGenLLM: Generate Table Documentation] Error: ${ e.message }`);
 }]]></script>
-        <show_insert>false</show_insert>
+        <show_insert>true</show_insert>
         <show_multiple_update>false</show_multiple_update>
         <show_query>false</show_query>
         <show_update>true</show_update>
         <sys_class_name>sys_ui_action</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-12 13:45:34</sys_created_on>
+        <sys_created_on>2025-09-16 04:15:48</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>9b131f3b83f7621046cfe4d0deaad34a</sys_id>
-        <sys_mod_count>36</sys_mod_count>
-        <sys_name>DocuGenLLM: Generate Code Documentation</sys_name>
+        <sys_id>9cc67dcd83043a1046cfe4d0deaad3f3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLM: Generate Table Documentation</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_ui_action_9b131f3b83f7621046cfe4d0deaad34a</sys_update_name>
+        <sys_update_name>sys_ui_action_9cc67dcd83043a1046cfe4d0deaad3f3</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-16 04:13:19</sys_updated_on>
+        <sys_updated_on>2025-09-16 04:15:48</sys_updated_on>
         <table>sys_metadata</table>
         <ui11_compatible>true</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
     </sys_ui_action>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
-        <id>9b131f3b83f7621046cfe4d0deaad34a</id>
+        <id>9cc67dcd83043a1046cfe4d0deaad3f3</id>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-12 13:45:34</sys_created_on>
-        <sys_id>93331f3b83f7621046cfe4d0deaad3a1</sys_id>
+        <sys_created_on>2025-09-16 04:15:47</sys_created_on>
+        <sys_id>fb27f50183443a1046cfe4d0deaad3b7</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-12 13:45:34</sys_updated_on>
+        <sys_updated_on>2025-09-16 04:15:47</sys_updated_on>
         <table>sys_ui_action</table>
         <use_es_latest>true</use_es_latest>
     </sys_es_latest_script>

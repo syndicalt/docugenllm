@@ -4,13 +4,27 @@
             <element>u_documentation</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2025-09-13 19:56:38</sys_created_on>
-            <sys_id>68c1b91c834cf21046cfe4d0deaad3c8</sys_id>
+            <sys_created_on>2025-09-16 02:41:07</sys_created_on>
+            <sys_id>4181ad8183c03a1046cfe4d0deaad374</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Documentation" display_value="Documentation" name="u_docugen_code_docs" sys_domain="global" view="Default view">3c49e59083c8f21046cfe4d0deaad373</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2025-09-13 19:56:38</sys_updated_on>
+            <sys_updated_on>2025-09-16 02:41:07</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_documentation_generated_by</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-09-16 02:41:07</sys_created_on>
+            <sys_id>4981ad8183c03a1046cfe4d0deaad374</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Documentation" display_value="Documentation" name="u_docugen_code_docs" sys_domain="global" view="Default view">3c49e59083c8f21046cfe4d0deaad373</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-09-16 02:41:07</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>

@@ -26,6 +26,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			this.APIPROMPT = docuGenModel.u_prompt;
 			this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
 			this.MODEL = docuGenModel.u_model.toString();
+			this.MODEL_SYS_ID = docuGenModel.getUniqueValue();
 			
 			// Logging Globals
 			this.LOG_SOURCE = 'DocuGenLLM';
@@ -114,11 +115,83 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         }
     },
 
+	generateTableDocumentation: function(recordSysId, recordDisplayValue, tableName) {
+		this.REQUEST_TYPE = 'table documentation';
+		let responseArr = [];
+
+        try {
+            // Prepare the LLM prompt
+            const prompt = this._buildTableDocumentationPrompt(recordSysId, tableName);
+			const jsonFormattedPrompt = this._formatRequest(prompt);
+			
+			if(this.DEBUG) responseArr.push(jsonFormattedPrompt);
+
+            // Call LLM API
+            const response = this._callLLMAPI(jsonFormattedPrompt);
+			if(this.DEBUG) responseArr.push(response);
+
+            const documentation = this._parseLLMDocumentResponse(response);
+			if(this.DEBUG) responseArr.push(documentation);
+
+            // Store or update documentation
+            const result = this._storeDocumentation(documentation, recordSysId, tableName, `Table: ${ recordDisplayValue }`);
+            if(this.DEBUG) responseArr.push(result);
+			
+			if(this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
+
+			this.LOG_MESSAGE = JSON.stringify(response);
+			this._writeUsageLog();
+			return this._createResponse(this.STATUS.SUCCESS, result);
+        } catch(e) {
+			this.LOG_MESSAGE = `[DocuGenLLM.generateDocumentation.generateTableDocumentation] Error: ${ e }`;
+			this._writeUsageLog();
+			return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateTableDocumentation]: ${ e }`);
+        }
+	},
+
 	_createResponse: function(status, message) {
 		return { status, message }
 	},
 
-    _buildDocumentationPrompt: function(recordSysId, tableName) {
+	_getTableJsonObj(table) {
+		try {
+			var res = {
+				table: {},
+				columns:[]
+			}
+
+			var tableGr = new GlideRecord('sys_db_object');
+			tableGr.get(table);
+
+			for(key in tableGr) {
+				if(key !== 'sys_meta') res.table[key] = tableGr[key].getDisplayValue();
+			}
+
+			var columnGr = new GlideRecord('sys_dictionary');
+			columnGr.addQuery('name', tableGr.name);
+			columnGr.query();
+
+			while(columnGr.next()) {
+				var obj = {};
+				obj.name = columnGr.element.toString();
+				obj.label = columnGr.column_label.toString();
+				obj.type = columnGr.type.getDisplayValue();
+				obj.reference = columnGr.reference.getDisplayValue();
+				obj.max_length = columnGr.max_length.getDisplayValue();
+				obj.default_value = columnGr.default_value.toString();
+				obj.display_column = columnGr.display.toString();
+
+				res.columns.push(obj);
+			}
+
+			return res;
+		} catch(e) {
+			gs.error(`[DocuGenLLM._getTableJsonObj] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM._getTableJsonObj] Error: ${ e }`);
+		}
+	},
+
+	_buildDocumentationPrompt: function(recordSysId, tableName) {
 		try {
 			let scriptAttributesObj = {}
 			const recordGr = new GlideRecord(tableName);
@@ -130,21 +203,38 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 
 			return 'Generate detailed documentation for the following ServiceNow ' + recordGr.getTableName() + ' script. Include purpose, parameters, logic flow, and any key functionality. Ignore system fields, prefixed by sys_. Format the output in markdown.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
 		} catch(e) {
-			gs.error(`[DocuGenLLM._buildPrompt] Error: ${ e }`);
-			throw new Error(`[DocuGenLLM._buildPrompt] Error: ${ e }`);
+			gs.error(`[DocuGenLLM._buildDocumentationPrompt] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM._buildDocumentationPrompt] Error: ${ e }`);
+		}
+    },
+
+	_buildTableDocumentationPrompt: function(recordSysId, tableName) {
+		try {
+			const tableUtil = new DocuGenTableSchemaUtil();
+			const tableJson = tableUtil.getTableSchema(recordSysId);
+
+			return 'You are an expert database designer that excels at data schema documentation. Generate detailed documentation for the ServiceNow table, ' + tableName + '. Include purpose, parameters, logic, and any key functionality. Provide a column outline table from the columns array. If there is a null column, note with a string of "null." If there are any reference fields, note that they are a reference to a table. Format the output in markdown.\n\n```json\n' + JSON.stringify(tableJson) + '\n```';
+		} catch(e) {
+			gs.error(`[DocuGenLLM._buildTableDocumentationPrompt] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM._buildTableDocumentationPrompt] Error: ${ e }`);
 		}
     },
 
 	_buildAnnotationPrompt: function(recordSysId, tableName) {
-		let scriptAttributesObj = {}
-		const recordGr = new GlideRecord(tableName);
-		recordGr.get(recordSysId);
+		try { 		
+			let scriptAttributesObj = {}
+			const recordGr = new GlideRecord(tableName);
+			recordGr.get(recordSysId);
 
-		for(key in recordGr) {
-			if(/(^|\W)script($|\W)/i.test(key) || key === 'condition') scriptAttributesObj[key] = recordGr[key].toString();
+			for(key in recordGr) {
+				if(/(^|\W)script($|\W)/i.test(key) || key === 'condition') scriptAttributesObj[key] = recordGr[key].toString();
+			}
+
+			return 'As an expert JavasScript developer. Generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works. If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do provide any commentary, or headers regarding the annotation.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
+		} catch(e) {
+			gs.error(`[DocuGenLLM._buildAnnotationPrompt] Error: ${ e }`);
+			throw new Error(`[DocuGenLLM._buildAnnotationPrompt] Error: ${ e }`);
 		}
-
-		return 'As an expert JavasScript developer. Generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works. If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do provide any commentary, or headers regarding the annotation.\n\n```json\n' + JSON.stringify(scriptAttributesObj) + '\n```';
 	},
 
 	_formatRequest(prompt) {
@@ -253,6 +343,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			if (docGr.next()) {
 				docGr.u_name = displayValue;
 				docGr.u_documentation_markdown = documentation;
+				docGr.u_documentation_generated_by = this.MODEL_SYS_ID;
 				docGr.update();
 			} else {
 				docGr.initialize();
@@ -260,6 +351,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 				docGr.u_script_reference = recordSysId;
 				docGr.u_script_type = tableName;
 				docGr.u_documentation_markdown = documentation;
+				docGr.u_documentation_generated_by = this.MODEL_SYS_ID;
 				docGr.insert();
 			}
 
@@ -282,6 +374,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 			if (docGr.next()) {
 				docGr.u_name = displayValue;
 				docGr.u_script = annotation;
+				docGr.u_script_generated_by = this.MODEL_SYS_ID;
 				docGr.update();
 			} else {
 				docGr.initialize();
@@ -289,6 +382,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 				docGr.u_script_reference = recordSysId;
 				docGr.u_script_type = tableName;
 				docGr.u_script = annotation;
+				docGr.u_script_generated_by = this.MODEL_SYS_ID;
 				docGr.insert();
 			}
 
@@ -437,14 +531,14 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>236</sys_mod_count>
+        <sys_mod_count>246</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-15 13:50:07</sys_updated_on>
+        <sys_updated_on>2025-09-17 00:22:33</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>

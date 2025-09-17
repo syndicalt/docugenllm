@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.DocuGenTableSchemaUtil</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenTableSchemaUtil</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var DocuGenTableSchemaUtil = Class.create();
+DocuGenTableSchemaUtil.prototype = {
+    initialize: function() {},
+
+    // Main method to get complete table schema
+    getTableSchema: function(sysId) {
+        try {
+            var tableInfo = this._getTableInfo(sysId);
+            if (tableInfo.error) {
+                return tableInfo;
+            }
+
+            var columns = this._getColumns(tableInfo.name);
+            var schema = {
+                table: {
+                    metadata: tableInfo,
+                    columns: this._enhanceColumns(columns)
+                }
+            };
+
+            return schema;
+
+        } catch (e) {
+            return { error: 'Error retrieving table schema: ' + e.message };
+        }
+    },
+
+    // Get basic table information
+    _getTableInfo: function(sysId) {
+        var gr = new GlideRecord('sys_db_object');
+        if (!gr.get('sys_id', sysId)) {
+            return { error: 'Table not found for sys_id: ' + sysId };
+        }
+
+        return {
+            sys_id: gr.getValue('sys_id'),
+            name: gr.getValue('name'),
+            label: gr.getValue('label'),
+            description: gr.getValue('sys_description') || '',
+            sys_package: gr.getValue('sys_package'),
+            sys_scope: gr.getValue('sys_scope'),
+            is_extendable: gr.getValue('is_extendable') === 'true',
+            super_class: gr.getValue('super_class')
+        };
+    },
+
+    // Get all columns for a table
+    _getColumns: function(tableName) {
+        var columns = [];
+        var columnGr = new GlideRecord('sys_dictionary');
+        columnGr.addQuery('name', tableName);
+        columnGr.addQuery('active', true);
+        columnGr.query();
+
+        while (columnGr.next()) {
+            columns.push({
+                name: columnGr.getValue('element'),
+                label: columnGr.getValue('column_label'),
+                type: columnGr.getValue('internal_type'),
+                max_length: parseInt(columnGr.getValue('max_length')) || 0,
+                mandatory: columnGr.getValue('mandatory') === 'true',
+                read_only: columnGr.getValue('read_only') === 'true',
+                default_value: columnGr.getValue('default_value'),
+                reference: columnGr.getValue('reference'),
+                sys_id: columnGr.getValue('sys_id')
+            });
+        }
+
+        return columns;
+    },
+
+    // Enhance columns with reference table details and choice lists
+    _enhanceColumns: function(columns) {
+        var enhancedColumns = [];
+        for (var i = 0; i < columns.length; i++) {
+            var column = columns[i];
+            var enhancedColumn = {
+                metadata: column,
+                choices: column.type === 'choice' ? this._getChoiceList(column.name, column.metadata.name) : null,
+                reference_table: null
+            };
+
+            if (column.reference) {
+                enhancedColumn.reference_table = this._getReferenceTableDetails(column.reference);
+            }
+
+            enhancedColumns.push(enhancedColumn);
+        }
+
+        return enhancedColumns;
+    },
+
+    // Get reference table details including columns
+    _getReferenceTableDetails: function(tableName) {
+        var refTableGr = new GlideRecord('sys_db_object');
+        if (!refTableGr.get('name', tableName)) {
+            return null;
+        }
+
+        return {
+            metadata: {
+                sys_id: refTableGr.getValue('sys_id'),
+                name: refTableGr.getValue('name'),
+                label: refTableGr.getValue('label'),
+                description: refTableGr.getValue('sys_description') || ''
+            },
+            columns: this._getColumns(tableName)
+        };
+    },
+
+    // Get choice list for a specific column
+    _getChoiceList: function(columnName, tableName) {
+        var choices = [];
+        var choiceGr = new GlideRecord('sys_choice');
+        choiceGr.addQuery('name', tableName);
+        choiceGr.addQuery('element', columnName);
+        choiceGr.addQuery('inactive', false);
+        choiceGr.query();
+
+        while (choiceGr.next()) {
+            choices.push({
+                value: choiceGr.getValue('value'),
+                label: choiceGr.getValue('label'),
+                sequence: parseInt(choiceGr.getValue('sequence')) || 0
+            });
+        }
+
+        return choices.length > 0 ? choices : null;
+    },
+
+    type: 'TableSchemaUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-17 00:10:24</sys_created_on>
+        <sys_id>5f68c25d83887a1046cfe4d0deaad3ef</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>DocuGenTableSchemaUtil</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_5f68c25d83887a1046cfe4d0deaad3ef</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-17 00:14:33</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>5f68c25d83887a1046cfe4d0deaad3ef</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-17 00:10:24</sys_created_on>
+        <sys_id>0798065d83887a1046cfe4d0deaad33a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-17 00:10:24</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>
