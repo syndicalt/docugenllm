@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>global.DocuGenFlowSchemaUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenFlowSchemaUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var DocuGenFlowSchemaUtils = Class.create();
+DocuGenFlowSchemaUtils.prototype = {
+    initialize: function() {},
+
+    // Main method to get complete flow schema
+    getFlowSchema: function(sysId) {
+        try {
+            var flowInfo = this._getFlowInfo(sysId);
+            if (flowInfo.error) {
+                return flowInfo;
+            }
+
+            var flowSchema = {
+                flow: {
+                    metadata: flowInfo,
+                    steps: this._getFlowSteps(sysId)
+                }
+            };
+
+            return flowSchema;
+
+        } catch (e) {
+            return { error: 'Error retrieving flow schema: ' + e.message };
+        }
+    },
+
+    // Get basic flow information
+    _getFlowInfo: function(sysId) {
+        var gr = new GlideRecord('sys_hub_flow_base');
+        if (!gr.get('sys_id', sysId)) {
+            return { error: 'Flow not found for sys_id: ' + sysId };
+        }
+
+        return {
+            sys_id: gr.getValue('sys_id'),
+            name: gr.getDisplayValue(),
+
+            description: gr.getValue('description') || '',
+            sys_scope: gr.getValue('sys_scope'),
+            active: gr.getValue('active') === 'true',
+            sys_package: gr.sys_package.getRefRecord(), //getValue('sys_package'),
+            trigger_type: gr.getValue('trigger_type'),
+            last_updated: gr.getValue('sys_updated_on'),
+            updated_by: gr.getValue('sys_updated_by'),
+            flow_type: gr.getValue('flow_type'),
+			version: gr.getValue('version_record')
+        };
+    },
+
+    // Get all steps in the flow, including control flow steps
+    _getFlowSteps: function(flowSysId) {
+        var steps = [];
+        var actionSteps = this._getActionStepsV1(flowSysId);
+		var controlSteps = []//this._getControlFlowSteps(flowSysId);
+
+        // Combine and sort steps by sequence/order
+        steps = steps.concat(actionSteps, controlSteps);
+        steps.sort(function(a, b) {
+            return a.metadata.sequence - b.metadata.sequence;
+        });
+
+        return steps;
+    },
+	
+
+    // Get action and subflow steps from sys_hub_action_instance
+    _getActionStepsV1: function(flowSysId) {
+        var steps = [];
+        var stepGr = new GlideRecord('sys_hub_action_instance');
+        stepGr.addQuery('flow', flowSysId);
+        stepGr.orderBy('order');
+        stepGr.query();
+
+        while (stepGr.next()) {
+            var step = {
+                metadata: {
+                    sys_id: stepGr.getValue('sys_id'),
+                    name: stepGr.getDisplayValue('name') || 'Unnamed Action',
+                    parent: stepGr.getDisplayValue('action_type_parent') || '',
+                    sequence: parseInt(stepGr.getValue('order')) || 0,
+                    comment: stepGr.getValue('comment') || '',
+                    created_by: stepGr.getValue('sys_created_by') || '',
+                    action_sys_id: stepGr.getValue('action_type'),
+                    subflow_sys_id: stepGr.getValue('subflow'),
+                    type: stepGr.getValue('action_type') ? 'action' : (stepGr.getValue('subflow') ? 'subflow' : 'unknown')
+                },
+                configuration: this._getStepConfiguration(stepGr),
+                action_details: null,
+                subflow_details: null,
+                control_flow_details: null
+            };
+
+            if (step.metadata.action_sys_id) {
+                step.action_details = this._getActionDetails(step.metadata.action_sys_id);
+            } else if (step.metadata.subflow_sys_id) {
+                step.subflow_details = this._getSubflowDetails(step.metadata.subflow_sys_id);
+            }
+
+            steps.push(step);
+        }
+
+        return steps;
+    },
+
+	// Get action and subflow steps from sys_hub_action_instance
+    _getActionStepsV2: function(flowSysId) {
+        var steps = [];
+        var stepGr = new GlideRecord('sys_hub_action_instance_v2');
+        stepGr.addQuery('flow', flowSysId);
+        stepGr.orderBy('order');
+        stepGr.query();
+
+        while (stepGr.next()) {
+            var step = {
+                metadata: {
+                    sys_id: stepGr.getValue('sys_id'),
+                    name: stepGr.getDisplayValue('name') || 'Unnamed Action',
+                    parent: stepGr.getDisplayValue('action_type_parent') || '',
+                    sequence: parseInt(stepGr.getValue('order')) || 0,
+                    comment: stepGr.getValue('comment') || '',
+                    created_by: stepGr.getValue('sys_created_by') || '',
+                    action_sys_id: stepGr.getValue('action_type'),
+                    subflow_sys_id: stepGr.getValue('subflow'),
+                    type: stepGr.getValue('action_type') ? 'action' : (stepGr.getValue('subflow') ? 'subflow' : 'unknown')
+                },
+                configuration: this._getStepConfiguration(stepGr),
+                action_details: null,
+                subflow_details: null,
+                control_flow_details: null
+            };
+
+            if (step.metadata.action_sys_id) {
+                step.action_details = this._getActionDetails(step.metadata.action_sys_id);
+            } else if (step.metadata.subflow_sys_id) {
+                step.subflow_details = this._getSubflowDetails(step.metadata.subflow_sys_id);
+            }
+
+            steps.push(step);
+        }
+
+        return steps;
+    },
+
+    // Get control flow steps (If, ForEach) from sys_hub_step_instance
+    _getControlFlowSteps: function(flowSysId) {
+        var steps = [];
+        var stepGr = new GlideRecord('sys_hub_step_instance');
+        stepGr.addQuery('action', flowSysId);
+        stepGr.addQuery('step_type', 'IN', 'if,foreach');
+        stepGr.orderBy('sequence');
+        stepGr.query();
+
+        while (stepGr.next()) {
+            var stepType = stepGr.getValue('type') || '';
+            var step = {
+                metadata: {
+                    sys_id: stepGr.getValue('sys_id'),
+                    name: stepGr.getDisplayValue('action_type') || stepType,
+                    parent: '',
+                    sequence: parseInt(stepGr.getValue('order')) || 0,
+                    comment: stepGr.getValue('comment') || '',
+                    created_by: stepGr.getValue('sys_created_by') || '',
+                    action_sys_id: null,
+                    subflow_sys_id: null,
+                    type: stepType
+                },
+                configuration: this._getStepConfiguration(stepGr.getUniqueValue()),
+                action_details: this._getActionDetails(stepGr.getUniqueValue()),
+                subflow_details: null,
+                control_flow_details: this._getControlFlowDetails(stepGr, stepType)
+            };
+
+            steps.push(step);
+        }
+
+        return steps;
+    },
+
+    // Get action details
+    _getActionDetails: function(actionSysId) {
+        var actionGr = new GlideRecord('sys_hub_action_type_definition');
+        if (!actionGr.get('sys_id', actionSysId)) {
+            return null;
+        }
+
+        return {
+            sys_id: actionGr.getValue('sys_id'),
+            name: actionGr.getValue('name'),
+            label: actionGr.getValue('title'),
+            description: actionGr.getValue('description') || '',
+            action_type: actionGr.getValue('action_type'),
+            sys_scope: actionGr.getValue('sys_scope')
+        };
+    },
+
+    // Get subflow details
+    _getSubflowDetails: function(subflowSysId) {
+        var subflowGr = new GlideRecord('sys_hub_flow');
+        if (!subflowGr.get('sys_id', subflowSysId)) {
+            return null;
+        }
+
+        return {
+            sys_id: subflowGr.getValue('sys_id'),
+            name: subflowGr.getValue('name'),
+            label: subflowGr.getValue('title'),
+            description: subflowGr.getValue('description') || '',
+            sys_scope: subflowGr.getValue('sys_scope'),
+            active: subflowGr.getValue('active') === 'true'
+        };
+    },
+
+    // Get configuration details for a step (inputs/outputs)
+    _getStepConfiguration: function(stepGr) {
+        var config = {
+            inputs: [],
+            outputs: []
+        };
+
+        var inputsJson = stepGr.getValue('inputs');
+        var outputsJson = stepGr.getValue('outputs');
+
+        if (inputsJson) {
+            try {
+                var inputsObj = JSON.parse(inputsJson);
+                for (var key in inputsObj) {
+                    if (inputsObj.hasOwnProperty(key)) {
+                        config.inputs.push({
+                            name: key,
+                            label: inputsObj[key].label || key,
+                            data_type: inputsObj[key].type || 'string',
+                            value: inputsObj[key].value || null,
+                            mandatory: inputsObj[key].mandatory || false
+                        });
+                    }
+                }
+            } catch (e) {
+                config.inputs = null;
+            }
+        }
+
+        if (outputsJson) {
+            try {
+                var outputsObj = JSON.parse(outputsJson);
+                for (var key in outputsObj) {
+                    if (outputsObj.hasOwnProperty(key)) {
+                        config.outputs.push({
+                            name: key,
+                            label: outputsObj[key].label || key,
+                            data_type: outputsObj[key].type || 'string',
+                            value: outputsObj[key].value || null,
+                            mandatory: outputsObj[key].mandatory || false
+                        });
+                    }
+                }
+            } catch (e) {
+                config.outputs = null;
+            }
+        }
+
+        return {
+            inputs: config.inputs.length > 0 ? config.inputs : null,
+            outputs: config.outputs.length > 0 ? config.outputs : null
+        };
+    },
+
+    // Get details for control flow steps (If, ForEach)
+    _getControlFlowDetails: function(stepGr, stepType) {
+        var details = {
+            type: stepType,
+            conditions: null,
+            iteration_details: null
+        };
+
+        if (stepType === 'if') {
+            var conditionsJson = stepGr.getValue('condition');
+            if (conditionsJson) {
+                try {
+                    details.conditions = JSON.parse(conditionsJson);
+                } catch (e) {
+                    details.conditions = { error: 'Failed to parse condition JSON: ' + e.message };
+                }
+            }
+        } else if (stepType === 'foreach') {
+            var foreachJson = stepGr.getValue('foreach_config') || stepGr.getValue('inputs');
+            if (foreachJson) {
+                try {
+                    var foreachConfig = JSON.parse(foreachJson);
+                    details.iteration_details = {
+                        collection: foreachConfig.collection || null,
+                        variable: foreachConfig.variable || null,
+                        max_iterations: foreachConfig.max_iterations || null
+                    };
+                } catch (e) {
+                    details.iteration_details = { error: 'Failed to parse foreach config JSON: ' + e.message };
+                }
+            }
+        }
+
+        return details;
+    },
+
+    type: 'DocuGenFlowSchemaUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-17 01:40:39</sys_created_on>
+        <sys_id>292d1ed5830c7a1046cfe4d0deaad314</sys_id>
+        <sys_mod_count>13</sys_mod_count>
+        <sys_name>DocuGenFlowSchemaUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_292d1ed5830c7a1046cfe4d0deaad314</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-17 03:23:45</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>292d1ed5830c7a1046cfe4d0deaad314</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-09-17 01:40:39</sys_created_on>
+        <sys_id>c94ddedd83887a1046cfe4d0deaad364</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-09-17 01:40:39</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

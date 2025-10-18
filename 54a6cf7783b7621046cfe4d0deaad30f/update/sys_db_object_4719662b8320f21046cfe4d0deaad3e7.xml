@@ -7,33 +7,33 @@
         <client_scripts_access>false</client_scripts_access>
         <configuration_access>false</configuration_access>
         <create_access>false</create_access>
-        <create_access_controls>false</create_access_controls>
+        <create_access_controls>true</create_access_controls>
         <delete_access>false</delete_access>
         <filter_extension/>
         <is_df_table>false</is_df_table>
         <is_extendable>false</is_extendable>
-        <label>DocugenLLM Usage Log</label>
+        <label>DocuGenLLM Models</label>
         <live_feed_enabled>false</live_feed_enabled>
-        <name>u_docugenllm_usage_log</name>
+        <name>u_docugen_models</name>
         <number_ref/>
         <provider_class/>
         <read_access>true</read_access>
         <scriptable_table>false</scriptable_table>
-        <super_class display_value="Log Entry" name="syslog">23e4a4335d3122104f34969735a7ad4a</super_class>
+        <super_class/>
         <sys_class_name>sys_db_object</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-15 03:49:15</sys_created_on>
-        <sys_id>1d8724b483c0b61046cfe4d0deaad3cf</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_name>DocugenLLM Usage Log</sys_name>
+        <sys_created_on>2025-10-18 22:52:57</sys_created_on>
+        <sys_id>4719662b8320f21046cfe4d0deaad3e7</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLM Models</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_db_object_1d8724b483c0b61046cfe4d0deaad3cf</sys_update_name>
+        <sys_update_name>sys_db_object_4719662b8320f21046cfe4d0deaad3e7</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-18 23:23:55</sys_updated_on>
+        <sys_updated_on>2025-10-18 22:52:57</sys_updated_on>
         <update_access>false</update_access>
-        <user_role/>
+        <user_role display_value="docugen_user" name="docugen_user">763746888384b21046cfe4d0deaad320</user_role>
         <ws_access>true</ws_access>
     </sys_db_object>
 </record_update>
