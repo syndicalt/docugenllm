@@ -17,7 +17,7 @@
         <form_style/>
         <format_for_configurable_workspace>false</format_for_configurable_workspace>
         <hint/>
-        <isolate_script>false</isolate_script>
+        <isolate_script>true</isolate_script>
         <list_action>false</list_action>
         <list_banner_button>false</list_banner_button>
         <list_button>false</list_button>
@@ -27,10 +27,11 @@
         <list_save_with_form_button>false</list_save_with_form_button>
         <list_style/>
         <messages/>
-        <name>DocuGenLLM: Generate Doc Suggestions</name>
+        <name>DocuGenLLM: Generate Code Review</name>
         <onclick/>
-        <order>103</order>
+        <order>104</order>
         <script><![CDATA[const DEBUG = false;
+
 try {
 	const recordName = current.getDisplayValue() 
 		? current.getDisplayValue() 
@@ -41,21 +42,21 @@ try {
 	if(DEBUG) gs.addInfoMessage(recordName);
 
 	const docUtil = new DocuGenLLMClientUtils();
-	const response = docUtil.generateMaintenanceSuggestions(current.sys_id, current.getTableName(), current.name);
+    var result = docUtil.generateCodeReviewAnnotations(current.sys_id, current.getTableName(), current.name);
 
-	if(DEBUG) gs.addInfoMessage(JSON.stringify(response));
-
-	if (response.status === 200) {
-		gs.addInfoMessage('[DocuGenLLM: Generate Doc Suggestions] Suggestions generated!');
-		gs.addInfoMessage(`<a href='${ response.message.link }'>${ response.message.title }</a>`);
+	if(DEBUG) gs.addInfoMessage(JSON.stringify(result));
+	
+	if(result.status === 200) {
+		gs.addInfoMessage('[DocuGenLLM: Generate Code Review] Code review has been generated! Please note that this feature is in development, so there may be errors or formatting issues.');
+		gs.addInfoMessage(`<a href='${ result.message.link }'>${ result.message.title }</a>`);
 	} else {
-		gs.addErrorMessage(response.message);
+		gs.addErrorMessage(result.message);
 	}
 
 	action.setRedirectURL(current);
 } catch(e) {
-	gs.log(`[DocuGenLLM: Generate Doc Suggestions] Error ${ e }`);
-	gs.addErrorMessage(`[DocuGenLLM: Generate Doc Suggestions] Error: ${ e.message }`);
+	gs.log(`[DocuGenLLM: Generate Code Rewiew] Error ${ e }`);
+	gs.addErrorMessage(`[DocuGenLLM: Generate Code Review] Error: ${ e.message }`);
 }]]></script>
         <show_insert>false</show_insert>
         <show_multiple_update>false</show_multiple_update>
@@ -63,31 +64,31 @@ try {
         <show_update>true</show_update>
         <sys_class_name>sys_ui_action</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-10-19 00:52:42</sys_created_on>
+        <sys_created_on>2025-10-19 03:31:28</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>431303e38324f21046cfe4d0deaad34c</sys_id>
-        <sys_mod_count>8</sys_mod_count>
-        <sys_name>DocuGenLLM: Generate Doc Suggestions</sys_name>
+        <sys_id>9089636b8368f21046cfe4d0deaad33e</sys_id>
+        <sys_mod_count>4</sys_mod_count>
+        <sys_name>DocuGenLLM: Generate Code Review</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_ui_action_431303e38324f21046cfe4d0deaad34c</sys_update_name>
+        <sys_update_name>sys_ui_action_9089636b8368f21046cfe4d0deaad33e</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 03:50:26</sys_updated_on>
+        <sys_updated_on>2025-10-19 03:41:50</sys_updated_on>
         <table>sys_metadata</table>
-        <ui11_compatible>true</ui11_compatible>
+        <ui11_compatible>false</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
     </sys_ui_action>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
-        <id>431303e38324f21046cfe4d0deaad34c</id>
+        <id>9089636b8368f21046cfe4d0deaad33e</id>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-10-19 00:52:41</sys_created_on>
-        <sys_id>2a2503e78324f21046cfe4d0deaad3e2</sys_id>
+        <sys_created_on>2025-10-19 03:31:28</sys_created_on>
+        <sys_id>2889636b8368f21046cfe4d0deaad342</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 00:52:41</sys_updated_on>
+        <sys_updated_on>2025-10-19 03:31:28</sys_updated_on>
         <table>sys_ui_action</table>
         <use_es_latest>true</use_es_latest>
     </sys_es_latest_script>

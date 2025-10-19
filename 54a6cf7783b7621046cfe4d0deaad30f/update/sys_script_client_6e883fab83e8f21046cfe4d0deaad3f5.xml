@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script_client">
+    <sys_script_client action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <applies_extended>false</applies_extended>
+        <condition/>
+        <description/>
+        <field/>
+        <global>true</global>
+        <isolate_script>false</isolate_script>
+        <messages/>
+        <name>Form Control - DocRef Suggestion</name>
+        <order/>
+        <script><![CDATA[function onLoad() {
+	try { 
+		var docReference = g_form.getValue('u_document_reference');
+		if(docReference) {
+			g_form.getReference('u_document_reference', function(response) {
+				var nullArr = [];
+
+				if(!response.u_documentation) nullArr.push('Code Documentation');
+				if(!response.u_script) nullArr.push('Script Annotation');
+
+				if(nullArr.length > 0) g_form.showFieldMsg('u_document_reference', 'Document Reference is missing ' + nullArr.join(' and ') + '. Consider generating or writing documenation for this code!', 'warning');
+			});
+		} else {
+			g_form.showFieldMsg('u_document_reference', 'Document reference is missing! This was likely caused by an application error. Please contact your administrator.', 'error');
+		}
+	} catch(e) {
+		g_form.addErrorMessage('[Form Control - DocRef Suggestion] Error: ' + e.message);
+	}
+}]]></script>
+        <sys_class_name>sys_script_client</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 04:38:46</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>6e883fab83e8f21046cfe4d0deaad3f5</sys_id>
+        <sys_mod_count>15</sys_mod_count>
+        <sys_name>Form Control - DocRef Suggestion</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_client_6e883fab83e8f21046cfe4d0deaad3f5</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 05:00:34</sys_updated_on>
+        <table>u_docugen_suggestions</table>
+        <type>onLoad</type>
+        <ui_type>10</ui_type>
+        <view/>
+    </sys_script_client>
+</record_update>

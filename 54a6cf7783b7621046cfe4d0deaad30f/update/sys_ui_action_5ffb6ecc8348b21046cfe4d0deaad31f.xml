@@ -7,7 +7,7 @@
 
 }]]></client_script_v2>
         <comments/>
-        <condition>new ClientActionsHandler().checkDocumentationExists(current.sys_id.toString()) &amp;&amp; new ClientActionsHandler().checkClass(current.sys_class_name.toString())</condition>
+        <condition>new DocuGenLLMClientActionsHandler().checkDocumentationExists(current.sys_id.toString()) &amp;&amp; new DocuGenLLMClientActionsHandler().checkClass(current.sys_class_name.toString())</condition>
         <form_action>true</form_action>
         <form_button>false</form_button>
         <form_button_v2>false</form_button_v2>
@@ -33,7 +33,7 @@
         <script><![CDATA[function navToLink() {
 	try {
 		var recordSysId = g_form.getUniqueValue();
-		var docAjax = new GlideAjax('ClientActionsHandler');
+		var docAjax = new GlideAjax('DocuGenLLMClientActionsHandler');
 		docAjax.addParam('sysparm_name', 'getDocumentationLink');
 		docAjax.addParam('sysparm_recordSysId', recordSysId);
 		docAjax.getXML(function(response) {
@@ -55,7 +55,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>5ffb6ecc8348b21046cfe4d0deaad31f</sys_id>
-        <sys_mod_count>71</sys_mod_count>
+        <sys_mod_count>75</sys_mod_count>
         <sys_name>DocuGenLLM: Show Documentation</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
@@ -63,7 +63,7 @@
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_ui_action_5ffb6ecc8348b21046cfe4d0deaad31f</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-13 07:41:59</sys_updated_on>
+        <sys_updated_on>2025-10-19 04:19:07</sys_updated_on>
         <table>sys_metadata</table>
         <ui11_compatible>true</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>

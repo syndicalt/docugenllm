@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties_category_m2m">
+    <sys_properties_category_m2m action="INSERT_OR_UPDATE">
+        <category display_value="docugenllm.system.properties">835b7df7832c361046cfe4d0deaad315</category>
+        <order>700</order>
+        <property display_value="glide.ui.u_docugen_code_docs_activity.fields" name="glide.ui.u_docugen_code_docs_activity.fields">b29ae5d0830cf21046cfe4d0deaad358</property>
+        <sys_class_name>sys_properties_category_m2m</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 14:16:05</sys_created_on>
+        <sys_id>cf0db5fb832c361046cfe4d0deaad379</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>glide.ui.u_docugen_code_docs_activity.fields.docugenllm.system.properties</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_properties_category_m2m_cf0db5fb832c361046cfe4d0deaad379</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 14:16:05</sys_updated_on>
+    </sys_properties_category_m2m>
+</record_update>

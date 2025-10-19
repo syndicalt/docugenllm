@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description>Enter the sys_id of the model the application will use for for generating documentation suggestions. If this property is empty, code documetnation will use the default model. Default is null. (string)</description>
+        <ignore_cache>true</ignore_cache>
+        <is_private>false</is_private>
+        <name>docugenllm.code.suggestions.model</name>
+        <read_roles>docugen_admin,docugen_user</read_roles>
+        <suffix/>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 14:08:14</sys_created_on>
+        <sys_id>792b75f7832c361046cfe4d0deaad30e</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>docugenllm.code.suggestions.model</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_properties_792b75f7832c361046cfe4d0deaad30e</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 14:17:56</sys_updated_on>
+        <type>string</type>
+        <value/>
+        <write_roles>docugen_admin</write_roles>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=792b75f7832c361046cfe4d0deaad30e"/>
+</record_update>

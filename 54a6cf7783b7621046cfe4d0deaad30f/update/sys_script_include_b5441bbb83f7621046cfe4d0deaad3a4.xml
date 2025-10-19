@@ -158,7 +158,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
             const changeData = this._getScriptChangeHistory(recordSysId, tableName);
 
             // Check if documentation exists
-            const existingDoc = this._getExistingDocumentation(recordSysId);
+            let existingDoc = this._getExistingDocumentation(recordSysId);
 
             // Build prompt for maintenance suggestions
             const prompt = this._buildMaintenancePrompt(scriptData, changeData, existingDoc);
@@ -174,7 +174,9 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
             if (this.DEBUG) responseArr.push(suggestions);
 
             // Store suggestions
-            const result = this._storeSuggestions(suggestions, recordSysId, tableName, recordDisplayValue, existingDoc.sys_id);
+			if(!existingDoc) existingDoc = this._storeDocumentation(null, recordSysId, tableName, recordDisplayValue);
+
+			const result = this._storeSuggestions(suggestions, recordSysId, tableName, recordDisplayValue, existingDoc.sys_id);
             if (this.DEBUG) responseArr.push(result);
 
             if (this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
@@ -186,6 +188,42 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
             this.LOG_MESSAGE = `[DocuGenLLM.generateMaintenanceSuggestions] Error: ${e}`;
             this._writeUsageLog();
             return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateMaintenanceSuggestions]: ${e}`);
+        }
+    },
+
+	generateCodeReviewAnnotations: function(recordSysId, tableName, recordDisplayValue) {
+        this.REQUEST_TYPE = 'code_review';
+        let responseArr = [];
+
+        try {
+            const scriptData = this._getScriptData(recordSysId, tableName);
+            const analysis = this._analyzeScript(scriptData.current.script || '', tableName);
+            const prompt = this._buildCodeReviewPrompt(scriptData, analysis);
+            const jsonFormattedPrompt = this._formatRequest(prompt);
+			let existingDoc = this._getExistingDocumentation(recordSysId);
+
+            if (this.DEBUG) responseArr.push(jsonFormattedPrompt);
+
+            const response = this._callLLMAPI(jsonFormattedPrompt);
+            if (this.DEBUG) responseArr.push(response);
+
+            const annotations = this._parseLLMDocumentResponse(response);
+            if (this.DEBUG) responseArr.push(annotations);
+			
+			if(!existingDoc.sys_id) existingDoc = this._storeDocumentation(null, recordSysId, tableName, recordDisplayValue);
+			
+            const result = this._storeCodeReviewAnnotations(annotations, recordSysId, tableName, recordDisplayValue, existingDoc.sys_id);
+            if (this.DEBUG) responseArr.push(result);
+
+            if (this.DEBUG) return this._createResponse(this.STATUS.DEBUG, responseArr);
+
+            this.LOG_MESSAGE = JSON.stringify(response);
+            this._writeUsageLog();
+            return this._createResponse(this.STATUS.SUCCESS, result);
+        } catch (e) {
+            this.LOG_MESSAGE = `[DocuGenLLM.generateCodeReviewAnnotations] Error: ${e}`;
+            this._writeUsageLog();
+            return this._createResponse(this.STATUS.BAD_REQUEST, `[DocuGenLLM.generateCodeReviewAnnotations]: ${e}`);
         }
     },
 
@@ -359,6 +397,30 @@ ${existingDoc.annotations || 'No existing annotations'}
         }
     },
 
+	_buildCodeReviewPrompt: function(scriptData, analysis) {
+        try {
+            return `As an expert ServiceNow developer, perform a code review for the following script. Generate detailed annotations in markdown, including:
+- **Identified Issues**: Highlight potential issues (e.g., deprecated APIs, performance bottlenecks).
+- **Best Practice Suggestions**: Recommend ServiceNow coding best practices (e.g., error handling, logging, ACL checks).
+- **Remediation Steps**: Suggest specific changes to address each issue or implement best practices.
+- **Code Context**: Provide inline comments in the script to mark issues or suggestions, using // for single-line comments.
+
+Script Details:
+\`\`\`json
+${JSON.stringify(scriptData.current)}
+\`\`\`
+
+Analysis Results:
+\`\`\`json
+${JSON.stringify(analysis)}
+\`\`\`
+`;
+        } catch (e) {
+            gs.error(`[DocuGenLLM._buildCodeReviewPrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLM._buildCodeReviewPrompt] Error: ${e}`);
+        }
+    },
+
     _formatRequest: function(prompt) {
         try {
             let promptJson;
@@ -452,7 +514,8 @@ ${existingDoc.annotations || 'No existing annotations'}
 
     _storeDocumentation: function(documentation, recordSysId, tableName, displayValue) {
         try {
-            var docGr = new GlideRecord(this.DOCS_TABLE);
+            let sys_id;
+			const docGr = new GlideRecord(this.DOCS_TABLE);
             docGr.addQuery('u_script_reference', recordSysId);
             docGr.query();
 
@@ -460,7 +523,7 @@ ${existingDoc.annotations || 'No existing annotations'}
                 docGr.u_name = displayValue;
                 docGr.u_documentation_markdown = documentation;
                 docGr.u_documentation_generated_by = this.MODEL_SYS_ID;
-                docGr.update();
+                sys_id = docGr.update();
             } else {
                 docGr.initialize();
                 docGr.u_name = displayValue;
@@ -468,12 +531,13 @@ ${existingDoc.annotations || 'No existing annotations'}
                 docGr.u_script_type = tableName;
                 docGr.u_documentation_markdown = documentation;
                 docGr.u_documentation_generated_by = this.MODEL_SYS_ID;
-                docGr.insert();
+                sys_id = docGr.insert();
             }
 
             return {
-                'title': docGr.getDisplayValue(),
-                'link': `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+				sys_id: sys_id,
+                title: docGr.getDisplayValue(),
+                link: `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
             };
         } catch (e) {
             gs.error(`[DocuGenLLM._storeDocumentation] Error: ${e}`);
@@ -483,7 +547,8 @@ ${existingDoc.annotations || 'No existing annotations'}
 
     _storeAnnotation: function(annotation, recordSysId, tableName, displayValue) {
         try {
-            var docGr = new GlideRecord(this.DOCS_TABLE);
+			let sys_id;
+            const docGr = new GlideRecord(this.DOCS_TABLE);
             docGr.addQuery('u_script_reference', recordSysId);
             docGr.query();
 
@@ -491,7 +556,7 @@ ${existingDoc.annotations || 'No existing annotations'}
                 docGr.u_name = displayValue;
                 docGr.u_script = annotation;
                 docGr.u_script_generated_by = this.MODEL_SYS_ID;
-                docGr.update();
+                sys_id = docGr.update();
             } else {
                 docGr.initialize();
                 docGr.u_name = displayValue;
@@ -499,16 +564,50 @@ ${existingDoc.annotations || 'No existing annotations'}
                 docGr.u_script_type = tableName;
                 docGr.u_script = annotation;
                 docGr.u_script_generated_by = this.MODEL_SYS_ID;
-                docGr.insert();
+                sys_id = docGr.insert();
             }
 
             return {
-                'title': docGr.getDisplayValue(),
-                'link': `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+				sys_id: sys_id,
+                title: docGr.getDisplayValue(),
+                link: `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
             };
         } catch (e) {
             gs.error(`[DocuGenLLM._storeAnnotation] Error: ${e}`);
             throw new Error(`[DocuGenLLM._storeAnnotation] Error: ${e}`);
+        }
+    },
+
+	_storeCodeReviewAnnotations: function(annotations, recordSysId, tableName, displayValue, existingDoc) {
+        try {
+            var sugGr = new GlideRecord(this.SUGGESTIONS_TABLE);
+            sugGr.addQuery('u_script_reference', recordSysId);
+            sugGr.query();
+
+            if (sugGr.next()) {
+                sugGr.u_name = displayValue;
+                sugGr.u_code_review = annotations;
+				sugGr.u_document_reference = existingDoc;
+                sugGr.u_generated_by = this.MODEL_SYS_ID;
+                sugGr.update();
+            } else {
+                sugGr.initialize();
+                sugGr.u_name = displayValue;
+                sugGr.u_script_reference = recordSysId;
+                sugGr.u_script_type = tableName;
+                sugGr.u_code_review = annotations;
+				sugGr.u_document_reference = existingDoc;
+                sugGr.u_generated_by = this.MODEL_SYS_ID;
+                sugGr.insert();
+            }
+
+            return {
+                'title': sugGr.getDisplayValue(),
+                'link': `${gs.getProperty('glide.servlet.uri')}${sugGr.getLink()}`
+            };
+        } catch (e) {
+            gs.error(`[DocuGenLLM._storeCodeReviewAnnotations] Error: ${e}`);
+            throw new Error(`[DocuGenLLM._storeCodeReviewAnnotations] Error: ${e}`);
         }
     },
 
@@ -545,7 +644,6 @@ ${existingDoc.annotations || 'No existing annotations'}
         }
     },
 
-    // New method to fetch script data
     _getScriptData: function(recordSysId, tableName) {
         try {
             var recordGr = new GlideRecord(tableName);
@@ -566,7 +664,6 @@ ${existingDoc.annotations || 'No existing annotations'}
         }
     },
 
-    // New method to fetch script change history
     _getScriptChangeHistory: function(recordSysId, tableName) {
         try {
             var history = [];
@@ -593,7 +690,6 @@ ${existingDoc.annotations || 'No existing annotations'}
         }
     },
 
-    // New method to fetch existing documentation
     _getExistingDocumentation: function(recordSysId) {
         try {
             var docGr = new GlideRecord(this.DOCS_TABLE);
@@ -891,14 +987,14 @@ ${existingDoc.annotations || 'No existing annotations'}
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>256</sys_mod_count>
+        <sys_mod_count>262</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 02:14:42</sys_updated_on>
+        <sys_updated_on>2025-10-19 04:32:33</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>
