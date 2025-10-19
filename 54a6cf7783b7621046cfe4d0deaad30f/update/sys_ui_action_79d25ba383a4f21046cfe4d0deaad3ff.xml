@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_action">
     <sys_ui_action action="INSERT_OR_UPDATE">
-        <action_name>edit_fields</action_name>
+        <action_name>read_fields</action_name>
         <active>true</active>
         <client>true</client>
         <client_script_v2><![CDATA[function onClick(g_form) {
@@ -10,19 +10,19 @@
 			return;
 		}
 			
-		g_form.setReadOnly('u_documentation', false);
-		g_form.setReadOnly('u_documentation_markdown', false);
-		g_form.setReadOnly('u_script', false);
-		hide('edit_fields');
-		hide('edit_fields_bottom');
-		show('read_fields');
-		show('read_fields_bottom');
+		g_form.setReadOnly('u_suggestions', true);
+		g_form.setReadOnly('u_suggestions_markdown', true);
+		g_form.setReadOnly('u_script', true);
+		show('edit_fields');
+		show('edit_fields_bottom');
+		hide('read_fields');
+		hide('read_fields_bottom');
 	} catch(e) {
 		g_form.addErrorMessage(`Form Control - Edit] Error: ${ e.message }`);
 	}
 }]]></client_script_v2>
         <comments/>
-        <condition>gs.hasRole('docugen_user') || gs.hasRole('docugen_admin')</condition>
+        <condition>gs.hasRole('docugen_user') || gs.hasRole('docugen_admin');</condition>
         <form_action>true</form_action>
         <form_button>true</form_button>
         <form_button_v2>true</form_button_v2>
@@ -42,23 +42,23 @@
         <list_save_with_form_button>false</list_save_with_form_button>
         <list_style/>
         <messages/>
-        <name>Edit</name>
-        <onclick>confirmEdit()</onclick>
+        <name>Read</name>
+        <onclick>confirmRead()</onclick>
         <order>100</order>
-        <script><![CDATA[function confirmEdit() {
+        <script><![CDATA[function confirmRead() {
 	try {
 		if (!g_form) {
 			alert("Form not loaded properly");
 			return;
 		}
 			
-		g_form.setReadOnly('u_documentation', false);
-		g_form.setReadOnly('u_documentation_markdown', false);
-		g_form.setReadOnly('u_script', false);
-		hide('edit_fields');
-		hide('edit_fields_bottom');
-		show('read_fields');
-		show('read_fields_bottom');
+		g_form.setReadOnly('u_suggestions', true);
+		g_form.setReadOnly('u_suggestions_markdown', true);
+		g_form.setReadOnly('u_script', true);
+		show('edit_fields');
+		show('edit_fields_bottom');
+		hide('read_fields');
+		hide('read_fields_bottom');
 	} catch(e) {
 		g_form.addErrorMessage(`Form Control - Edit] Error: ${ e.message }`);
 	}
@@ -69,20 +69,20 @@
         <show_update>true</show_update>
         <sys_class_name>sys_ui_action</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-14 17:31:09</sys_created_on>
+        <sys_created_on>2025-10-19 01:52:27</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>4c19d6688384761046cfe4d0deaad31d</sys_id>
-        <sys_mod_count>22</sys_mod_count>
-        <sys_name>Edit</sys_name>
+        <sys_id>79d25ba383a4f21046cfe4d0deaad3ff</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>Read</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_ui_action_4c19d6688384761046cfe4d0deaad31d</sys_update_name>
+        <sys_update_name>sys_ui_action_79d25ba383a4f21046cfe4d0deaad3ff</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 02:22:01</sys_updated_on>
-        <table>u_docugen_code_docs</table>
+        <sys_updated_on>2025-10-19 01:55:18</sys_updated_on>
+        <table>u_docugen_suggestions</table>
         <ui11_compatible>true</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
     </sys_ui_action>

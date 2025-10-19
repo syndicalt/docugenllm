@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_module">
+    <sys_ui_module action="DELETE">
+        <active>true</active>
+        <application display_value="DocuGenLLM">28c96e6b8320f21046cfe4d0deaad3b9</application>
+        <filter/>
+        <name>DocuGenLLM Suggestions</name>
+        <order/>
+        <path/>
+        <path_relative_to_root>false</path_relative_to_root>
+        <roles>docugen_user</roles>
+        <sys_class_name>sys_ui_module</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 00:39:06</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>e3024f238324f21046cfe4d0deaad30c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLM Suggestions</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ui_module_e3024f238324f21046cfe4d0deaad30c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 00:39:06</sys_updated_on>
+        <table>u_docugenllm_suggestions</table>
+        <uncancelable>false</uncancelable>
+        <view_name/>
+    </sys_ui_module>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>sys_ui_module_e3024f238324f21046cfe4d0deaad30c</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_ui_module"><sys_ui_module action="INSERT_OR_UPDATE"><active>true</active><application display_value="DocuGenLLM">28c96e6b8320f21046cfe4d0deaad3b9</application><filter/><name>DocuGenLLM Suggestions</name><order/><path/><path_relative_to_root>false</path_relative_to_root><roles>docugen_user</roles><sys_class_name>sys_ui_module</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-10-19 00:39:06</sys_created_on><sys_domain>global</sys_domain><sys_domain_path>/</sys_domain_path><sys_id>e3024f238324f21046cfe4d0deaad30c</sys_id><sys_mod_count>0</sys_mod_count><sys_name>DocuGenLLM Suggestions</sys_name><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_update_name>sys_ui_module_e3024f238324f21046cfe4d0deaad30c</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-10-19 00:39:06</sys_updated_on><table>u_docugenllm_suggestions</table><uncancelable>false</uncancelable><view_name/></sys_ui_module></record_update>]]></payload>
+        <payload_hash>2119358722</payload_hash>
+        <record_name>DocuGenLLM Suggestions</record_name>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 00:39:06</sys_created_on>
+        <sys_id>e3024f238324f21046cfe4d0deaad310</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>199f9e7df130000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 00:39:06</sys_updated_on>
+        <type>Module</type>
+        <update_guid>a3024f23da24f210b4dc57ec5b001f0f</update_guid>
+        <update_guid_history>a3024f23da24f210b4dc57ec5b001f0f:2119358722</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 01:07:24</sys_created_on>
+        <sys_db_object display_value="" name="sys_ui_module">sys_ui_module</sys_db_object>
+        <sys_id>d438ae2081924ba39680b7aca9df6f21</sys_id>
+        <sys_metadata>e3024f238324f21046cfe4d0deaad30c</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLM Suggestions</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>sys_ui_module_e3024f238324f21046cfe4d0deaad30c</sys_update_name>
+        <sys_update_version display_value="sys_ui_module_e3024f238324f21046cfe4d0deaad30c">e3024f238324f21046cfe4d0deaad310</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 01:07:24</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

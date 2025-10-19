@@ -27,9 +27,9 @@
         <list_save_with_form_button>false</list_save_with_form_button>
         <list_style/>
         <messages/>
-        <name>DocuGenLLM: Generate Code Documentation</name>
+        <name>DocuGenLLM: Generate Doc Suggestions</name>
         <onclick/>
-        <order>101</order>
+        <order>103</order>
         <script><![CDATA[const DEBUG = false;
 try {
 	const recordName = current.getDisplayValue() ?
@@ -39,16 +39,12 @@ try {
 	if(DEBUG) gs.addInfoMessage(recordName);
 
 	const docUtil = new DocuGenLLMClientUtils();
-	const response = docUtil.generateDocumentation(
-		current.getUniqueValue(),
-		recordName,
-		current.getTableName()
-	);
+	const response = docUtil.generateMaintenanceSuggestions(current.sys_id, current.getTableName(), current.name);
 
 	if(DEBUG) gs.addInfoMessage(JSON.stringify(response));
-	
-	if(response.status === 200) {
-		gs.addInfoMessage('[DocuGenLLM: Generate Code Documentation] Code documenation has been generated!');
+
+	if (response.status === 200) {
+		gs.addInfoMessage('[DocuGenLLM: Generate Maintenace Suggestions] Suggestions generated!');
 		gs.addInfoMessage(`<a href='${ response.message.link }'>${ response.message.title }</a>`);
 	} else {
 		gs.addErrorMessage(response.message);
@@ -56,40 +52,40 @@ try {
 
 	action.setRedirectURL(current);
 } catch(e) {
-	gs.log(`[DocuGenLLM: Generate Code Documentation] Error ${ e }`);
-	gs.addErrorMessage(`[DocuGenLLM: Generate Code Documentation] Error: ${ e.message }`);
+	gs.log(`[DocuGenLLM: Generate Maintenance Suggestions] Error ${ e }`);
+	gs.addErrorMessage(`[DocuGenLLM: Generate Maintenance Suggestions] Error: ${ e.message }`);
 }]]></script>
-        <show_insert>false</show_insert>
+        <show_insert>true</show_insert>
         <show_multiple_update>false</show_multiple_update>
         <show_query>false</show_query>
         <show_update>true</show_update>
         <sys_class_name>sys_ui_action</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-12 13:45:34</sys_created_on>
+        <sys_created_on>2025-10-19 00:52:42</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>9b131f3b83f7621046cfe4d0deaad34a</sys_id>
-        <sys_mod_count>38</sys_mod_count>
-        <sys_name>DocuGenLLM: Generate Code Documentation</sys_name>
+        <sys_id>431303e38324f21046cfe4d0deaad34c</sys_id>
+        <sys_mod_count>7</sys_mod_count>
+        <sys_name>DocuGenLLM: Generate Doc Suggestions</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_ui_action_9b131f3b83f7621046cfe4d0deaad34a</sys_update_name>
+        <sys_update_name>sys_ui_action_431303e38324f21046cfe4d0deaad34c</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 01:15:52</sys_updated_on>
+        <sys_updated_on>2025-10-19 01:22:44</sys_updated_on>
         <table>sys_metadata</table>
         <ui11_compatible>true</ui11_compatible>
         <ui16_compatible>false</ui16_compatible>
     </sys_ui_action>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
-        <id>9b131f3b83f7621046cfe4d0deaad34a</id>
+        <id>431303e38324f21046cfe4d0deaad34c</id>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-09-12 13:45:34</sys_created_on>
-        <sys_id>93331f3b83f7621046cfe4d0deaad3a1</sys_id>
+        <sys_created_on>2025-10-19 00:52:41</sys_created_on>
+        <sys_id>2a2503e78324f21046cfe4d0deaad3e2</sys_id>
         <sys_mod_count>0</sys_mod_count>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-09-12 13:45:34</sys_updated_on>
+        <sys_updated_on>2025-10-19 00:52:41</sys_updated_on>
         <table>sys_ui_action</table>
         <use_es_latest>true</use_es_latest>
     </sys_es_latest_script>
