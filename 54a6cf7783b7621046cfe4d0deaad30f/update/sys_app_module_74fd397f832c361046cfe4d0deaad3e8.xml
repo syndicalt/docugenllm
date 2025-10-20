@@ -13,7 +13,7 @@
         <mobile_title>Properties</mobile_title>
         <mobile_view_name>Mobile</mobile_view_name>
         <name/>
-        <order>1002</order>
+        <order>902</order>
         <override_menu_roles>false</override_menu_roles>
         <query>/system_properties_ui.do?sysparm_title=Properties&amp;sysparm_category=docugenllm.system.properties&amp;sysparm_domain_restore=false&amp;sysparm_stack=no&amp;sysparm_use_polaris=false</query>
         <report/>
@@ -25,7 +25,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>74fd397f832c361046cfe4d0deaad3e8</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>6</sys_mod_count>
         <sys_name>Properties</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
@@ -33,7 +33,7 @@
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_app_module_74fd397f832c361046cfe4d0deaad3e8</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-20 04:33:34</sys_updated_on>
+        <sys_updated_on>2025-10-20 04:35:00</sys_updated_on>
         <timeline_page/>
         <title>Properties</title>
         <uncancelable>false</uncancelable>

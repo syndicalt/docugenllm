@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_page">
+    <sys_ui_page action="INSERT_OR_UPDATE">
+        <category>general</category>
+        <client_script><![CDATA[function initializeFeedbackForm() {
+	var submitBtn = document.getElementById('submitBtn');
+	var cancelBtn = document.getElementById('cancelBtn');
+	var errorMsg = document.getElementById('errorMsg');
+
+	// Clear previous event listeners to prevent duplicates
+	var newSubmitBtn = submitBtn.cloneNode(true);
+	submitBtn.parentNode.replaceChild(newSubmitBtn, submitBtn);
+	var newCancelBtn = cancelBtn.cloneNode(true);
+	cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+
+	// Add event listeners
+	newSubmitBtn.addEventListener('click', function() {
+		var ratingElement = document.getElementById('rating');
+		var commentsElement = document.getElementById('comments');
+
+		if (!ratingElement || !commentsElement) {
+			errorMsg.style.display = 'block';
+			errorMsg.textContent = 'Form elements not found. Please try again.';
+			return;
+		}
+
+		var rating = ratingElement.value;
+		var comments = commentsElement.value;
+		var sysId = '${sysparm_sys_id}';
+		var table = '${sysparm_table}';
+
+		if (!rating) {
+			errorMsg.style.display = 'block';
+			errorMsg.textContent = 'Please select a rating.';
+			return;
+		}
+
+		var ga = new GlideAjax('DocuGenLLMFeedbackUtils');
+		ga.addParam('sysparm_name', 'submitFeedback');
+		ga.addParam('sysparm_sys_id', sysId);
+		ga.addParam('sysparm_table', table);
+		ga.addParam('sysparm_rating', rating);
+		ga.addParam('sysparm_comments', comments);
+		ga.getXML(function(response) {
+			var answer = response.responseXML.documentElement.getAttribute('answer');
+			try {
+				var result = JSON.parse(answer);
+				if (result.success) {
+					g_form.addInfoMessage('Feedback submitted successfully');
+					GlideDialogWindow.get().destroy();
+				} else {
+					errorMsg.style.display = 'block';
+					errorMsg.textContent = 'Error submitting feedback: ' + result.error;
+				}
+			} catch (e) {
+				errorMsg.style.display = 'block';
+				errorMsg.textContent = 'Error processing response: ' + e.message;
+			}
+		});
+	});
+
+	newCancelBtn.addEventListener('click', function() {
+		GlideDialogWindow.get().destroy();
+	});
+}
+
+// Initialize form when loaded
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+	initializeFeedbackForm();
+} else {
+	document.addEventListener('DOMContentLoaded', initializeFeedbackForm);
+}]]></client_script>
+        <description/>
+        <direct>false</direct>
+        <endpoint/>
+        <html><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<html>
+		<head>
+			<title>Submit Feedback</title>
+			<style>
+				.feedback-form {
+					padding: 20px;
+				}
+				.form-group {
+					margin-bottom: 15px;
+				}
+				label {
+					display: block;
+					margin-bottom: 5px;
+				}
+				select, textarea {
+					width: 100%;
+					padding: 8px;
+					border: 1px solid #ccc;
+					border-radius: 4px;
+				}
+				.button-group {
+					text-align: right;
+					margin-top: 20px;
+				}
+				.form-btn {
+					padding: 8px 16px;
+					margin-left: 10px;
+					cursor: pointer;
+				}
+			</style>
+		</head>
+		<body>
+			<div class="feedback-form">
+				<div class="form-group">
+					<label for="rating">Rating (1-5):</label>
+					<select id="rating" name="rating">
+						<option value="1">1 - Poor</option>
+						<option value="2">2 - Fair</option>
+						<option value="3">3 - Good</option>
+						<option value="4">4 - Very Good</option>
+						<option value="5">5 - Excellent</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="comments">Comments:</label>
+					<textarea id="comments" name="comments" rows="5"></textarea>
+				</div>
+				<div class="button-group">
+					<button id="submitBtn" class="btn form-btn">Submit</button>
+					<button id="cancelBtn" class="btn form-btn">Cancel</button>
+				</div>
+				<div id="errorMsg" class="error" style="display: none;"></div>
+			</div>
+		</body>
+	</html>
+</j:jelly>]]></html>
+        <name>docugenllm_feedback_form</name>
+        <processing_script/>
+        <sys_class_name>sys_ui_page</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:23:42</sys_created_on>
+        <sys_id>a7d5d7c483b8f61046cfe4d0deaad382</sys_id>
+        <sys_mod_count>16</sys_mod_count>
+        <sys_name>docugenllm_feedback_form</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ui_page_a7d5d7c483b8f61046cfe4d0deaad382</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 16:55:36</sys_updated_on>
+    </sys_ui_page>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>a7d5d7c483b8f61046cfe4d0deaad382</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:23:42</sys_created_on>
+        <sys_id>4f16dfc483b8f61046cfe4d0deaad339</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 15:23:42</sys_updated_on>
+        <table>sys_ui_page</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

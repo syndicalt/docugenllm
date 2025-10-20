@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMFeedbackUtils</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMFeedbackUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[/**
+ * DocuGenLLMFeedbackUtils
+ * AJAX handler to submit feedback for documentation or suggestions
+ */
+
+var DocuGenLLMFeedbackUtils = Class.create();
+DocuGenLLMFeedbackUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    submitFeedback: function() {
+        try {
+            var sysId = this.getParameter('sysparm_sys_id');
+            var table = this.getParameter('sysparm_table');
+            var rating = parseInt(this.getParameter('sysparm_rating'), 10);
+            var comments = this.getParameter('sysparm_comments');
+
+            // if (!sysId || !table || (table !== 'u_docugen_code_docs' && table !== 'u_docugen_suggestions')) {
+            //     return JSON.stringify({ success: false, error: 'Invalid sys_id or table' });
+            // }
+
+            if (!rating || rating < 1 || rating > 5) {
+                return JSON.stringify({ success: false, error: 'Invalid rating (must be 1-5)' });
+            }
+
+            var gr = new GlideRecord(table);
+            if (!gr.get(sysId)) {
+                return JSON.stringify({ success: false, error: 'Record not found' });
+            }
+
+            if (!gr.canRead()) {
+                return JSON.stringify({ success: false, error: 'No read access to record' });
+            }
+
+            var feedbackGr = new GlideRecord('u_docugen_feedback');
+            feedbackGr.initialize();
+            if (table == 'u_docugen_code_docs') {
+                feedbackGr.u_documentation_reference = sysId;
+            } else {
+                feedbackGr.u_suggestion_reference = sysId;
+            }
+            feedbackGr.u_rating = rating;
+            feedbackGr.u_comments = comments;
+            feedbackGr.u_user = gs.getUserID();
+            feedbackGr.u_timestamp = new GlideDateTime();
+            feedbackGr.insert();
+
+            return JSON.stringify({ success: true });
+        } catch (e) {
+            gs.error(`[DocuGenLLMFeedbackUtils.submitFeedback] Error: ${e}`);
+            return JSON.stringify({ success: false, error: 'Error submitting feedback: ' + e.message });
+        }
+    },
+
+    type: 'DocuGenLLMFeedbackUtils'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:25:51</sys_created_on>
+        <sys_id>c376df0883b8f61046cfe4d0deaad306</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>DocuGenLLMFeedbackUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_c376df0883b8f61046cfe4d0deaad306</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 15:54:01</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>c376df0883b8f61046cfe4d0deaad306</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:25:50</sys_created_on>
+        <sys_id>2296df0883b8f61046cfe4d0deaad32f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 15:25:50</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

@@ -292,6 +292,7 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
             }
 
             const analysis = this._analyzeScript(scriptAttributesObj.script || '', tableName);
+			const feedback = this._getFeedbackForRecord(recordSysId, tableName);
 
             const prompt = `Generate detailed documentation in markdown for the following ServiceNow ${recordGr.getTableName()} script. Include:
 - **Purpose**: Describe the script's purpose and functionality.
@@ -301,6 +302,11 @@ DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProces
 - **Dependencies**: List identified dependencies (e.g., Script Includes, APIs).
 - **Integration Points**: Describe interactions with tables or platform APIs.
 - **Potential Edge Cases**: Note potential issues like null checks or error handling.
+
+Incorporate the following user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
 
 Script Details:
 \`\`\`json
@@ -325,6 +331,7 @@ ${JSON.stringify(analysis)}
             const tableUtil = new DocuGenTableSchemaUtil();
             const tableJson = tableUtil.getTableSchema(recordSysId);
 			const analysis = this._analyzeTableUsage(tableName);
+			const feedback = this._getFeedbackForRecord(recordSysId, tableName);
 
             return `You are an expert database designer that excels at data schema documentation. Generate detailed documentation in markdown for the ServiceNow table, ${tableName}. Include:
 - **Purpose**: Describe the table's purpose and role in the system.
@@ -334,6 +341,11 @@ ${JSON.stringify(analysis)}
 - **Dependencies**: List dependencies (e.g., referenced tables, APIs).
 - **Integration Points**: Describe interactions with other tables or platform APIs.
 - **Potential Edge Cases**: Note potential issues (e.g., data validation, reference integrity).
+
+Incorporate the following user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
 
 Table Schema:
 \`\`\`json
@@ -361,22 +373,35 @@ ${JSON.stringify(analysis)}
                 if (/(^|\W)script($|\W)/i.test(key) || key === 'condition') scriptAttributesObj[key] = recordGr[key].toString();
             }
 
-            return `As an expert JavaScript developer, generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works. If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do not provide any commentary or headers regarding the annotation.\n\n\`\`\`json\n${JSON.stringify(scriptAttributesObj)}\n\`\`\``;
+			const feedback = this._getFeedbackForRecord(recordSysId, tableName);
+
+            return `As an expert JavaScript developer, generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works, incorporating the following user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
+
+If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do not provide any commentary or headers regarding the annotation.\n\n\`\`\`json\n${JSON.stringify(scriptAttributesObj)}\n\`\`\``;
         } catch (e) {
             gs.error(`[DocuGenLLM._buildAnnotationPrompt] Error: ${e}`);
             throw new Error(`[DocuGenLLM._buildAnnotationPrompt] Error: ${e}`);
         }
     },
 
-    // New method to build prompt for maintenance suggestions
     _buildMaintenancePrompt: function(scriptData, changeData, existingDoc) {
         try {
+			const feedback = this._getFeedbackForRecord(scriptData.current.sys_id, scriptData.current.tableName);
+
             return `Analyze the following ServiceNow script changes and existing documentation to suggest updates to keep the documentation current. Provide suggestions in markdown format, including:
 - **Suggested Documentation Updates**: Changes to the existing documentation to reflect script modifications.
 - **Suggested Annotation Updates**: Updates to JSDOC or inline comments to align with code changes.
 - **Rationale**: Explain why each suggestion is needed based on the changes.
 
 If there is no existing documentation or no script available, along with your own documentation or annotation suggestions, suggest running DocuGenLLM Code Documentation to generate new documentation, or DocuGenLLM Code Annotation for code annotation via available UI actions.
+
+Incorporate the following user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
 
 Current Script:
 \`\`\`json
@@ -411,15 +436,35 @@ ${existingDoc.annotations || 'No existing annotations'}
 
 	_buildCodeReviewPrompt: function(scriptData, analysis) {
         try {
+            // Summarize large scripts to reduce token count
+            var scriptContent = scriptData.current.script || '';
+            var scriptSummary = scriptContent;
+            if (scriptContent.split('\n').length > 100) { // Summarize if > 100 lines
+                var lines = scriptContent.split('\n');
+                scriptSummary = [
+                    lines[0], // First line (e.g., function declaration)
+                    '// [Script truncated for brevity; full script available in source]',
+                    ...lines.slice(1).filter(line => line.match(/function\s+\w+\s*\(/) || line.match(/GlideRecord\s*\(/) || line.match(/gs\./)).slice(0, 10), // Key lines
+                    '// [End of summary]'
+                ].join('\n');
+            }
+
+			const feedback = this._getFeedbackForRecord(scriptData.current.sys_id, scriptData.current.tableName);
+
             return `As an expert ServiceNow developer, perform a code review for the following script. Generate detailed annotations in markdown, including:
 - **Identified Issues**: Highlight potential issues (e.g., deprecated APIs, performance bottlenecks).
 - **Best Practice Suggestions**: Recommend ServiceNow coding best practices (e.g., error handling, logging, ACL checks).
 - **Remediation Steps**: Suggest specific changes to address each issue or implement best practices.
 - **Code Context**: Provide inline comments in the script to mark issues or suggestions, using // for single-line comments.
 
-Script Details:
+Incorporate the following user feedback to improve output quality (e.g., address low ratings or specific comments):
 \`\`\`json
-${JSON.stringify(scriptData.current)}
+${JSON.stringify(feedback)}
+\`\`\`
+
+Script Details (summarized if large):
+\`\`\`javascript
+${scriptSummary}
 \`\`\`
 
 Analysis Results:
@@ -455,7 +500,8 @@ ${JSON.stringify(analysis)}
             restMessage.setRequestHeader('Authorization', `Bearer ${this.APIKEY}`);
             restMessage.setRequestHeader('Content-Type', 'application/json');
             restMessage.setRequestBody(JSON.stringify(prompt));
-
+			restMessage.setHttpTimeout(120000);
+			
             const response = restMessage.execute();
             if (response.getStatusCode() != 200) {
                 this.LOG_LEVEL = 2;
@@ -715,6 +761,37 @@ ${JSON.stringify(analysis)}
         } catch (e) {
             gs.error(`[DocuGenLLM._getExistingDocumentation] Error: ${e}`);
             throw new Error(`[DocuGenLLM._getExistingDocumentation] Error: ${e}`);
+        }
+    },
+
+	_getFeedbackForRecord: function(recordSysId, tableName) {
+        try {
+            var feedback = [];
+            var feedbackGr = new GlideRecord(this.FEEDBACK_TABLE);
+            if (tableName === 'u_docugen_code_docs') {
+                feedbackGr.addQuery('u_document_reference', recordSysId);
+            } else if (tableName === 'u_docugen_suggestions') {
+                feedbackGr.addQuery('u_suggestion_reference', recordSysId);
+            } else {
+                feedbackGr.addQuery('u_script_reference', recordSysId);
+            }
+			feedbackGr.addEncodedQuery('u_status=1^u_commentsISNOTEMPTY');
+            feedbackGr.orderByDesc('u_timestamp');
+            feedbackGr.setLimit(5); // Limit to recent feedback
+            feedbackGr.query();
+
+            while (feedbackGr.next()) {
+                feedback.push({
+                    rating: feedbackGr.u_rating.toString(),
+                    comments: feedbackGr.u_comments.toString(),
+                    timestamp: feedbackGr.u_timestamp.toString()
+                });
+            }
+
+            return feedback;
+        } catch (e) {
+            gs.error(`[DocuGenLLM._getFeedbackForRecord] Error: ${e}`);
+            return [];
         }
     },
 
@@ -995,14 +1072,14 @@ ${JSON.stringify(analysis)}
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>269</sys_mod_count>
+        <sys_mod_count>273</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 16:23:20</sys_updated_on>
+        <sys_updated_on>2025-10-20 16:09:19</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role">
+    <sys_security_acl_role action="DELETE">
+        <sys_class_name>sys_security_acl_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:19:00</sys_created_on>
+        <sys_id>1605574483b8f61046cfe4d0deaad386</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>u_docugenllm_feedback.docugen_user</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_security_acl display_value="u_docugenllm_feedback">9605574483b8f61046cfe4d0deaad380</sys_security_acl>
+        <sys_update_name>sys_security_acl_role_1605574483b8f61046cfe4d0deaad386</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 15:19:00</sys_updated_on>
+        <sys_user_role display_value="docugen_user" name="docugen_user">763746888384b21046cfe4d0deaad320</sys_user_role>
+    </sys_security_acl_role>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>sys_security_acl_role_1605574483b8f61046cfe4d0deaad386</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl_role"><sys_security_acl_role action="INSERT_OR_UPDATE"><sys_class_name>sys_security_acl_role</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-10-20 15:19:00</sys_created_on><sys_id>1605574483b8f61046cfe4d0deaad386</sys_id><sys_mod_count>0</sys_mod_count><sys_name>u_docugenllm_feedback.docugen_user</sys_name><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_security_acl display_value="u_docugenllm_feedback">9605574483b8f61046cfe4d0deaad380</sys_security_acl><sys_update_name>sys_security_acl_role_1605574483b8f61046cfe4d0deaad386</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-10-20 15:19:00</sys_updated_on><sys_user_role display_value="docugen_user" name="docugen_user">763746888384b21046cfe4d0deaad320</sys_user_role></sys_security_acl_role></record_update>]]></payload>
+        <payload_hash>1680805579</payload_hash>
+        <record_name>u_docugenllm_feedback.docugen_user</record_name>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:19:00</sys_created_on>
+        <sys_id>1e05574483b8f61046cfe4d0deaad38b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19a0233cbb70000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 15:19:00</sys_updated_on>
+        <type>Access Roles</type>
+        <update_guid>da0557444fb8f610289d1d11bdeaff8a</update_guid>
+        <update_guid_history>da0557444fb8f610289d1d11bdeaff8a:1680805579</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="u_docugenllm_feedback.docugen_user">6a4b170483f8f61046cfe4d0deaad32d</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 15:46:19</sys_created_on>
+        <sys_db_object display_value="" name="sys_security_acl_role">sys_security_acl_role</sys_db_object>
+        <sys_id>0d2c88e050db4846a689d8b9a5845604</sys_id>
+        <sys_metadata>1605574483b8f61046cfe4d0deaad386</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>u_docugenllm_feedback.docugen_user</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent display_value="">9605574483b8f61046cfe4d0deaad380</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>sys_security_acl_role_1605574483b8f61046cfe4d0deaad386</sys_update_name>
+        <sys_update_version display_value="sys_security_acl_role_1605574483b8f61046cfe4d0deaad386">1e05574483b8f61046cfe4d0deaad38b</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 15:46:19</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>
