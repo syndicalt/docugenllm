@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_api_access_scope">
+    <sys_api_access_scope action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <api>DocuGenLLMAPI</api>
+        <api_path>1588303/docugenllm_api</api_path>
+        <api_resource/>
+        <apply_all_methods>true</apply_all_methods>
+        <apply_all_resources>true</apply_all_resources>
+        <apply_all_versions>true</apply_all_versions>
+        <auth_scope display_value="DocuGenLLM">ebce3b4083303a1046cfe4d0deaad354</auth_scope>
+        <http_method/>
+        <name>AutoGen-DocuGenLLM+DocuGenLLMAPI</name>
+        <sys_class_name>sys_api_access_scope</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:22:19</sys_created_on>
+        <sys_id>3ffebf4083303a1046cfe4d0deaad35b</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>AutoGen-DocuGenLLM+DocuGenLLMAPI</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_api_access_scope_3ffebf4083303a1046cfe4d0deaad35b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:22:19</sys_updated_on>
+        <version/>
+    </sys_api_access_scope>
+</record_update>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_entity_auth_scope_mapping">
+    <oauth_entity_auth_scope_mapping action="DELETE">
+        <auth_scope display_value="DocuGenLLM">ebce3b4083303a1046cfe4d0deaad354</auth_scope>
+        <oauth_entity display_value="DocuGenLLMAPI">debef34083303a1046cfe4d0deaad33c</oauth_entity>
+        <sys_class_name>oauth_entity_auth_scope_mapping</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:21:46</sys_created_on>
+        <sys_id>23debb4083303a1046cfe4d0deaad3db</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>oauth_entity_auth_scope_mapping_23debb4083303a1046cfe4d0deaad3db</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:21:46</sys_updated_on>
+    </oauth_entity_auth_scope_mapping>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>oauth_entity_auth_scope_mapping_23debb4083303a1046cfe4d0deaad3db</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_entity_auth_scope_mapping"><oauth_entity_auth_scope_mapping action="INSERT_OR_UPDATE"><auth_scope display_value="DocuGenLLM">ebce3b4083303a1046cfe4d0deaad354</auth_scope><oauth_entity display_value="DocuGenLLMAPI">debef34083303a1046cfe4d0deaad33c</oauth_entity><sys_class_name>oauth_entity_auth_scope_mapping</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-10-20 18:21:46</sys_created_on><sys_id>23debb4083303a1046cfe4d0deaad3db</sys_id><sys_mod_count>0</sys_mod_count><sys_name/><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_update_name>oauth_entity_auth_scope_mapping_23debb4083303a1046cfe4d0deaad3db</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-10-20 18:21:46</sys_updated_on></oauth_entity_auth_scope_mapping></record_update>]]></payload>
+        <payload_hash>-180768030</payload_hash>
+        <record_name/>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:21:46</sys_created_on>
+        <sys_id>e7de3f4083303a1046cfe4d0deaad30a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19a02db1f360000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:21:46</sys_updated_on>
+        <type>Auth Scopes</type>
+        <update_guid>67de3f40a7303a1021d32253d5b81f09</update_guid>
+        <update_guid_history>67de3f40a7303a1021d32253d5b81f09:-180768030</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="">1b3f3b4083303a1046cfe4d0deaad35f</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:23:23</sys_created_on>
+        <sys_db_object display_value="" name="oauth_entity_auth_scope_mapping">oauth_entity_auth_scope_mapping</sys_db_object>
+        <sys_id>180f7a75a65c48e4b2849d63bebf8649</sys_id>
+        <sys_metadata>23debb4083303a1046cfe4d0deaad3db</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>oauth_entity_auth_scope_mapping_23debb4083303a1046cfe4d0deaad3db</sys_update_name>
+        <sys_update_version display_value="oauth_entity_auth_scope_mapping_23debb4083303a1046cfe4d0deaad3db">e7de3f4083303a1046cfe4d0deaad30a</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:23:23</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

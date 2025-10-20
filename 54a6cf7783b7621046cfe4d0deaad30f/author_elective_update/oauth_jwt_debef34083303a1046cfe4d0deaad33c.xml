@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_jwt">
+    <oauth_jwt action="DELETE">
+        <access>public</access>
+        <access_token_lifespan>1800</access_token_lifespan>
+        <active>true</active>
+        <auth_code_lifespan>60</auth_code_lifespan>
+        <auth_url/>
+        <certificate_url/>
+        <client_id>441df9bd2e7540c8a2bbdea1c920358d</client_id>
+        <client_secret>﷞﷟﷒0229a415836b221046cfe4d0deaad35c﷬﷔1﷬﷭8BAgbJyCaefOmNwWAb3krQ==0qpmHQuNSL_qGZjabsb55CZOmtYAVYVQ5JXLp57UWSFzICvFQsQXyM1UNKvnxNDX﷮﷯</client_secret>
+        <client_type/>
+        <client_uuid>9ebef34083303a1046cfe4d0deaad33c</client_uuid>
+        <clock_skew>300</clock_skew>
+        <code_challenge_method>S256</code_challenge_method>
+        <comments/>
+        <default_grant_type>password</default_grant_type>
+        <enable_jti_verification>false</enable_jti_verification>
+        <extend_refresh_token_expiry>false</extend_refresh_token_expiry>
+        <id_token_lifespan>86400</id_token_lifespan>
+        <inbound_grant_type>jwt</inbound_grant_type>
+        <jti_claim>jti</jti_claim>
+        <jwks_cache_lifespan>720</jwks_cache_lifespan>
+        <jwks_url/>
+        <jwt_provider/>
+        <login_url/>
+        <logo_url/>
+        <message_signature_lifespan>60</message_signature_lifespan>
+        <mobile_client>false</mobile_client>
+        <name>DocuGenLLMAPI</name>
+        <oauth_api_script/>
+        <protocol_name/>
+        <public_client>false</public_client>
+        <redirect_url/>
+        <refresh_token_lifespan>8640000</refresh_token_lifespan>
+        <refresh_token_url/>
+        <restricted_binding>false</restricted_binding>
+        <revoke_token_url/>
+        <salt/>
+        <send_client_credentials_as>request_body_parameter</send_client_credentials_as>
+        <skip_authorize>false</skip_authorize>
+        <sub_claim>user_name</sub_claim>
+        <sys_class_name>oauth_jwt</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:21:08</sys_created_on>
+        <sys_id>debef34083303a1046cfe4d0deaad33c</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>DocuGenLLMAPI</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>oauth_jwt_debef34083303a1046cfe4d0deaad33c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:22:19</sys_updated_on>
+        <token_format>opaque</token_format>
+        <token_url/>
+        <type>client</type>
+        <use_mutual_auth>false</use_mutual_auth>
+        <use_pkce>false</use_pkce>
+        <user/>
+        <user_field>email</user_field>
+    </oauth_jwt>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</application>
+        <file_path/>
+        <instance_id>ade9c8de1b9ab59039a54089bd4bcbdb</instance_id>
+        <instance_name>dev205954</instance_name>
+        <name>oauth_jwt_debef34083303a1046cfe4d0deaad33c</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_jwt"><oauth_jwt action="INSERT_OR_UPDATE"><access>public</access><access_token_lifespan>1800</access_token_lifespan><active>true</active><auth_code_lifespan>60</auth_code_lifespan><auth_url/><certificate_url/><client_id>441df9bd2e7540c8a2bbdea1c920358d</client_id><client_secret>﷞﷟﷒0229a415836b221046cfe4d0deaad35c﷬﷔1﷬﷭8BAgbJyCaefOmNwWAb3krQ==0qpmHQuNSL_qGZjabsb55CZOmtYAVYVQ5JXLp57UWSFzICvFQsQXyM1UNKvnxNDX﷮﷯</client_secret><client_type/><client_uuid>9ebef34083303a1046cfe4d0deaad33c</client_uuid><clock_skew>300</clock_skew><code_challenge_method>S256</code_challenge_method><comments/><default_grant_type>password</default_grant_type><enable_jti_verification>false</enable_jti_verification><extend_refresh_token_expiry>false</extend_refresh_token_expiry><id_token_lifespan>86400</id_token_lifespan><inbound_grant_type>jwt</inbound_grant_type><jti_claim>jti</jti_claim><jwks_cache_lifespan>720</jwks_cache_lifespan><jwks_url/><jwt_provider/><login_url/><logo_url/><message_signature_lifespan>60</message_signature_lifespan><mobile_client>false</mobile_client><name>DocuGenLLMAPI</name><oauth_api_script/><protocol_name/><public_client>false</public_client><redirect_url/><refresh_token_lifespan>8640000</refresh_token_lifespan><refresh_token_url/><restricted_binding>false</restricted_binding><revoke_token_url/><salt/><send_client_credentials_as>request_body_parameter</send_client_credentials_as><skip_authorize>false</skip_authorize><sub_claim>user_name</sub_claim><sys_class_name>oauth_jwt</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2025-10-20 18:21:08</sys_created_on><sys_id>debef34083303a1046cfe4d0deaad33c</sys_id><sys_mod_count>2</sys_mod_count><sys_name>DocuGenLLMAPI</sys_name><sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package><sys_policy/><sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope><sys_update_name>oauth_jwt_debef34083303a1046cfe4d0deaad33c</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2025-10-20 18:22:19</sys_updated_on><token_format>opaque</token_format><token_url/><type>client</type><use_mutual_auth>false</use_mutual_auth><use_pkce>false</use_pkce><user/><user_field>email</user_field></oauth_jwt></record_update>]]></payload>
+        <payload_hash>-336531951</payload_hash>
+        <record_name>DocuGenLLMAPI</record_name>
+        <reverted_from/>
+        <source>2b2cd0ff83f7221046cfe4d0deaad3ea</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:22:19</sys_created_on>
+        <sys_id>bbfebf4083303a1046cfe4d0deaad35a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>19a02dba1bc0000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:22:19</sys_updated_on>
+        <type>OAuth JWT</type>
+        <update_guid>f7febf4031303a10693d199dd5dbc259</update_guid>
+        <update_guid_history>f7febf4031303a10693d199dd5dbc259:-336531951,ebdebb4011303a10dd4a4f799f39ddd8:-1642087371,d2be77403d303a102a9f50fa9de35581:1058847626</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete display_value="DocuGenLLMAPI">1f3ffb8083303a1046cfe4d0deaad3d8</sys_audit_delete>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:23:24</sys_created_on>
+        <sys_db_object display_value="" name="oauth_jwt">oauth_jwt</sys_db_object>
+        <sys_id>31dc37e2eefd45928d9ab55b8402fdb9</sys_id>
+        <sys_metadata>debef34083303a1046cfe4d0deaad33c</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLMAPI</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_scope_delete display_value="">3e20a1fad56d4d1b9f340083711ad731</sys_scope_delete>
+        <sys_update_name>oauth_jwt_debef34083303a1046cfe4d0deaad33c</sys_update_name>
+        <sys_update_version display_value="oauth_jwt_debef34083303a1046cfe4d0deaad33c">bbfebf4083303a1046cfe4d0deaad35a</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:23:24</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

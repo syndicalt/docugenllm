@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl/>
+        <http_method>POST</http_method>
+        <name>Generate Maintenance Suggestion</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+    try {
+        var body = request.body.data;
+        if (!body.sys_id || !body.table || !body.display_value) {
+            response.setStatus(400);
+            return { error: 'Missing required parameters: sys_id, table, display_value' };
+        }
+
+        var docGen = new DocuGenLLMClientUtils();
+        var result = docGen.generateMaintenanceSuggestions(body.sys_id, body.table, body.display_value);
+
+        if (result.status === 200) {
+            response.setStatus(200);
+            return {
+                status: 'success',
+                link: result.message.link,
+                title: result.message.title,
+                sys_id: result.message.sys_id
+            };
+        } else {
+            response.setStatus(400);
+            return { error: result.message };
+        }
+    } catch (e) {
+        gs.error(`[DocuGenLLMAPI.generateMaintenanceSuggestions] Error: ${e}`);
+        response.setStatus(500);
+        return { error: 'Internal server error: ' + e.message };
+    }
+})(request, response);]]></operation_script>
+        <operation_uri>/api/1588303/docugenllm_api/suggestion</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/suggestion</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:01:53</sys_created_on>
+        <sys_id>521af3c483fcf61046cfe4d0deaad3e4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Generate Maintenance Suggestion</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ws_operation_521af3c483fcf61046cfe4d0deaad3e4</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:01:53</sys_updated_on>
+        <web_service_definition display_value="DocuGenLLMAPI">a62833c083fcf61046cfe4d0deaad3bd</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>521af3c483fcf61046cfe4d0deaad3e4</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 18:01:52</sys_created_on>
+        <sys_id>d85a7bc483fcf61046cfe4d0deaad3ad</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 18:01:52</sys_updated_on>
+        <table>sys_ws_operation</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>
