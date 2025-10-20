@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="u_docugen_suggestions" version="2" view="">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>u_name</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>99ddc8008330b61046cfe4d0deaad356</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>u_script_type</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>11ddc8008330b61046cfe4d0deaad357</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>u_script_reference</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>95ddc8008330b61046cfe4d0deaad357</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>u_document_reference</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>1dddc8008330b61046cfe4d0deaad357</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>u_generated_by</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>4</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>91ddc8008330b61046cfe4d0deaad358</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sys_updated_on</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>5</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>19ddc8008330b61046cfe4d0deaad358</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>sys_updated_by</element>
+            <list_id display_value="u_docugen_suggestions" element="NULL" name="u_docugen_suggestions" parent="NULL" relationship="NULL" sys_domain="global" view="Default view">d9ddc8008330b61046cfe4d0deaad355</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>6</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_id>9dddc8008330b61046cfe4d0deaad358</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>u_docugen_suggestions</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 00:48:40</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>d9ddc8008330b61046cfe4d0deaad355</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>u_docugen_suggestions</sys_name>
+            <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+            <sys_update_name>sys_ui_list_u_docugen_suggestions_null</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 00:48:40</sys_updated_on>
+            <sys_user/>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

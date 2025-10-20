@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_list parent="" relationship="" sys_domain="global" table="pm_project" version="2" view="docugenllm_view">
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>number</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>0</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>2bee24088334b61046cfe4d0deaad334</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>short_description</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>1</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>afee24088334b61046cfe4d0deaad334</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>project_manager</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>2</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>27ee24088334b61046cfe4d0deaad335</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>primary_portfolio</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>3</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>abee24088334b61046cfe4d0deaad335</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>approved_start_date</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>4</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>23ee24088334b61046cfe4d0deaad336</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>approved_end_date</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>5</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>a7ee24088334b61046cfe4d0deaad336</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>start_date</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>6</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>2fee24088334b61046cfe4d0deaad336</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>end_date</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>7</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>a3ee24088334b61046cfe4d0deaad337</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>priority</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>8</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>2bee24088334b61046cfe4d0deaad337</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>state</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>9</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>afee24088334b61046cfe4d0deaad337</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list_element action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element>percent_complete</element>
+            <list_id display_value="pm_project" element="NULL" name="pm_project" parent="NULL" relationship="NULL" sys_domain="global" view="62ee60088334b61046cfe4d0deaad316">a7ee24088334b61046cfe4d0deaad333</list_id>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <position>10</position>
+            <sum>false</sum>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_id>27ee24088334b61046cfe4d0deaad338</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+        </sys_ui_list_element>
+        <sys_ui_list action="INSERT_OR_UPDATE">
+            <average_value>false</average_value>
+            <element/>
+            <max_value>false</max_value>
+            <min_value>false</min_value>
+            <name>pm_project</name>
+            <parent/>
+            <position/>
+            <relationship/>
+            <sum>false</sum>
+            <sys_class_name>sys_ui_list</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 03:13:16</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>a7ee24088334b61046cfe4d0deaad333</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>pm_project</sys_name>
+            <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+            <sys_update_name>sys_ui_list_pm_project_docugenllm_view</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 03:13:16</sys_updated_on>
+            <sys_user/>
+            <view display_value="DocuGenLLM View" name="docugenllm_view">62ee60088334b61046cfe4d0deaad316</view>
+            <view_name/>
+        </sys_ui_list>
+    </sys_ui_list>
+</record_update>

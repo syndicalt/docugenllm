@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>true</action_query>
+        <action_update>false</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>pm_project</collection>
+        <condition>gs.isInteractive();</condition>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Data Policy - DocuGenLLM Filtered List</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	const table = current.getTableName();
+	const uri = gs.action.getGlideURI().toString().indexOf(`${table}_list.do`) === 0;
+	const viewGr = new GlideRecord('sys_ui_view');
+		viewGr.get(RP.getViewID());
+	const view = viewGr.getDisplayValue();
+
+	if(uri && view == 'DocuGenLLM View') {
+		let projSet = new Set();
+		const docugenGr = new GlideRecord('u_docugen_code_docs');
+		docugenGr.addEncodedQuery('u_projectsISNOTEMPTY');
+		docugenGr.query();
+
+		while(docugenGr.next()) {
+			docugenGr.u_projects.split(',').forEach(project => {
+				projSet.add(project.toString());
+			});
+		}
+
+		gs.addInfoMessage('Note: View has been filtered to show only DocuGenLLM-linked projects.');
+		current.addEncodedQuery(`sys_idIN${ Array.from(projSet).join(',') }`);
+	}
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 03:17:49</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>f89f68488334b61046cfe4d0deaad3b7</sys_id>
+        <sys_mod_count>30</sys_mod_count>
+        <sys_name>Data Policy - DocuGenLLM Filtered List</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_f89f68488334b61046cfe4d0deaad3b7</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 04:32:46</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=f89f68488334b61046cfe4d0deaad3b7"/>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>f89f68488334b61046cfe4d0deaad3b7</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 03:17:49</sys_created_on>
+        <sys_id>46ffe0888334b61046cfe4d0deaad383</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 03:17:49</sys_updated_on>
+        <table>sys_script</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

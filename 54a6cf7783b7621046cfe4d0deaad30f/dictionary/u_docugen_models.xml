@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
     <element db_object_id="4719662b8320f21046cfe4d0deaad3e7" label="DocuGenLLM Models" max_length="40" name="u_docugen_models" type="collection">
-        <element label="API Key" max_length="255" name="u_api_key" type="password2"/>
+        <element attributes="is_fallback_module_encrypted=true" label="API Key" max_length="1000" name="u_api_key" type="password2"/>
         <element label="Prompt Text Attribute" max_length="155" name="u_prompt_text_attribute" type="string"/>
         <element label="Default" max_length="40" name="u_default" type="boolean"/>
         <element choice="1" label="Model" max_length="40" name="u_model" type="choice">

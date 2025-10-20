@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update>
     <sys_ui_section caption="Documentation Suggestions (Markdown)" section_id="36159f2f83a4f21046cfe4d0deaad3d9" sys_domain="global" table="u_docugen_suggestions" version="3" view="">
         <sys_ui_element action="INSERT_OR_UPDATE">
-            <element>u_suggestions_markdown</element>
+            <element>docugen_doc_md_interpreter.xml</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2025-10-19 03:42:35</sys_created_on>
-            <sys_id>130c6baf8368f21046cfe4d0deaad3b4</sys_id>
+            <sys_created_on>2025-10-19 23:34:45</sys_created_on>
+            <sys_id>6aec33bb836c761046cfe4d0deaad331</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter display_value="Suggestions (Markdown)">c54437b7832c761046cfe4d0deaad3ba</sys_ui_formatter>
+            <sys_ui_section caption="Documentation Suggestions (Markdown)" display_value="Documentation Suggestions (Markdown)" name="u_docugen_suggestions" sys_domain="global" view="Default view">36159f2f83a4f21046cfe4d0deaad3d9</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-19 23:34:45</sys_updated_on>
+            <sys_user/>
+            <type>formatter</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_suggestions_markdown</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-19 23:34:45</sys_created_on>
+            <sys_id>a6ec33bb836c761046cfe4d0deaad332</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Documentation Suggestions (Markdown)" display_value="Documentation Suggestions (Markdown)" name="u_docugen_suggestions" sys_domain="global" view="Default view">36159f2f83a4f21046cfe4d0deaad3d9</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2025-10-19 03:42:35</sys_updated_on>
+            <sys_updated_on>2025-10-19 23:34:45</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>

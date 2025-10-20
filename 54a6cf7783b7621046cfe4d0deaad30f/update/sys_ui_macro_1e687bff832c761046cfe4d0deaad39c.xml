@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_macro">
+    <sys_ui_macro action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category>general</category>
+        <description/>
+        <media_type/>
+        <name>docugen_codereview_md_interpreter</name>
+        <scoped_name/>
+        <sys_class_name>sys_ui_macro</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 23:15:04</sys_created_on>
+        <sys_id>1e687bff832c761046cfe4d0deaad39c</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>docugen_codereview_md_interpreter</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ui_macro_1e687bff832c761046cfe4d0deaad39c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 02:29:15</sys_updated_on>
+        <xml><![CDATA[<?xml version="1.0" encoding="utf-8" ?>
+<j:jelly trim="false" xmlns:j="jelly:core" xmlns:g="glide" xmlns:j2="null" xmlns:g2="null">
+	<head>
+		<!-- Load marked.js from CDN -->
+		<script src="https://cdn.jsdelivr.net/npm/marked@latest/marked.min.js"></script>
+		<!-- Load DOMPurify for sanitization -->
+		<script src="https://cdn.jsdelivr.net/npm/dompurify@latest/dist/purify.min.js"></script>
+		<style>
+			.markdown-content {
+				display: flex;
+				flex-direction: column;
+				max-width:1200px;
+				margin: 0 auto;
+				background: #fff;
+				padding: 20px;
+				border-radius: 5px;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			}
+			h1, h2, h3, h4, h5, h6 {
+				color: #1a3c34;
+			}
+			pre {
+				background: #f8f8f8;
+				padding: 10px;
+				border-radius: 5px;
+				overflow-x: auto;
+			}
+			code {
+				font-family: Consolas, monospace;
+			}
+			ul, ol {
+				margin: 10px 0;
+				padding-left: 20px;
+			}
+			a {
+				color: #0070d2;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
+			.error {
+				color: #d32f2f;
+				font-weight: bold;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="markdown-content" id="md-code"></div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				const sysId = g_form.getUniqueValue();
+				const table = g_form.getTableName();
+
+				console.log(sysId, table);
+				
+				if (!sysId) {
+					document.getElementById('md-code').innerHTML = '<p class="error">Error: No sys_id provided</p>';
+					return;
+				}
+
+				const dataObj = {
+					sys_id: g_form.getUniqueValue(),
+					table: g_form.getTableName(),
+					return_field: 'u_code_review',
+					field_suggestion: 'a code review'
+				}
+				const ga = new GlideAjax('global.DocuGenLLMMarkdownUtils');
+				ga.addParam('sysparm_name', 'getMarkdownContent');
+				ga.addParam('sysparm_data_obj', JSON.stringify(dataObj));
+
+				ga.getXML(function(response) {
+					const answer = response.responseXML.documentElement.getAttribute('answer');
+
+					try {
+						const result = JSON.parse(answer);
+						
+						if (result.error) {
+							document.getElementById('md-code').innerHTML = '<p class="error">' + result.error + '</p>';
+							return;
+						}
+
+						const markdown = result.markdown || 'No content available';
+						const html = marked.parse(markdown);
+						const sanitizedHtml = DOMPurify.sanitize(html);
+
+						document.getElementById('md-code').innerHTML = sanitizedHtml;
+					} catch (e) {
+						document.getElementById('md-code').innerHTML = '<p class="error">Error rendering content: ' + e.message + '</p>';
+					}
+				});
+			});
+		</script>
+	</body>
+</j:jelly>]]></xml>
+    </sys_ui_macro>
+</record_update>

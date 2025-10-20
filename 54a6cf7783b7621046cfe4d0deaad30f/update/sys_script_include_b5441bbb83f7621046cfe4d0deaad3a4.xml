@@ -18,33 +18,45 @@
 var DocuGenLLMClientUtils = Class.create();
 DocuGenLLMClientUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
     initialize: function(model) {
+		let ifLayer = null;
         const docuGenModel = new GlideRecord('u_docugen_models');
-        if (!model) {
-            docuGenModel.addQuery('u_default', true);
-        } else {
-            docuGenModel.addQuery('u_name', model);
-        }
-        docuGenModel.query();
-
-        if (docuGenModel.next()) {
-            this.LLMENDPOINT = docuGenModel.u_api_endpoint;
-            this.APIKEY = docuGenModel.u_api_key.getDecryptedValue();
-            this.APIPROMPT = docuGenModel.u_prompt;
-            this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
-            this.MODEL = docuGenModel.u_model.toString();
-            this.MODEL_SYS_ID = docuGenModel.getUniqueValue();
-        
-            // Logging Globals
-            this.LOG_SOURCE = 'DocuGenLLM';
-            this.REQUEST_TYPE = '';
-            this.LOG_MESSAGE = '';
-            this.LOG_LEVEL = 0;
-        } else {
+        if(!model) {
+			ifLayer = 'not model';
+			docuGenModel.addQuery('u_default', true);
+		} else if(model.match(/[a-z0-9]{32}/)) {
+			ifLayer = 'match sys_id'; 		
+			docuGenModel.addQuery('sys_id', model);
+		} else {
+			ifLayer = 'model name';
+			docuGenModel.addQuery('u_name', model);		
+		}
+		docuGenModel.query();
+		
+        if(!docuGenModel.next()) {
+			gs.error(`[DocuGenLLMClientUtils.initialize] Error: Model ${model} not found in the u_docugen_models table. If Layer: ${ ifLayer }`);
             throw new Error(`[DocuGenLLMClientUtils.initialize] Error: Model ${model} not found in the u_docugen_models table.`);
-        }
+        } else {
+			// Model Globals
+			this.LLMENDPOINT = docuGenModel.u_api_endpoint;
+			this.APIKEY = docuGenModel.u_api_key.getDecryptedValue();
+			this.APIPROMPT = docuGenModel.u_prompt;
+			this.PROMPTATTRIBUTE = docuGenModel.u_prompt_text_attribute;
+			this.MODEL = docuGenModel.u_model.toString();
+			this.MODEL_SYS_ID = docuGenModel.getUniqueValue();
+		}
+	
+		// Logging Globals
+		this.LOG_SOURCE = 'DocuGenLLM';
+		this.REQUEST_TYPE = '';
+		this.LOG_MESSAGE = '';
+		this.LOG_LEVEL = 0;
+
+		// Table Globals
         this.DOCS_TABLE = 'u_docugen_code_docs';
         this.SUGGESTIONS_TABLE = 'u_docugen_suggestions';
-        this.DEBUG = false;
+        
+		// Debug Global
+		this.DEBUG = false;
     },
 
     STATUS: {
@@ -463,8 +475,6 @@ ${JSON.stringify(analysis)}
         try {
             switch (this.MODEL) {
                 case 'chatgpt':
-                    result = JSON.parse(response).output[0].content[0].text;
-                    break;
                 case 'grok':
                     result = JSON.parse(response).choices[0].message.content;
                     break;
@@ -487,8 +497,6 @@ ${JSON.stringify(analysis)}
         try {
             switch (this.MODEL) {
                 case 'chatgpt':
-                    tempResult = JSON.parse(response).output[0].content[0].text;
-                    break;
                 case 'grok':
                     tempResult = JSON.parse(response).choices[0].message.content;
                     break;
@@ -987,14 +995,14 @@ ${JSON.stringify(analysis)}
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-12 13:54:08</sys_created_on>
         <sys_id>b5441bbb83f7621046cfe4d0deaad3a4</sys_id>
-        <sys_mod_count>262</sys_mod_count>
+        <sys_mod_count>269</sys_mod_count>
         <sys_name>DocuGenLLMClientUtils</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_b5441bbb83f7621046cfe4d0deaad3a4</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 04:32:33</sys_updated_on>
+        <sys_updated_on>2025-10-19 16:23:20</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>b5441bbb83f7621046cfe4d0deaad3a4</id>

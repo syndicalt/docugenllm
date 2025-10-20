@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMMarkdownUtils</api_name>
+        <caller_access/>
+        <client_callable>true</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMMarkdownUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[/**
+ * DocuGenLLMMarkdownUtils
+ * AJAX handler to fetch Markdown content from u_docugen_suggestions or u_docugen_code_docs
+ */
+
+var DocuGenLLMMarkdownUtils = Class.create();
+DocuGenLLMMarkdownUtils.prototype = Object.extendsObject(global.AbstractAjaxProcessor, {
+    getMarkdownContent: function() {
+        try {
+            const dataObj = JSON.parse(this.getParameter('sysparm_data_obj'));
+
+            if (!dataObj.sys_id) {
+                return JSON.stringify({ error: 'No sys_id provided' });
+            }
+
+            if (dataObj.table != 'u_docugen_suggestions' && dataObj.table != 'u_docugen_code_docs') {
+                return JSON.stringify({ error: 'Invalid table specified' });
+            }
+
+            const mdGr = new GlideRecord(dataObj.table);
+            mdGr.addQuery('sys_id', dataObj.sys_id);
+            mdGr.query();
+
+            if (mdGr.next()) {
+                const markdown = mdGr[dataObj.return_field].toString() || `No content available. Consider generating ${ dataObj.field_suggestion } for this record!`;
+               
+                return JSON.stringify({ markdown: markdown });
+            } else {
+                return JSON.stringify({ error: 'Record not found' });
+            }
+        } catch (e) {
+            gs.error(`[DocuGenLLMMarkdownUtils.getMarkdownContent] Error: ${e}`);
+            return JSON.stringify({ error: 'Error fetching content: ' + e.message });
+        }
+    },
+
+    type: 'DocuGenLLMMarkdownUtils'
+});]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 22:29:07</sys_created_on>
+        <sys_id>529dabf783e8761046cfe4d0deaad335</sys_id>
+        <sys_mod_count>30</sys_mod_count>
+        <sys_name>DocuGenLLMMarkdownUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_529dabf783e8761046cfe4d0deaad335</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 02:28:32</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>529dabf783e8761046cfe4d0deaad335</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-19 22:29:07</sys_created_on>
+        <sys_id>09ede33b83e8761046cfe4d0deaad374</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-19 22:29:07</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

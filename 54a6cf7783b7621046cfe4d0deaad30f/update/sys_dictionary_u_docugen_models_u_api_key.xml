@@ -2,7 +2,7 @@
     <sys_dictionary action="INSERT_OR_UPDATE" element="u_api_key" table="u_docugen_models">
         <active>true</active>
         <array>false</array>
-        <attributes/>
+        <attributes>is_fallback_module_encrypted=true</attributes>
         <audit>false</audit>
         <calculation><![CDATA[(function calculatedFieldValue(current) {
 
@@ -34,7 +34,7 @@
         <function_field>false</function_field>
         <internal_type display_value="">password2</internal_type>
         <mandatory>false</mandatory>
-        <max_length>255</max_length>
+        <max_length>1000</max_length>
         <name>u_docugen_models</name>
         <next_element/>
         <primary>false</primary>
@@ -58,7 +58,7 @@
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_dictionary_u_docugen_models_u_api_key</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-18 22:52:56</sys_updated_on>
+        <sys_updated_on>2025-10-19 15:19:49</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

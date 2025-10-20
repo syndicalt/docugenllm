@@ -10,10 +10,10 @@
         <image/>
         <link_type>LIST</link_type>
         <map_page/>
-        <mobile_title>DocuGenLLM Models</mobile_title>
+        <mobile_title>Stories</mobile_title>
         <mobile_view_name>Mobile</mobile_view_name>
-        <name>u_docugen_models</name>
-        <order>1001</order>
+        <name>rm_story</name>
+        <order>202</order>
         <override_menu_roles>false</override_menu_roles>
         <query/>
         <report/>
@@ -21,23 +21,23 @@
         <roles>docugen_user</roles>
         <sys_class_name>sys_app_module</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-10-18 22:52:57</sys_created_on>
+        <sys_created_on>2025-10-20 03:38:27</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>a4c96e6b8320f21046cfe4d0deaad3b1</sys_id>
-        <sys_mod_count>2</sys_mod_count>
-        <sys_name>DocuGenLLM Models</sys_name>
+        <sys_id>5684b8448374b61046cfe4d0deaad336</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Stories</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_app_module_a4c96e6b8320f21046cfe4d0deaad3b1</sys_update_name>
+        <sys_update_name>sys_app_module_5684b8448374b61046cfe4d0deaad336</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-20 04:33:31</sys_updated_on>
+        <sys_updated_on>2025-10-20 03:38:27</sys_updated_on>
         <timeline_page/>
-        <title>DocuGenLLM Models</title>
+        <title>Stories</title>
         <uncancelable>false</uncancelable>
-        <view_name/>
+        <view_name>docugenllm_view</view_name>
         <window_name/>
     </sys_app_module>
 </record_update>
