@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script_client">
     <sys_script_client action="INSERT_OR_UPDATE">
-        <active>false</active>
+        <active>true</active>
         <applies_extended>false</applies_extended>
         <condition/>
         <description/>
         <field/>
         <global>true</global>
-        <isolate_script>false</isolate_script>
+        <isolate_script>true</isolate_script>
         <messages/>
-        <name>Debug - Models Scratchpad</name>
+        <name>Form Control - Hide Tabs</name>
         <order/>
         <script><![CDATA[function onLoad() {
-	g_form.addInfoMessage('[Debug - Model Scratchpad]');
-	g_form.addInfoMessage('Documentations Model: ' + g_scratchpad.documentations_model);
-	g_form.addInfoMessage('Annotations Model: ' + g_scratchpad.annotations_model);
-	g_form.addInfoMessage('Review Model: ' + g_scratchpad.review_model);
-	g_form.addInfoMessage('Suggestions Model: ' + g_scratchpad.suggestions_model);
+	try {
+		g_form.getReference('u_script_reference', function(reference) {
+			var sections = g_form.getSectionNames();
+			if(reference.sys_class_name === 'sys_db_object') {
+				g_form.setSectionDisplay('annotated_code', false);
+				g_form.setLabelOf('u_script_type', 'Table');
+			}
+		});
+	} catch(e) {
+		g_form.addErrorMessage('[Form Control - Hide Tabs] Error: ' + e.message);
+	}
 }]]></script>
         <sys_class_name>sys_script_client</sys_class_name>
         <sys_created_by>admin</sys_created_by>
-        <sys_created_on>2025-10-19 14:36:13</sys_created_on>
+        <sys_created_on>2025-10-21 00:40:31</sys_created_on>
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
-        <sys_id>05d00a77836c361046cfe4d0deaad355</sys_id>
-        <sys_mod_count>4</sys_mod_count>
-        <sys_name>Debug - Models Scratchpad</sys_name>
+        <sys_id>7f8559d483f83a1046cfe4d0deaad318</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Form Control - Hide Tabs</sys_name>
         <sys_overrides/>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
-        <sys_update_name>sys_script_client_05d00a77836c361046cfe4d0deaad355</sys_update_name>
+        <sys_update_name>sys_script_client_7f8559d483f83a1046cfe4d0deaad318</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-21 00:35:52</sys_updated_on>
-        <table>sys_script_client</table>
+        <sys_updated_on>2025-10-21 00:42:31</sys_updated_on>
+        <table>u_docugen_code_docs</table>
         <type>onLoad</type>
         <ui_type>10</ui_type>
         <view/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
-    <element db_object_id="b9d7876f8324f21046cfe4d0deaad3c0" label="DocuGenLLM Suggestions" max_length="40" name="u_docugen_suggestions" type="collection">
+    <element audit="true" db_object_id="b9d7876f8324f21046cfe4d0deaad3c0" label="DocuGenLLM Suggestions" max_length="40" name="u_docugen_suggestions" type="collection">
         <element label="Maintainability Index" max_length="10" name="u_maintainability_index" read_only="true" type="float"/>
         <element label="Function Count" max_length="10" name="u_function_count" read_only="true" type="integer"/>
         <element display="true" label="Name" max_length="155" name="u_name" type="string"/>
@@ -10,6 +10,7 @@
         <element label="Line Count" max_length="10" name="u_line_count" read_only="true" type="integer"/>
         <element label="Tag Suggestions" max_length="4000" name="u_tag_suggestions" type="string"/>
         <element label="Suggestions" max_length="50000" name="u_suggestions" read_only="true" type="html"/>
+        <element label="Comment" max_length="4000" name="u_comment" type="journal"/>
         <element label="Code Smells" max_length="4000" name="u_code_smells" read_only="true" type="string"/>
         <element hint="Cyclomatic complexity is a software metric used to measure the complexity of a program by counting the number of linearly independent paths through its source code. It indicates the number of unique execution paths, which correlates with the effort required for testing and maintenance. Lower complexity suggests simpler, more maintainable code, while higher complexity may indicate code that’s harder to test and prone to errors.&#13;&#10;&#13;&#10;Cyclomatic complexity (denoted as M) can be calculated using the control flow graph of the program. The formula is:&#13;&#10;M = E - N + 2P&#13;&#10;Where:&#13;&#10;&#13;&#10;E = Number of edges in the control flow graph (representing transitions between code blocks).&#13;&#10;N = Number of nodes in the control flow graph (representing code blocks or statements).&#13;&#10;P = Number of connected components (usually 1 for a single program or function).&#13;&#10;&#13;&#10;Alternatively, for a simpler approximation in structured programming, cyclomatic complexity can be calculated by counting decision points (e.g., if, while, for, case, logical operators like &amp;&amp; or ||) and adding 1:&#13;&#10;M = Number of decision points + 1" label="Cyclomatic Complexity" max_length="10" name="u_cyclomatic_complexity" read_only="true" type="integer"/>
         <element attributes="readonly_clickthrough=true" label="Document Reference" max_length="32" name="u_document_reference" read_only="true" reference="u_docugen_code_docs" type="reference"/>
