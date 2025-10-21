@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ui_style">
+    <sys_ui_style action="INSERT_OR_UPDATE">
+        <alt/>
+        <element>u_cyclomatic_complexity</element>
+        <name>u_docugen_suggestions</name>
+        <style>background-color:#FFC107;</style>
+        <sys_class_name>sys_ui_style</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-20 20:23:16</sys_created_on>
+        <sys_id>9faa145c83f03a1046cfe4d0deaad329</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>u_docugen_suggestions</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_ui_style_9faa145c83f03a1046cfe4d0deaad329</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-20 20:38:27</sys_updated_on>
+        <themed_style/>
+        <value>javascript:(current.u_cyclomatic_complexity &gt;10 &amp;&amp; current.u_cyclomatic_complexity &lt;= 20)</value>
+    </sys_ui_style>
+    <sys_translated_text action="delete_multiple" query="documentkey=9faa145c83f03a1046cfe4d0deaad329"/>
+</record_update>

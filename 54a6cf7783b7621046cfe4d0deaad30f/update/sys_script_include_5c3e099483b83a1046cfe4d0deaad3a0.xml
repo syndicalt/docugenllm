@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMWriteUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMWriteUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[/**
+ * DocuGenLLMWriteUtils
+ * Handles storage operations for DocuGenLLM
+ * Includes methods for storing documentation, annotations, code reviews, and suggestions
+ */
+
+var DocuGenLLMWriteUtils = Class.create();
+DocuGenLLMWriteUtils.prototype = {
+    initialize: function(config) {
+        // Configuration from DocuGenLLMClientUtils
+        this.DOCS_TABLE = config.DOCS_TABLE;
+        this.SUGGESTIONS_TABLE = config.SUGGESTIONS_TABLE;
+        this.MODEL_SYS_ID = config.MODEL_SYS_ID;
+    },
+
+    _createResponse: function(status, message) {
+        return { status, message };
+    },
+
+    _storeDocumentation: function(documentation, recordSysId, tableName, displayValue) {
+        try {
+            let sys_id;
+            const docGr = new GlideRecord(this.DOCS_TABLE);
+            docGr.addQuery('u_script_reference', recordSysId);
+            docGr.query();
+
+            if (docGr.next()) {
+                docGr.u_name = displayValue;
+                docGr.u_documentation_markdown = documentation;
+                docGr.u_documentation_generated_by = this.MODEL_SYS_ID;
+                sys_id = docGr.update();
+            } else {
+                docGr.initialize();
+                docGr.u_name = displayValue;
+                docGr.u_script_reference = recordSysId;
+                docGr.u_script_type = tableName;
+                docGr.u_documentation_markdown = documentation;
+                docGr.u_documentation_generated_by = this.MODEL_SYS_ID;
+                sys_id = docGr.insert();
+            }
+
+            return {
+                sys_id: sys_id,
+                title: docGr.getDisplayValue(),
+                link: `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+            };
+        } catch (e) {
+            gs.error(`[DocuGenLLMWriteUtils._storeDocumentation] Error: ${e}`);
+            throw new Error(`[DocuGenLLMWriteUtils._storeDocumentation] Error: ${e}`);
+        }
+    },
+
+    _storeAnnotation: function(annotation, recordSysId, tableName, displayValue) {
+        try {
+            let sys_id;
+            const docGr = new GlideRecord(this.DOCS_TABLE);
+            docGr.addQuery('u_script_reference', recordSysId);
+            docGr.query();
+
+            if (docGr.next()) {
+                docGr.u_name = displayValue;
+                docGr.u_script = annotation;
+                docGr.u_script_generated_by = this.MODEL_SYS_ID;
+                sys_id = docGr.update();
+            } else {
+                docGr.initialize();
+                docGr.u_name = displayValue;
+                docGr.u_script_reference = recordSysId;
+                docGr.u_script_type = tableName;
+                docGr.u_script = annotation;
+                docGr.u_script_generated_by = this.MODEL_SYS_ID;
+                sys_id = docGr.insert();
+            }
+
+            return {
+                sys_id: sys_id,
+                title: docGr.getDisplayValue(),
+                link: `${gs.getProperty('glide.servlet.uri')}${docGr.getLink()}`
+            };
+        } catch {
+            gs.error(`[DocuGenLLMWriteUtils._storeAnnotation] Error: ${e}`);
+            throw new Error(`[DocuGenLLMWriteUtils._storeAnnotation] Error: ${e}`);
+        }
+    },
+
+    _storeCodeReviewAnnotations: function(annotations, metrics, recordSysId, tableName, displayValue, existingDoc) {
+        try {
+            var sugGr = new GlideRecord(this.SUGGESTIONS_TABLE);
+            sugGr.addQuery('u_script_reference', recordSysId);
+            sugGr.query();
+
+            if (sugGr.next()) {
+                sugGr.u_name = displayValue;
+                sugGr.u_code_review = annotations;
+                sugGr.u_line_count = metrics.lineCount;
+                sugGr.u_function_count = metrics.functionCount;
+                sugGr.u_cyclomatic_complexity = metrics.cyclomaticComplexity;
+                sugGr.u_maintainability_index = metrics.maintainabilityIndex;
+                sugGr.u_technical_debt_hours = metrics.technicalDebtHours;
+                sugGr.u_code_smells = metrics.codeSmells.join(', ');
+                sugGr.u_document_reference = existingDoc;
+                sugGr.u_generated_by = this.MODEL_SYS_ID;
+                sugGr.update();
+            } else {
+                sugGr.initialize();
+                sugGr.u_name = displayValue;
+                sugGr.u_script_reference = recordSysId;
+                sugGr.u_script_type = tableName;
+                sugGr.u_code_review = annotations;
+                sugGr.u_line_count = metrics.lineCount;
+                sugGr.u_function_count = metrics.functionCount;
+                sugGr.u_cyclomatic_complexity = metrics.cyclomaticComplexity;
+                sugGr.u_maintainability_index = metrics.maintainabilityIndex;
+                sugGr.u_technical_debt_hours = metrics.technicalDebtHours;
+                sugGr.u_code_smells = metrics.codeSmells.join(', ');
+                sugGr.u_document_reference = existingDoc;
+                sugGr.u_generated_by = this.MODEL_SYS_ID;
+                sugGr.insert();
+            }
+
+            return {
+                title: sugGr.getDisplayValue(),
+                link: `${gs.getProperty('glide.servlet.uri')}${sugGr.getLink()}`,
+                sys_id: sugGr.getUniqueValue()
+            };
+        } catch (e) {
+            gs.error(`[DocuGenLLMWriteUtils._storeCodeReviewAnnotations] Error: ${e}`);
+            throw new Error(`[DocuGenLLMWriteUtils._storeCodeReviewAnnotations] Error: ${e}`);
+        }
+    },
+
+    _storeSuggestions: function(suggestions, recordSysId, tableName, displayValue, existingDoc) {
+        try {
+            var sugGr = new GlideRecord(this.SUGGESTIONS_TABLE);
+            sugGr.addQuery('u_script_reference', recordSysId);
+            sugGr.query();
+
+            if (sugGr.next()) {
+                sugGr.u_name = displayValue;
+                sugGr.u_suggestions_markdown = suggestions;
+                sugGr.u_document_reference = existingDoc;
+                sugGr.u_generated_by = this.MODEL_SYS_ID;
+                sugGr.update();
+            } else {
+                sugGr.initialize();
+                sugGr.u_name = displayValue;
+                sugGr.u_script_reference = recordSysId;
+                sugGr.u_script_type = tableName;
+                sugGr.u_suggestions_markdown = suggestions;
+                sugGr.u_document_reference = existingDoc;
+                sugGr.u_generated_by = this.MODEL_SYS_ID;
+                sugGr.insert();
+            }
+
+            return {
+                title: sugGr.getDisplayValue(),
+                link: `${gs.getProperty('glide.servlet.uri')}${sugGr.getLink()}`,
+                sys_id: sugGr.getUniqueValue()
+            };
+        } catch (e) {
+            gs.error(`[DocuGenLLMWriteUtils._storeSuggestions] Error: ${e}`);
+            throw new Error(`[DocuGenLLMWriteUtils._storeSuggestions] Error: ${e}`);
+        }
+    },
+
+    type: 'DocuGenLLMWriteUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 00:10:01</sys_created_on>
+        <sys_id>5c3e099483b83a1046cfe4d0deaad3a0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLMWriteUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_5c3e099483b83a1046cfe4d0deaad3a0</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 00:10:01</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>5c3e099483b83a1046cfe4d0deaad3a0</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 00:10:01</sys_created_on>
+        <sys_id>b49e411883b83a1046cfe4d0deaad3f4</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 00:10:01</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

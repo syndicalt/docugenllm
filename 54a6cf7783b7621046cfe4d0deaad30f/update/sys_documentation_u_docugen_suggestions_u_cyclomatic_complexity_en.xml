@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="u_cyclomatic_complexity" label="Cyclomatic Complexity" language="en" table="u_docugen_suggestions">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>u_cyclomatic_complexity</element>
+            <help>Cyclomatic complexity is a software metric used to measure the complexity of a program by counting the number of linearly independent paths through its source code. It indicates the number of unique execution paths, which correlates with the effort required for testing and maintenance. Lower complexity suggests simpler, more maintainable code, while higher complexity may indicate code that’s harder to test and prone to errors.&#13;
+&#13;
+Cyclomatic complexity (denoted as M) can be calculated using the control flow graph of the program. The formula is:&#13;
+M = E - N + 2P&#13;
+Where:&#13;
+&#13;
+E = Number of edges in the control flow graph (representing transitions between code blocks).&#13;
+N = Number of nodes in the control flow graph (representing code blocks or statements).&#13;
+P = Number of connected components (usually 1 for a single program or function).&#13;
+&#13;
+Alternatively, for a simpler approximation in structured programming, cyclomatic complexity can be calculated by counting decision points (e.g., if, while, for, case, logical operators like &amp;&amp; or ||) and adding 1:&#13;
+M = Number of decision points + 1</help>
+            <hint>Cyclomatic complexity is a software metric used to measure the complexity of a program by counting the number of linearly independent paths through its source code. It indicates the number of unique execution paths, which correlates with the effort required for testing and maintenance. Lower complexity suggests simpler, more maintainable code, while higher complexity may indicate code that’s harder to test and prone to errors.&#13;
+&#13;
+Cyclomatic complexity (denoted as M) can be calculated using the control flow graph of the program. The formula is:&#13;
+M = E - N + 2P&#13;
+Where:&#13;
+&#13;
+E = Number of edges in the control flow graph (representing transitions between code blocks).&#13;
+N = Number of nodes in the control flow graph (representing code blocks or statements).&#13;
+P = Number of connected components (usually 1 for a single program or function).&#13;
+&#13;
+Alternatively, for a simpler approximation in structured programming, cyclomatic complexity can be calculated by counting decision points (e.g., if, while, for, case, logical operators like &amp;&amp; or ||) and adding 1:&#13;
+M = Number of decision points + 1</hint>
+            <label>Cyclomatic Complexity</label>
+            <language>en</language>
+            <name>u_docugen_suggestions</name>
+            <plural>Cyclomatic Complexities</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-20 19:21:35</sys_created_on>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_name>Cyclomatic Complexity</sys_name>
+            <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+            <sys_update_name>sys_documentation_u_docugen_suggestions_u_cyclomatic_complexity_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-20 19:33:01</sys_updated_on>
+            <url>https://en.wikipedia.org/wiki/Cyclomatic_complexity</url>
+            <url_target>_blank</url_target>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

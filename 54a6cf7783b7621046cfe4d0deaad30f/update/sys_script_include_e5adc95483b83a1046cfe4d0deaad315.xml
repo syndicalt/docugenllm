@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMRequestUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMRequestUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[/**
+ * DocuGenLLMRequestUtils
+ * Handles API calls and response parsing for DocuGenLLM
+ * Includes methods for calling the LLM API and parsing responses
+ */
+
+var DocuGenLLMRequestUtils = Class.create();
+DocuGenLLMRequestUtils.prototype = {
+    initialize: function(config) {
+        // Configuration from DocuGenLLMClientUtils
+        this.LLMENDPOINT = config.LLMENDPOINT;
+        this.APIKEY = config.APIKEY;
+        this.APIPROMPT = config.APIPROMPT;
+        this.PROMPTATTRIBUTE = config.PROMPTATTRIBUTE;
+        this.MODEL = config.MODEL;
+
+        // Logging Globals
+        this.LOG_SOURCE = 'DocuGenLLM';
+        this.LOG_LEVEL = 0;
+        this.LOG_MESSAGE = '';
+        this.REQUEST_TYPE = '';
+    },
+
+    _formatRequest: function(prompt) {
+        try {
+            let promptJson;
+            let obj = JSON.parse(this.APIPROMPT);
+            this._setNestedValue(obj, this.PROMPTATTRIBUTE, prompt);
+            promptJson = obj;
+
+            return obj;
+        } catch (e) {
+            gs.error(`[DocuGenLLMRequestUtils._formatPrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLMRequestUtils._formatPrompt] Error: ${e}`);
+        }
+    },
+
+    _callLLMAPI: function(prompt) {
+        try {
+            const restMessage = new sn_ws.RESTMessageV2();
+            restMessage.setEndpoint(this.LLMENDPOINT);
+            restMessage.setHttpMethod('POST');
+            restMessage.setRequestHeader('Authorization', `Bearer ${this.APIKEY}`);
+            restMessage.setRequestHeader('Content-Type', 'application/json');
+            restMessage.setRequestBody(JSON.stringify(prompt));
+            restMessage.setHttpTimeout(120000);
+
+            const response = restMessage.execute();
+            if (response.getStatusCode() != 200) {
+                this.LOG_LEVEL = 2;
+                throw new Error(`[DocuGenLLMRequestUtils._callLLMAPI] Error: LLM API call failed: ${response.getErrorMessage()}`);
+            }
+
+            this.LOG_LEVEL = 0;
+            return response.getBody();
+        } catch (e) {
+            gs.error(`[DocuGenLLMRequestUtils._callLLMAPI] Error: ${e}`);
+            this._writeUsageLog();
+            throw new Error(`[DocuGenLLMRequestUtils._callLLMAPI] Error: ${e}`);
+        }
+    },
+
+    _parseLLMDocumentResponse: function(response) {
+        let result;
+        try {
+            switch (this.MODEL) {
+                case 'chatgpt':
+                case 'grok':
+                    result = JSON.parse(response).choices[0].message.content;
+                    break;
+                case 'claude':
+                    result = JSON.parse(response).content.text;
+                    break;
+                default:
+                    result = 'No documentation generated';
+            }
+            return result;
+        } catch (e) {
+            gs.error(`[DocuGenLLMRequestUtils._parseLLMDocumentResponse] Error: ${e}`);
+            gs.error(`[DocuGenLLMRequestUtils._parseLLMDocumentResponse] responseObj: ${response}`);
+            throw new Error(`[DocuGenLLMRequestUtils._parseLLMDocumentResponse] Error: ${e}`);
+        }
+    },
+
+    _parseLLMAnnotationResponse: function(response) {
+        let tempResult;
+        try {
+            switch (this.MODEL) {
+                case 'chatgpt':
+                case 'grok':
+                    tempResult = JSON.parse(response).choices[0].message.content;
+                    break;
+                case 'claude':
+                    tempResult = JSON.parse(response).content.text;
+                    break;
+                default:
+                    tempResult = 'No documentation generated';
+            }
+
+            let resultArr = tempResult.split('|||');
+            resultArr.forEach((result, index) => {
+                resultArr[index] = result.replace('```javascript', '').replace('```', '');
+            });
+
+            return resultArr.join('\n\n');
+        } catch (e) {
+            gs.error(`[DocuGenLLMRequestUtils._parseLLMAnnotationResponse] Error: ${e}`);
+            gs.error(`[DocuGenLLMRequestUtils._parseLLMAnnotationResponse] responseObj: ${response}`);
+            throw new Error(`[DocuGenLLMRequestUtils._parseLLMAnnotationResponse] Error: ${e}`);
+        }
+    },
+
+    _writeUsageLog: function() {
+        try {
+            const logGr = new GlideRecord('u_docugenllm_usage_log');
+            logGr.source = this.LOG_SOURCE;
+            logGr.level = this.LOG_LEVEL;
+            logGr.u_model = this.MODEL;
+            logGr.u_request_type = this.REQUEST_TYPE;
+            logGr.message = this.LOG_MESSAGE;
+            logGr.insert();
+        } catch (e) {
+            gs.error(`[DocuGenLLMRequestUtils._writeUsageLog] Error: ${e}`);
+            throw new Error(`[DocuGenLLMRequestUtils._writeUsageLog] Error: ${e}`);
+        }
+    },
+
+    _setNestedValue: function(obj, keyStr, newValue) {
+        const parts = keyStr.split('.');
+        let target = obj;
+        let lastPart = parts.pop();
+
+        for (let part of parts) {
+            if (part.includes('[')) {
+                const match = part.match(/(\w+)\[(\d+)\]/);
+                if (match) {
+                    const base = match[1];
+                    const idx = parseInt(match[2], 10);
+                    target = target[base][idx];
+                } else {
+                    target = target[part];
+                }
+            } else {
+                target = target[part];
+            }
+        }
+
+        if (lastPart.includes('[')) {
+            const match = lastPart.match(/(\w+)\[(\d+)\]/);
+            if (match) {
+                const base = match[1];
+                const idx = parseInt(match[2], 10);
+                target[base][idx] = newValue;
+            } else {
+                target[lastPart] = newValue;
+            }
+        } else {
+            target[lastPart] = newValue;
+        }
+    },
+
+    type: 'DocuGenLLMRequestUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 00:06:23</sys_created_on>
+        <sys_id>e5adc95483b83a1046cfe4d0deaad315</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLMRequestUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_e5adc95483b83a1046cfe4d0deaad315</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 00:06:23</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>e5adc95483b83a1046cfe4d0deaad315</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 00:06:23</sys_created_on>
+        <sys_id>33bdc19483b83a1046cfe4d0deaad3d3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 00:06:23</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

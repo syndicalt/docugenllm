@@ -36,6 +36,7 @@ DocuGenLLMClientActionsHandler.prototype = Object.extendsObject(global.AbstractA
 		// 	'sys_web_service',
 		// 	'sys_db_object',
 		// 	'sys_script_validator'
+		// 	'sys_api_stats_script'
 		// ]
 	},
 
@@ -90,14 +91,14 @@ DocuGenLLMClientActionsHandler.prototype = Object.extendsObject(global.AbstractA
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2025-09-13 07:07:57</sys_created_on>
         <sys_id>6081c30c83c8b21046cfe4d0deaad36a</sys_id>
-        <sys_mod_count>49</sys_mod_count>
+        <sys_mod_count>50</sys_mod_count>
         <sys_name>DocuGenLLMClientActionsHandler</sys_name>
         <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
         <sys_policy/>
         <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
         <sys_update_name>sys_script_include_6081c30c83c8b21046cfe4d0deaad36a</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2025-10-19 03:53:20</sys_updated_on>
+        <sys_updated_on>2025-10-21 00:27:04</sys_updated_on>
     </sys_script_include>
     <sys_es_latest_script action="INSERT_OR_UPDATE">
         <id>6081c30c83c8b21046cfe4d0deaad36a</id>

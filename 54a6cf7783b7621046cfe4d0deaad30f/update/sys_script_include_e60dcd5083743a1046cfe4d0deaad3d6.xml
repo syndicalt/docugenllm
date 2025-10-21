@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMPromptUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMPromptUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[/**
+ * DocuGenLLMPromptUtils
+ * Handles prompt construction and supporting analysis for DocuGenLLM
+ * Includes methods for building prompts and analyzing scripts/tables
+ */
+
+var DocuGenLLMPromptUtils = Class.create();
+DocuGenLLMPromptUtils.prototype = {
+    initialize: function() {
+        // Table Globals
+        this.DOCS_TABLE = 'u_docugen_code_docs';
+        this.FEEDBACK_TABLE = 'u_docugen_feedback';
+    },
+
+    _getTableJsonObj: function(table) {
+        try {
+            var res = {
+                table: {},
+                columns: []
+            };
+
+            var tableGr = new GlideRecord('sys_db_object');
+            tableGr.get(table);
+
+            for (var key in tableGr) {
+                if (key !== 'sys_meta') res.table[key] = tableGr[key].getDisplayValue();
+            }
+
+            var columnGr = new GlideRecord('sys_dictionary');
+            columnGr.addQuery('name', tableGr.name);
+            columnGr.query();
+
+            while (columnGr.next()) {
+                var obj = {};
+                obj.name = columnGr.element.toString();
+                obj.label = columnGr.column_label.toString();
+                obj.type = columnGr.type.getDisplayValue();
+                obj.reference = columnGr.reference.getDisplayValue();
+                obj.max_length = columnGr.max_length.getDisplayValue();
+                obj.default_value = columnGr.default_value.toString();
+                obj.display_column = columnGr.display.toString();
+
+                res.columns.push(obj);
+            }
+
+            return res;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._getTableJsonObj] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._getTableJsonObj] Error: ${e}`);
+        }
+    },
+
+    _getScriptData: function(recordSysId, tableName) {
+        try {
+            var recordGr = new GlideRecord(tableName);
+            if (!recordGr.get(recordSysId)) {
+                throw new Error('Script record not found');
+            }
+
+            var scriptField = this._getScriptField(tableName);
+            return {
+                current: {
+                    script: recordGr[scriptField] ? recordGr[scriptField].toString() : '',
+                    name: recordGr.name ? recordGr.name.toString() : '',
+                    sys_id: recordGr.sys_id.toString(),
+                    tableName: tableName
+                }
+            };
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._getScriptData] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._getScriptData] Error: ${e}`);
+        }
+    },
+
+    _getScriptChangeHistory: function(recordSysId, tableName) {
+        try {
+            var history = [];
+            var historyGr = new GlideRecord('sys_history_line');
+            historyGr.addQuery('set', 'CONTAINS', recordSysId);
+            historyGr.addQuery('field', this._getScriptField(tableName));
+            historyGr.orderByDesc('sys_created_on');
+            historyGr.setLimit(1);
+            historyGr.query();
+
+            if (historyGr.next()) {
+                history.push({
+                    old_value: historyGr.old_value.toString(),
+                    new_value: historyGr.new_value.toString(),
+                    changed_by: historyGr.user_name.toString(),
+                    changed_on: historyGr.sys_created_on.toString()
+                });
+            }
+
+            return history;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._getScriptChangeHistory] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._getScriptChangeHistory] Error: ${e}`);
+        }
+    },
+
+    _getExistingDocumentation: function(recordSysId) {
+        try {
+            var docGr = new GlideRecord(this.DOCS_TABLE);
+            docGr.addQuery('u_script_reference', recordSysId);
+            docGr.query();
+
+            if (docGr.next()) {
+                return {
+                    sys_id: docGr.getUniqueValue(),
+                    documentation: docGr.u_documentation_markdown.toString() || '',
+                    annotations: docGr.u_script.toString() || ''
+                };
+            }
+            return { documentation: '', annotations: '' };
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._getExistingDocumentation] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._getExistingDocumentation] Error: ${e}`);
+        }
+    },
+
+    _getFeedbackForRecord: function(recordSysId, tableName) {
+        try {
+            var feedback = [];
+            var feedbackGr = new GlideRecord(this.FEEDBACK_TABLE);
+            if (tableName === 'u_docugen_code_docs') {
+                feedbackGr.addQuery('u_document_reference', recordSysId);
+            } else if (tableName === 'u_docugen_suggestions') {
+                feedbackGr.addQuery('u_suggestion_reference', recordSysId);
+            } else {
+                feedbackGr.addQuery('u_script_reference', recordSysId);
+            }
+            feedbackGr.orderByDesc('u_timestamp');
+            feedbackGr.setLimit(5);
+            feedbackGr.query();
+
+            while (feedbackGr.next()) {
+                feedback.push({
+                    rating: feedbackGr.u_rating.toString(),
+                    comments: feedbackGr.u_comments.toString(),
+                    user: feedbackGr.u_user.getDisplayValue(),
+                    timestamp: feedbackGr.u_timestamp.toString()
+                });
+            }
+
+            return feedback;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._getFeedbackForRecord] Error: ${e}`);
+            return [];
+        }
+    },
+
+    _getScriptField: function(tableName) {
+        var fieldMap = {
+            'sys_script': 'script',
+            'sys_script_client': 'script',
+            'sys_script_include': 'script'
+        };
+        return fieldMap[tableName] || 'script';
+    },
+
+    _analyzeScript: function(scriptContent, tableName) {
+        try {
+            var analysis = {
+                dependencies: [],
+                integrations: [],
+                edgeCases: [],
+                metrics: {
+                    lineCount: 0,
+                    functionCount: 0,
+                    cyclomaticComplexity: 1,
+                    codeSmells: [],
+                    maintainabilityIndex: 0,
+                    technicalDebtHours: 0
+                }
+            };
+
+            analysis.metrics.lineCount = scriptContent.split('\n').length;
+            var functionPattern = /function\s+\w+\s*\(/g;
+            analysis.metrics.functionCount = (scriptContent.match(functionPattern) || []).length;
+
+            var controlPatterns = [
+                /if\s*\(/g,
+                /else\s*{/g,
+                /for\s*\(/g,
+                /while\s*\(/g,
+                /case\s+\w+:/g,
+                /catch\s*\(/g
+            ];
+            controlPatterns.forEach(function(pattern) {
+                var matches = scriptContent.match(pattern);
+                if (matches) {
+                    analysis.metrics.cyclomaticComplexity += matches.length;
+                }
+            });
+
+            var scriptIncludePattern = /new\s+([A-Za-z0-9_]+)\s*\(\)/g;
+            var matches = scriptContent.match(scriptIncludePattern);
+            if (matches) {
+                matches.forEach(function(match) {
+                    var scriptIncludeName = match.replace(/new\s+|\s*\(\)/g, '');
+                    var sysId = this._getScriptIncludeSysId(scriptIncludeName);
+                    analysis.dependencies.push({
+                        type: 'Script Include',
+                        name: scriptIncludeName,
+                        sysId: sysId || null
+                    });
+                }, this);
+            }
+
+            var restPattern = /(GlideHTTPClient|sn_ws\.RESTMessageV2)/g;
+            if (scriptContent.match(restPattern)) {
+                analysis.dependencies.push({
+                    type: 'REST API',
+                    name: 'External Service Call'
+                });
+                analysis.metrics.codeSmells.push('External API call detected; ensure error handling');
+            }
+
+            var glideRecordPattern = /GlideRecord\s*\(\s*['"]([a-zA-Z0-9_]+)['"]\s*\)/g;
+            matches = scriptContent.match(glideRecordPattern);
+            if (matches) {
+                matches.forEach(function(match) {
+                    var tableName = match.replace(/GlideRecord\s*\(\s*['"]|['"]\s*\)/g, '');
+                    analysis.integrations.push({
+                        type: 'Table',
+                        name: tableName
+                    });
+                });
+            }
+
+            var gsPattern = /gs\.(info|error|log|eventQueue)\s*\(/g;
+            if (scriptContent.match(gsPattern)) {
+                analysis.integrations.push({
+                    type: 'ServiceNow Platform',
+                    name: 'Platform Logging/Eventing'
+                });
+                if (scriptContent.match(/gs\.log\s*\(/) && !scriptContent.match(/gs\.error\s*\(/)) {
+                    analysis.metrics.codeSmells.push('Use of gs.log() instead of gs.error() for error logging');
+                }
+            }
+
+            var varAccessPattern = /\b(\w+)\.\w+/g;
+            var nullCheckPattern = /if\s*\(\s*!?\s*\w+\s*(===|==)\s*null\s*\)/g;
+            var variables = scriptContent.match(varAccessPattern) || [];
+            var hasNullChecks = scriptContent.match(nullCheckPattern);
+            if (variables.length > 0 && !hasNullChecks) {
+                analysis.metrics.codeSmells.push('Potential missing null check for object property access');
+            }
+
+            if (!scriptContent.match(/try\s*{/)) {
+                analysis.metrics.codeSmells.push('No try-catch block for error handling');
+            }
+
+            var hardcodedPattern = /['"]([a-zA-Z0-9_-]+)['"]/g;
+            var hardcodedValues = scriptContent.match(hardcodedPattern);
+            if (hardcodedValues && hardcodedValues.length > 5) {
+                analysis.metrics.codeSmells.push('Multiple hardcoded values detected; consider using configuration');
+            }
+
+            var longFunctionPattern = /function\s+\w+\s*\([^)]*\)\s*{[^}]{100,}/g;
+            if (scriptContent.match(longFunctionPattern)) {
+                analysis.metrics.codeSmells.push('Long function detected; consider refactoring for readability');
+            }
+
+            var avgLineLength = scriptContent.split('\n').reduce((sum, line) => sum + line.length, 0) / analysis.metrics.lineCount;
+            analysis.metrics.maintainabilityIndex = Math.max(0, 100 - (analysis.metrics.cyclomaticComplexity * 10) - (avgLineLength / 10));
+            if (analysis.metrics.maintainabilityIndex < 50) {
+                analysis.metrics.codeSmells.push('Low maintainability index; simplify code structure');
+            }
+
+            analysis.metrics.technicalDebtHours = analysis.metrics.codeSmells.length * 0.5;
+
+            return analysis;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._analyzeScript] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._analyzeScript] Error: ${e}`);
+        }
+    },
+
+    _analyzeTableUsage: function(tableName) {
+        try {
+            var analysis = {
+                dependencies: [],
+                integrations: [],
+                edgeCases: []
+            };
+
+            var dictGr = new GlideRecord('sys_dictionary');
+            dictGr.addQuery('name', tableName);
+            dictGr.addQuery('reference', '!=', '');
+            dictGr.query();
+            while (dictGr.next()) {
+                analysis.dependencies.push({
+                    type: 'Referenced Table',
+                    name: dictGr.reference.getDisplayValue()
+                });
+            }
+
+            var scriptTables = ['sys_script', 'sys_script_client', 'sys_script_include'];
+            scriptTables.forEach(function(scriptTable) {
+                var scriptGr = new GlideRecord(scriptTable);
+                scriptGr.addQuery('script', 'CONTAINS', 'GlideRecord(\'' + tableName + '\'');
+                scriptGr.query();
+                while (scriptGr.next()) {
+                    analysis.integrations.push({
+                        type: 'Script Reference',
+                        name: scriptGr.name + ' (' + scriptTable + ')'
+                    });
+                }
+            });
+
+            if (dictGr.getRowCount() === 0) {
+                analysis.edgeCases.push('No reference fields defined; verify if table is isolated or underutilized.');
+            }
+            var mandatoryGr = new GlideRecord('sys_dictionary');
+            mandatoryGr.addQuery('name', tableName);
+            mandatoryGr.addQuery('mandatory', true);
+            mandatoryGr.query();
+            if (!mandatoryGr.hasNext()) {
+                analysis.edgeCases.push('No mandatory fields defined; consider adding to ensure data integrity.');
+            }
+
+            return analysis;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._analyzeTableUsage] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._analyzeTableUsage] Error: ${e}`);
+        }
+    },
+
+    _getScriptIncludeSysId: function(name) {
+        var gr = new GlideRecord('sys_script_include');
+        gr.addQuery('name', name);
+        gr.query();
+        if (gr.next()) {
+            return gr.sys_id.toString();
+        }
+        return null;
+    },
+
+    _buildDocumentationPrompt: function(recordSysId, tableName) {
+        try {
+            let scriptAttributesObj = {};
+            const recordGr = new GlideRecord(tableName);
+            recordGr.get(recordSysId);
+
+            for (var key in recordGr) {
+                if (!key.includes('sys_')) scriptAttributesObj[key] = recordGr[key].toString() || null;
+            }
+
+            const analysis = this._analyzeScript(scriptAttributesObj.script || '', tableName);
+            const feedback = this._getFeedbackForRecord(recordSysId, tableName);
+
+            return `Generate detailed documentation in markdown for the following ServiceNow ${recordGr.getTableName()} script. Include:
+- **Purpose**: Describe the script's purpose and functionality.
+- **Parameters**: List any parameters or inputs.
+- **Logic Flow**: Explain the script's logic step-by-step.
+- **Key Functionality**: Highlight critical features.
+- **Dependencies**: List identified dependencies (e.g., Script Includes, APIs).
+- **Integration Points**: Describe interactions with tables or platform APIs.
+- **Potential Edge Cases**: Note potential issues like null checks or error handling.
+- **Code Quality Metrics**: Provide metrics including:
+  - **Cyclomatic Complexity**: Number of independent paths (higher indicates more complex code).
+  - **Maintainability Index**: Score (0-100) based on readability, size, and complexity.
+  - **Technical Debt**: Estimated effort to fix issues (e.g., hardcoded values, missing error handling).
+  - **Code Smells**: Common issues like long functions or excessive nesting.
+
+Incorporate user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
+
+Script Details:
+\`\`\`json
+${JSON.stringify(scriptAttributesObj)}
+\`\`\`
+
+Analysis Results (including computed metrics):
+\`\`\`json
+${JSON.stringify(analysis)}
+\`\`\`
+`;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._buildDocumentationPrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._buildDocumentationPrompt] Error: ${e}`);
+        }
+    },
+
+    _buildTableDocumentationPrompt: function(recordSysId, tableName) {
+        try {
+            const tableUtil = new DocuGenLLMTableSchemaUtils();
+            const tableJson = tableUtil.getTableSchema(recordSysId);
+            const analysis = this._analyzeTableUsage(tableName);
+            const feedback = this._getFeedbackForRecord(recordSysId, tableName);
+
+            return `You are an expert database designer that excels at data schema documentation. Generate detailed documentation in markdown for the ServiceNow table, ${tableName}. Include:
+- **Purpose**: Describe the table's purpose and role in the system.
+- **Parameters**: List key fields or configurations (e.g., reference fields, mandatory fields).
+- **Table Structure**: Provide a detailed outline of the table's columns in a markdown table, noting name, label, type, reference (if applicable), max length, default value, and display column status. Use "null" for null values.
+- **Key Functionality**: Highlight critical features or uses of the table.
+- **Dependencies**: List dependencies (e.g., referenced tables, APIs).
+- **Integration Points**: Describe interactions with other tables or platform APIs.
+- **Potential Edge Cases**: Note potential issues (e.g., data validation, reference integrity).
+
+Incorporate user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
+
+Table Schema:
+\`\`\`json
+${JSON.stringify(tableJson)}
+\`\`\`
+
+Analysis Results:
+\`\`\`json
+${JSON.stringify(analysis)}
+\`\`\`
+`;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._buildTableDocumentationPrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._buildTableDocumentationPrompt] Error: ${e}`);
+        }
+    },
+
+    _buildAnnotationPrompt: function(recordSysId, tableName) {
+        try {
+            let scriptAttributesObj = {};
+            const recordGr = new GlideRecord(tableName);
+            recordGr.get(recordSysId);
+
+            for (var key in recordGr) {
+                if (/(^|\W)script($|\W)/i.test(key) || key === 'condition') scriptAttributesObj[key] = recordGr[key].toString();
+            }
+
+            const feedback = this._getFeedbackForRecord(recordSysId, tableName);
+
+            return `As an expert JavaScript developer, generate JSDOC annotation for the following code in the JSON object. Only respond with the annotated code. Provide helpful commentary for future developers to understand how the code works, incorporating user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
+
+If there are multiple scripts, separate the scripts into code blocks with |||. Do not make them into variables in the same script, and do not add any code elements. Only comment on the code that is there. Do not provide any commentary or headers regarding the annotation.\n\n\`\`\`json\n${JSON.stringify(scriptAttributesObj)}\n\`\`\``;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._buildAnnotationPrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._buildAnnotationPrompt] Error: ${e}`);
+        }
+    },
+
+    _buildCodeReviewPrompt: function(scriptData, analysis) {
+        try {
+            var scriptContent = scriptData.current.script || '';
+            var scriptSummary = scriptContent;
+            if (scriptContent.split('\n').length > 100) {
+                var lines = scriptContent.split('\n');
+                scriptSummary = [
+                    lines[0],
+                    '// [Script truncated for brevity; full script available in source]',
+                    ...lines.slice(1).filter(line => line.match(/function\s+\w+\s*\(/) || line.match(/GlideRecord\s*\(/) || line.match(/gs\./)).slice(0, 10),
+                    '// [End of summary]'
+                ].join('\n');
+            }
+
+            const feedback = this._getFeedbackForRecord(scriptData.current.sys_id, scriptData.current.tableName);
+
+            return `As an expert ServiceNow developer, perform a code review for the following script. Generate detailed annotations in markdown, including:
+- **Identified Issues**: Highlight potential issues (e.g., deprecated APIs, performance bottlenecks).
+- **Best Practice Suggestions**: Recommend ServiceNow coding best practices (e.g., error handling, logging, ACL checks).
+- **Remediation Steps**: Suggest specific changes to address each issue or implement best practices.
+- **Code Context**: Provide inline comments in the script to mark issues or suggestions, using // for single-line comments.
+- **Code Quality Metrics**: Provide metrics including:
+  - **Cyclomatic Complexity**: Number of independent paths (higher indicates more complex code).
+  - **Maintainability Index**: Score (0-100) based on readability, size, and complexity.
+  - **Technical Debt**: Estimated effort to fix issues (e.g., hardcoded values, missing error handling).
+  - **Code Smells**: Common issues like long functions or excessive nesting.
+
+Incorporate user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
+
+Script Details (summarized if large):
+\`\`\`javascript
+${scriptSummary}
+\`\`\`
+
+Analysis Results (including computed metrics):
+\`\`\`json
+${JSON.stringify(analysis)}
+\`\`\`
+`;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._buildCodeReviewPrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._buildCodeReviewPrompt] Error: ${e}`);
+        }
+    },
+
+    _buildMaintenancePrompt: function(scriptData, changeData, existingDoc) {
+        try {
+            const feedback = this._getFeedbackForRecord(scriptData.current.sys_id, scriptData.current.tableName);
+
+            return `Analyze the following ServiceNow script changes and existing documentation to suggest updates to keep the documentation current. Provide suggestions in markdown format, including:
+- **Suggested Documentation Updates**: Changes to the existing documentation to reflect script modifications.
+- **Suggested Annotation Updates**: Updates to JSDOC or inline comments to align with code changes.
+- **Rationale**: Explain why each suggestion is needed based on the changes.
+
+If there is no existing documentation or no script available, along with your own documentation or annotation suggestions, suggest running DocuGenLLM Code Documentation to generate new documentation, or DocuGenLLM Code Annotation for code annotation via available UI actions.
+
+Incorporate user feedback to improve output quality (e.g., address low ratings or specific comments):
+\`\`\`json
+${JSON.stringify(feedback)}
+\`\`\`
+
+Current Script:
+\`\`\`json
+${JSON.stringify(scriptData.current)}
+\`\`\`
+
+Previous Script (if available):
+\`\`\`json
+${JSON.stringify(scriptData.previous || {})}
+\`\`\`
+
+Change History:
+\`\`\`json
+${JSON.stringify(changeData)}
+\`\`\`
+
+Existing Documentation:
+\`\`\`markdown
+${existingDoc.documentation || 'No existing documentation'}
+\`\`\`
+
+Existing Annotations:
+\`\`\`markdown
+${existingDoc.annotations || 'No existing annotations'}
+\`\`\`
+`;
+        } catch (e) {
+            gs.error(`[DocuGenLLMPromptUtils._buildMaintenancePrompt] Error: ${e}`);
+            throw new Error(`[DocuGenLLMPromptUtils._buildMaintenancePrompt] Error: ${e}`);
+        }
+    },
+
+    type: 'DocuGenLLMPromptUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 00:04:37</sys_created_on>
+        <sys_id>e60dcd5083743a1046cfe4d0deaad3d6</sys_id>
+        <sys_mod_count>2</sys_mod_count>
+        <sys_name>DocuGenLLMPromptUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_e60dcd5083743a1046cfe4d0deaad3d6</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 00:31:55</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>e60dcd5083743a1046cfe4d0deaad3d6</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 00:04:37</sys_created_on>
+        <sys_id>795d815483b83a1046cfe4d0deaad39e</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 00:04:37</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

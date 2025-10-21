@@ -4,13 +4,13 @@
             <element>docugen_codereview_md_interpreter.xml</element>
             <position>0</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2025-10-19 23:37:55</sys_created_on>
-            <sys_id>30adbbfb836c761046cfe4d0deaad3e8</sys_id>
+            <sys_created_on>2025-10-20 19:15:53</sys_created_on>
+            <sys_id>dc4bc81c83703a1046cfe4d0deaad319</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter display_value="Code Review (Markdown)">1caa3b37836c761046cfe4d0deaad361</sys_ui_formatter>
             <sys_ui_section caption="Code Review" display_value="Code Review" name="u_docugen_suggestions" sys_domain="global" view="Default view">3567a7278368f21046cfe4d0deaad33c</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2025-10-19 23:37:55</sys_updated_on>
+            <sys_updated_on>2025-10-20 19:15:53</sys_updated_on>
             <sys_user/>
             <type>formatter</type>
         </sys_ui_element>
@@ -18,13 +18,13 @@
             <element>u_code_review</element>
             <position>1</position>
             <sys_created_by>admin</sys_created_by>
-            <sys_created_on>2025-10-19 23:37:55</sys_created_on>
-            <sys_id>7cadbbfb836c761046cfe4d0deaad3e8</sys_id>
+            <sys_created_on>2025-10-20 19:15:53</sys_created_on>
+            <sys_id>1c4bc81c83703a1046cfe4d0deaad31a</sys_id>
             <sys_mod_count>0</sys_mod_count>
             <sys_ui_formatter/>
             <sys_ui_section caption="Code Review" display_value="Code Review" name="u_docugen_suggestions" sys_domain="global" view="Default view">3567a7278368f21046cfe4d0deaad33c</sys_ui_section>
             <sys_updated_by>admin</sys_updated_by>
-            <sys_updated_on>2025-10-19 23:37:55</sys_updated_on>
+            <sys_updated_on>2025-10-20 19:15:53</sys_updated_on>
             <sys_user/>
             <type/>
         </sys_ui_element>
