@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMCoverageUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMCoverageUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[var DocuGenLLMCoverageUtils = Class.create();
+DocuGenLLMCoverageUtils.prototype = {
+    initialize: function() {
+        this.VALID_CLASSES = gs.getProperty('docugenllm.valid.classes');
+        this.COVERAGE_TABLE = 'u_docugen_coverage_reports';
+        this.CHOICE_TABLE = 'sys_choice';
+    },
+
+    // Get all coverage statistics in one call
+    generateCoverageStats: function(scope_sys_id) {
+		try {
+			const appStatsObj = {
+				appScope: scope_sys_id,
+				totalAppFiles: this.getTotalAppFiles(scope_sys_id),
+				totalTables: this.getTotalTables(scope_sys_id),
+				totalCodeDocs: this.getCodeDocs(scope_sys_id),
+				totalAnnotations: this.getCodeAnnotations(scope_sys_id),
+				totalCodeReviews: this.getCodeReviews(scope_sys_id),
+				totalTableDocs: this.getTableDocumentations(scope_sys_id)
+			};
+			return this._createResponse(200, this._storeCoverageReport(appStatsObj));
+		} catch(e) {
+			gs.error(`[DocuGenLLMCoverageUtils._storeCoverageReport] Error: ${e}`);
+			return this._createResponse(400, e.message);
+		}
+    },
+
+    // Get total count of application files (excluding sys_db_object)
+    getTotalAppFiles: function(scope) {
+        const query = `sys_scope=${scope}^sys_class_nameIN${this.VALID_CLASSES.replace('sys_db_object', '')}`;
+        return this._getCount('sys_metadata', query);
+    },
+
+    // Get total count of tables (sys_db_object)
+    getTotalTables: function(scope) {
+        const query = `sys_scope=${scope}^sys_class_name=sys_db_object`;
+        return this._getCount('sys_metadata', query);
+    },
+
+    // Get total count of code documentations
+    getCodeDocs: function(scope) {
+        const query = `u_script_reference.sys_scope=${scope}^u_documentation_markdownISNOTEMPTY`;
+        return this._getCount('u_docugen_code_docs', query);
+    },
+
+    // Get total count of code annotations
+    getCodeAnnotations: function(scope) {
+        const query = `u_script_reference.sys_scope=${scope}^u_scriptISNOTEMPTY`;
+        return this._getCount('u_docugen_code_docs', query);
+    },
+
+    // Get total count of code reviews
+    getCodeReviews: function(scope) {
+        const query = `u_script_reference.sys_scope=${scope}^u_code_reviewISNOTEMPTY`;
+        return this._getCount('u_docugen_suggestions', query);
+    },
+
+    // Get total count of table documentations
+    getTableDocumentations: function(scope) {
+        const query = `u_script_reference.sys_scope=${scope}^u_script_type=sys_db_object^u_documentation_markdownISNOTEMPTY`;
+        return this._getCount('u_docugen_code_docs', query);
+    },
+
+	_createResponse: function(status, message) {
+		return { status: status, message: message }
+	},
+
+    // Generic method to get count from a table with an encoded query
+    _getCount: function(table, encodedQuery) {
+        const gAgg = new GlideAggregate(table);
+        gAgg.addEncodedQuery(encodedQuery);
+        gAgg.addAggregate('COUNT');
+        gAgg.query();
+        if (gAgg.next()) {
+            return parseInt(gAgg.getAggregate('COUNT')) || 0;
+        }
+        return 0;
+    },
+
+    _calculateStatus: function(data) {
+        const statusOptions = this._getFieldValues('u_status');
+        const scriptCoverage = data.totalAppFiles > 0 ? (data.totalCodeDocs / data.totalAppFiles) * 100 : 0;
+        const tableCoverage = data.totalTables > 0 ? (data.totalTableDocs / data.totalTables) * 100 : 0;
+        const hasAnnotations = data.totalAnnotations > 0;
+        const hasCodeReviews = data.totalCodeReviews > 0;
+        const avgCoverage = (scriptCoverage + tableCoverage) / 2;
+
+        if (scriptCoverage === 0 && tableCoverage === 0) {
+            return statusOptions['Undocumented'] || '-1';
+        }
+        if (avgCoverage < 25) {
+            return statusOptions['Poorly Documented'] || '0';
+        } else if (avgCoverage < 50) {
+            return statusOptions['Moderately Documented'] || '1';
+        } else if (avgCoverage < 75) {
+            if (hasAnnotations || hasCodeReviews) {
+                return statusOptions['Well Documented'] || '2';
+            }
+            return statusOptions['Moderately Documented'] || '1';
+        } else {
+            if (hasAnnotations && hasCodeReviews) {
+                return statusOptions['Complete'] || '3';
+            }
+            return statusOptions['Well Documented'] || '2';
+        }
+    },
+
+    _calculatePriority: function(data, status) {
+        const priorityOptions = this._getFieldValues('u_priority');
+        const scriptCoverage = data.totalAppFiles > 0 ? (data.totalCodeDocs / data.totalAppFiles) * 100 : 0;
+        const tableCoverage = data.totalTables > 0 ? (data.totalTableDocs / data.totalTables) * 100 : 0;
+        const avgCoverage = (scriptCoverage + tableCoverage) / 2;
+
+        // Get average complexity and technical debt from suggestions
+        const suggestionsStats = this._getSuggestionsStats(data.appScope);
+        const avgComplexity = suggestionsStats.avgComplexity || 0;
+        const avgTechDebt = suggestionsStats.avgTechDebt || 0;
+
+        // Priority logic based on status, coverage, complexity, and technical debt
+        if (status === '-1' || (avgCoverage < 25 && (avgComplexity > 10 || avgTechDebt > 50))) {
+            return priorityOptions['Critical'] || '4'; // Undocumented or very low coverage with high complexity/debt
+        } else if (status === '0' || (avgCoverage < 50 && (avgComplexity > 5 || avgTechDebt > 20))) {
+            return priorityOptions['High'] || '3'; // Poorly documented or low coverage with moderate complexity/debt
+        } else if (status === '1' || (avgCoverage < 75 && (avgComplexity > 3 || avgTechDebt > 10))) {
+            return priorityOptions['Medium'] || '2'; // Moderately documented or moderate coverage with low complexity/debt
+        } else {
+            return priorityOptions['Low'] || '1'; // Well documented or complete with low complexity/debt
+        }
+    },
+
+    _getSuggestionsStats: function(scope) {
+        const gr = new GlideAggregate('u_docugen_suggestions');
+        gr.addEncodedQuery(`u_script_reference.sys_scope=${scope}`);
+        gr.addAggregate('AVG', 'u_cyclomatic_complexity');
+        gr.addAggregate('AVG', 'u_technical_debt_hours');
+        gr.query();
+        if (gr.next()) {
+            return {
+                avgComplexity: parseFloat(gr.getAggregate('AVG', 'u_cyclomatic_complexity')) || 0,
+                avgTechDebt: parseFloat(gr.getAggregate('AVG', 'u_technical_debt_hours')) || 0
+            };
+        }
+        return { avgComplexity: 0, avgTechDebt: 0 };
+    },
+
+    _getFieldValues: function(element) {
+        let res = {};
+        const choiceGr = new GlideRecord(this.CHOICE_TABLE);
+        choiceGr.addQuery('name', this.COVERAGE_TABLE);
+        choiceGr.addQuery('element', element);
+        choiceGr.query();
+        while (choiceGr.next()) {
+            res[choiceGr.label.toString()] = choiceGr.value.toString();
+        }
+        return res;
+    },
+
+    _storeCoverageReport: function(data) {
+        try {
+            const calculatedStatus = this._calculateStatus(data);
+            const reportGr = new GlideRecord(this.COVERAGE_TABLE);
+            reportGr.addQuery('u_app_scope', data.appScope);
+            reportGr.query();
+            
+            if (reportGr.next()) {
+                reportGr.u_report_date = new GlideDateTime();
+                reportGr.u_app_tables = data.totalTables;
+                reportGr.u_total_annotations = data.totalAnnotations;
+                reportGr.u_total_app_files = data.totalAppFiles;
+                reportGr.u_total_code_reviews = data.totalCodeReviews;
+                reportGr.u_total_documentations = data.totalCodeDocs;
+                reportGr.u_total_tables = data.totalTableDocs;
+                reportGr.u_status = calculatedStatus;
+                reportGr.u_priority = this._calculatePriority(data, calculatedStatus);
+                reportGr.update();
+            } else {
+                reportGr.initialize();
+                reportGr.u_report_date = new GlideDateTime();
+                reportGr.u_app_scope = data.appScope;
+                reportGr.u_app_tables = data.totalTables;
+                reportGr.u_total_annotations = data.totalAnnotations;
+                reportGr.u_total_app_files = data.totalAppFiles;
+                reportGr.u_total_code_reviews = data.totalCodeReviews;
+                reportGr.u_total_documentations = data.totalCodeDocs;
+                reportGr.u_total_tables = data.totalTableDocs;
+                reportGr.u_status = calculatedStatus;
+                reportGr.u_priority = this._calculatePriority(data, calculatedStatus);
+                reportGr.insert();
+            }
+
+            return {
+                title: reportGr.getDisplayValue(),
+                number: reportGr.u_number.toString(),
+                link: `${gs.getProperty('glide.servlet.uri')}${reportGr.getLink()}`
+            };
+        } catch (e) {
+            gs.error(`[DocuGenLLMCoverageUtils._storeCoverageReport] Error: ${e}`);
+            throw new Error(`[DocuGenLLMCoverageUtils._storeCoverageReport] Error: ${e}`);
+        }
+    },
+
+    type: 'DocuGenLLMCoverageUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 01:54:57</sys_created_on>
+        <sys_id>03f3a958837c3a1046cfe4d0deaad341</sys_id>
+        <sys_mod_count>28</sys_mod_count>
+        <sys_name>DocuGenLLMCoverageUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_03f3a958837c3a1046cfe4d0deaad341</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-22 02:37:12</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>03f3a958837c3a1046cfe4d0deaad341</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 01:54:57</sys_created_on>
+        <sys_id>0e96a1dc837c3a1046cfe4d0deaad319</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 01:54:57</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

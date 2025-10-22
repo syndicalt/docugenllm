@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>global.DocuGenLLMNotificationUtils</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <mobile_callable>false</mobile_callable>
+        <name>DocuGenLLMNotificationUtils</name>
+        <sandbox_callable>false</sandbox_callable>
+        <script><![CDATA[/**
+ * DocuGenLLMNotificationUtils
+ * Handles notifications for coverage report completion
+ */
+
+var DocuGenLLMNotificationUtils = Class.create();
+DocuGenLLMNotificationUtils.prototype = {
+    initialize: function() {},
+
+    sendCoverageCompleteNotification: function(appSysId, userId) {
+        try {
+            var appGr = new GlideRecord('sys_app');
+            if (appGr.get(appSysId)) {
+                var notification = new GlideRecord('sysevent_email_action');
+                notification.addQuery('name', 'DocuGenLLM Coverage Report Complete');
+                notification.query();
+                if (!notification.next()) {
+                    notification.initialize();
+                    notification.setValue('name', 'DocuGenLLM Coverage Report Complete');
+                    notification.setValue('table', 'sys_app');
+                    notification.setValue('template', 'docugen_coverage_complete');
+                    notification.setValue('active', true);
+                    notification.insert();
+                }
+
+                var event = new GlideRecord('sysevent');
+                event.initialize();
+                event.setValue('name', 'docugen.coverage.complete');
+                event.setValue('parms', {
+                    app_name: appGr.name.toString(),
+                    app_sys_id: appSysId,
+                    user_id: userId,
+                    link: 'u_docugen_coverage_reports_list.do?sysparm_query=u_app_scope=' + appSysId
+                });
+                event.insert();
+            }
+        } catch (e) {
+            gs.error(`[DocuGenLLMNotificationUtils.sendCoverageCompleteNotification] Error: ${e}`);
+        }
+    },
+
+    type: 'DocuGenLLMNotificationUtils'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 02:14:43</sys_created_on>
+        <sys_id>541be15883bc3a1046cfe4d0deaad351</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>DocuGenLLMNotificationUtils</sys_name>
+        <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+        <sys_update_name>sys_script_include_541be15883bc3a1046cfe4d0deaad351</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 02:14:43</sys_updated_on>
+    </sys_script_include>
+    <sys_es_latest_script action="INSERT_OR_UPDATE">
+        <id>541be15883bc3a1046cfe4d0deaad351</id>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2025-10-21 02:14:43</sys_created_on>
+        <sys_id>ef1be15883bc3a1046cfe4d0deaad36a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2025-10-21 02:14:43</sys_updated_on>
+        <table>sys_script_include</table>
+        <use_es_latest>true</use_es_latest>
+    </sys_es_latest_script>
+</record_update>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="u_total_app_files" label="Total Application Files" language="en" table="u_docugen_coverage_reports">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>u_total_app_files</element>
+            <help/>
+            <hint/>
+            <label>Total Application Files</label>
+            <language>en</language>
+            <name>u_docugen_coverage_reports</name>
+            <plural>Total Application Files</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-21 01:37:08</sys_created_on>
+            <sys_mod_count>4</sys_mod_count>
+            <sys_name>Total Application Files</sys_name>
+            <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+            <sys_update_name>sys_documentation_u_docugen_coverage_reports_u_total_app_files_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-22 01:39:16</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

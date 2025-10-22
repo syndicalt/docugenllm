@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="u_status" table="u_docugen_coverage_reports" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>u_status</element>
+            <name>u_docugen_coverage_reports</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-21 01:39:08</sys_created_on>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>u_status</sys_name>
+            <sys_package display_value="DocuGenLLM" source="54a6cf7783b7621046cfe4d0deaad30f">54a6cf7783b7621046cfe4d0deaad30f</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="DocuGenLLM">54a6cf7783b7621046cfe4d0deaad30f</sys_scope>
+            <sys_update_name>sys_choice_u_docugen_coverage_reports_u_status</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-21 01:39:08</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>u_status</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Undocumented</label>
+            <language>en</language>
+            <name>u_docugen_coverage_reports</name>
+            <sequence>0</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-21 01:39:08</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_mod_count>2</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-21 01:39:12</sys_updated_on>
+            <value>-1</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>u_status</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Poorly Documented</label>
+            <language>en</language>
+            <name>u_docugen_coverage_reports</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-21 01:39:16</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-22 00:02:51</sys_updated_on>
+            <value>0</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>u_status</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Moderately Documented</label>
+            <language>en</language>
+            <name>u_docugen_coverage_reports</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-22 00:03:34</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-22 00:04:06</sys_updated_on>
+            <value>1</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>u_status</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Well Documented</label>
+            <language>en</language>
+            <name>u_docugen_coverage_reports</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-21 01:39:27</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_mod_count>6</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-22 00:04:09</sys_updated_on>
+            <value>2</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>u_status</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>Complete</label>
+            <language>en</language>
+            <name>u_docugen_coverage_reports</name>
+            <sequence>4</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2025-10-22 00:02:57</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_mod_count>3</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2025-10-22 00:04:10</sys_updated_on>
+            <value>3</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>
